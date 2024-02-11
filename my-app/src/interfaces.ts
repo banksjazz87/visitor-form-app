@@ -12,4 +12,16 @@ export interface Visitor {
     phone: string;
     email: string;
     contactMethod: string;
+    interests: string[];
+    prayerRequest: string;
+}
+
+export interface FormFields {
+    type: string;
+    name: string;
+    placeHolder: string;
+    label: string;
+    id: string;
+    value: string;
+    visitorKey: string;
 }

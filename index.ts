@@ -18,9 +18,9 @@ app.listen(port, ()=> {
     console.log(`App is listening on port ${port}`);
 });
 
-app.use(express.static(path.join(__dirname, "../client/build")));
+app.use(express.static(path.join(__dirname, "../my-app/build")));
 
 app.get('/', (req: Request, res: Response): void => {
-    res.sendFile(path.join(__dirname, "../client/build/index.html"));
+    res.sendFile(path.join(__dirname, "../my-app/build/index.html"));
 });
 

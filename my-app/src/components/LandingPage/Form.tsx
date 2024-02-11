@@ -1,14 +1,6 @@
 import React, {useState} from "react";
 import {Visitor} from "../../interfaces.ts";
-
-interface FormFields {
-    type: string;
-    placeHolder: string;
-    label: string;
-    id: string;
-    value: string;
-    visitorKey: string;
-}
+import FormConstructor from "../../Lib/FormConstructor.ts";
 
 export default function Form() {
 
@@ -23,17 +15,18 @@ export default function Form() {
         state: '',
         phone: '',
         email: '',
-        contactMethod: ''
+        contactMethod: '', 
+        interests: [''], 
+        prayerRequest: ''
     });
 
-
-    const formFields: FormFields[] = [
-        {type: 'input', placeHolder: '', label: '', id: '', value: '', visitorKey: ''}, 
-    ]
+   
+    const form = new FormConstructor();
+    
 
     return (
-        <form method="/visitor-form" action="POST">
+        <div>
             
-        </form>
+        </div>
     )
 }
