@@ -1,6 +1,7 @@
 import React, {useState} from "react";
-import {Visitor, FormFields} from "../../interfaces.ts";
+import {Visitor} from "../../interfaces.ts";
 import FormConstructor from "../../Lib/FormConstructor.ts";
+import FormField from "../../components/LandingPage/FormField.tsx";
 
 export default function Form() {
 
@@ -23,23 +24,45 @@ export default function Form() {
    
     const form = new FormConstructor();
 
-    const createFormFieldsVerticalLabel = (arr: FormFields[]): JSX.Element[] => {
-        const elements = arr.map((x: FormFields, y: number) => {
-            return (
-                <div key={`${x.visitorKey}_${y}`}>
-                    <label htmlFor={x.id}>{x.label}</label>
-                    <input id={x.id} type={x.type} placeholder={x.placeHolder}></input>
-                </div>
-            );
-        });
-
-        return elements;
-    }
-    
-
     return (
-        <div>
-            {createFormFieldsVerticalLabel(form.getContactFields())}
+        <div className="flex flex-col gap-8 w-6/12 m-auto">
+            <FormField 
+                dataArray={form.getTitleFields()}
+                title="Title"
+                changeHandler={() => console.log(test)}
+                vertical={true}
+            />
+            <FormField 
+                dataArray={form.getNameFields()}
+                title="Title"
+                changeHandler={() => console.log(test)}
+                vertical={false}
+            />
+            <FormField 
+                dataArray={form.getAddressFields()}
+                title="Title"
+                changeHandler={() => console.log(test)}
+                vertical={false}
+            />
+            <FormField 
+                dataArray={form.getContactFields()}
+                title="Title"
+                changeHandler={() => console.log(test)}
+                vertical={false}
+            />
+            <FormField 
+                dataArray={form.getContactMethodFields() }
+                title="Title"
+                changeHandler={() => console.log(test)}
+                vertical={true}
+            />
+            <FormField 
+                dataArray={form.getInterests()}
+                title="Title"
+                changeHandler={() => console.log(test)}
+                vertical={true}
+            />
+
         </div>
-    )
+    );
 }
