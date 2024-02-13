@@ -1,13 +1,14 @@
 import React, {useState} from "react";
 import {Visitor} from "../../interfaces.ts";
 import FormConstructor from "../../Lib/FormConstructor.ts";
-import FormField from "../../components/LandingPage/FormField.tsx";
+import InputField from "./InputField.tsx";
+import express from 'express';
 
 export default function Form() {
 
     const [visitorDetails, setVisitorDetails] = useState<Visitor>({
         title: '',
-        name: {
+        visitorName: {
             firstName: 'Burt', 
             lastName: ''
         },
@@ -21,47 +22,66 @@ export default function Form() {
         prayerRequest: ''
     });
 
-   
     const form = new FormConstructor();
+
+    const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+        let currentKey = key as keyof Visitor;
+        setVisitorDetails({...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value});
+    }
+    
+
+    const nameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+        let currentKey = key as keyof Visitor;
+        setVisitorDetails({
+                ...visitorDetails, 
+                visitorName: {
+                ...visitorDetails.visitorName,
+                [currentKey]: (e.target as HTMLInputElement).value}
+    });
+
+    console.log(visitorDetails);
+    }
 
     return (
         <div className="flex flex-col gap-8 w-6/12 m-auto">
-            <FormField 
-                dataArray={form.getTitleFields()}
-                title="Title"
-                changeHandler={() => console.log(test)}
-                vertical={true}
-            />
-            <FormField 
-                dataArray={form.getNameFields()}
-                title="Title"
-                changeHandler={() => console.log(test)}
-                vertical={false}
-            />
-            <FormField 
-                dataArray={form.getAddressFields()}
-                title="Title"
-                changeHandler={() => console.log(test)}
-                vertical={false}
-            />
-            <FormField 
-                dataArray={form.getContactFields()}
-                title="Title"
-                changeHandler={() => console.log(test)}
-                vertical={false}
-            />
-            <FormField 
-                dataArray={form.getContactMethodFields() }
-                title="Title"
-                changeHandler={() => console.log(test)}
-                vertical={true}
-            />
-            <FormField 
-                dataArray={form.getInterests()}
-                title="Title"
-                changeHandler={() => console.log(test)}
-                vertical={true}
-            />
+            <form>
+                <InputField 
+                    dataArray={form.getTitleFields()}
+                    title="Title"
+                    changeHandler={inputChangeHandler}
+                    vertical={true}
+                />
+                <InputField 
+                    dataArray={form.getNameFields()}
+                    title="Name"
+                    changeHandler={nameChangeHandler}
+                    vertical={false}
+                />
+                <InputField 
+                    dataArray={form.getAddressFields()}
+                    title="Title"
+                    changeHandler={inputChangeHandler}
+                    vertical={false}
+                />
+                <InputField 
+                    dataArray={form.getContactFields()}
+                    title="Title"
+                    changeHandler={() => console.log(test)}
+                    vertical={false}
+                />
+                <InputField 
+                    dataArray={form.getContactMethodFields() }
+                    title="Title"
+                    changeHandler={() => console.log(test)}
+                    vertical={true}
+                />
+                <InputField 
+                    dataArray={form.getInterests()}
+                    title="Title"
+                    changeHandler={() => console.log(test)}
+                    vertical={true}
+                />
+            </form>
 
         </div>
     );

@@ -8,14 +8,14 @@ interface FormFieldProps {
     vertical: boolean;
 }
 
-export default function FormField({dataArray, title, vertical}: FormFieldProps) {
+export default function InputField({dataArray, title, vertical, changeHandler}: FormFieldProps) {
 
     const createFormFields = (arr: FormFields[]): JSX.Element[] => {
         const elements = arr.map((x: FormFields, y: number) => {
             return (
                 <div key={`${x.visitorKey}_${y}`} className={vertical ? 'flex flex-row grow gap-2' : 'flex flex-col grow gap-2'}>
                     <label htmlFor={x.id}>{x.label}</label>
-                    <input id={x.id} type={x.type} placeholder={x.placeHolder}></input>
+                    <input id={x.id} type={x.type} placeholder={x.placeHolder} onChange={(event) => changeHandler(event, x.visitorKey)}></input>
                 </div>
             );
         });

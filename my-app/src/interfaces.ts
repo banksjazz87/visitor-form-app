@@ -5,7 +5,7 @@ export interface Name {
 
 export interface Visitor {
     title: string;
-    name: Name;
+    visitorName: Name;
     address: string;
     city: string;
     state: string;
