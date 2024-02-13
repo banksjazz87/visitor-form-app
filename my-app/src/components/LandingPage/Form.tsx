@@ -27,6 +27,7 @@ export default function Form() {
     const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
         let currentKey = key as keyof Visitor;
         setVisitorDetails({...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value});
+        console.log(visitorDetails);
     }
     
 
@@ -38,8 +39,6 @@ export default function Form() {
                 ...visitorDetails.visitorName,
                 [currentKey]: (e.target as HTMLInputElement).value}
     });
-
-    console.log(visitorDetails);
     }
 
     return (
@@ -59,25 +58,25 @@ export default function Form() {
                 />
                 <InputField 
                     dataArray={form.getAddressFields()}
-                    title="Title"
+                    title="Address"
                     changeHandler={inputChangeHandler}
                     vertical={false}
                 />
                 <InputField 
                     dataArray={form.getContactFields()}
-                    title="Title"
+                    title="Contact"
                     changeHandler={() => console.log(test)}
                     vertical={false}
                 />
                 <InputField 
                     dataArray={form.getContactMethodFields() }
-                    title="Title"
+                    title="Preferred Contact Method"
                     changeHandler={() => console.log(test)}
                     vertical={true}
                 />
                 <InputField 
                     dataArray={form.getInterests()}
-                    title="Title"
+                    title="I am interested in learning more about:"
                     changeHandler={() => console.log(test)}
                     vertical={true}
                 />

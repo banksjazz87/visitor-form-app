@@ -12,21 +12,30 @@ export default function InputField({dataArray, title, vertical, changeHandler}: 
 
     const createFormFields = (arr: FormFields[]): JSX.Element[] => {
         const elements = arr.map((x: FormFields, y: number) => {
-            return (
+            if (x.type === "radio") {
+                return (
                 <div key={`${x.visitorKey}_${y}`} className={vertical ? 'flex flex-row grow gap-2' : 'flex flex-col grow gap-2'}>
                     <label htmlFor={x.id}>{x.label}</label>
-                    <input id={x.id} type={x.type} placeholder={x.placeHolder} onChange={(event) => changeHandler(event, x.visitorKey)}></input>
+                    <input id={x.id} type={x.type} placeholder={x.placeHolder} name={x.name} onChange={(event) => changeHandler(event, x.visitorKey)} value={x.value} className="border border-slate-700 rounded-sm"></input>
                 </div>
-            );
+                );
+            } else {
+                return (
+                    <div key={`${x.visitorKey}_${y}`} className={vertical ? 'flex flex-row grow gap-2' : 'flex flex-col grow gap-2'}>
+                        <label htmlFor={x.id}>{x.label}</label>
+                        <input id={x.id} type={x.type} placeholder={x.placeHolder} name={x.name} onChange={(event) => changeHandler(event, x.visitorKey)} className="border border-slate-700 rounded-sm pl-2"></input>
+                    </div>
+                );
+            }
         });
 
         return elements;
     }
 
     return (
-       <div className="fields_wrapper flex flex-col gap-2">
+       <div className="fields_wrapper flex flex-col gap-x-2 mt-6 gap-y-2">
             <p className="text-lg font-bold">{title}</p>
-            <div className="flex flex-row flex-wrap">
+            <div className="flex flex-row flex-wrap gap-4">
                 {createFormFields(dataArray)}
             </div>
        </div>
