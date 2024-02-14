@@ -25,3 +25,8 @@ export interface FormFields {
     value: string;
     visitorKey: string;
 }
+
+export interface BtnGroup {
+    value: string;
+    visitorKey: string;
+}

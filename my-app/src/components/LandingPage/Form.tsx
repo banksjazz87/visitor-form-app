@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import {Visitor} from "../../interfaces.ts";
 import FormConstructor from "../../Lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
-import express from 'express';
+import ButtonGroup from "./ButtonGroup.tsx";
+
 
 export default function Form() {
 
@@ -18,7 +19,7 @@ export default function Form() {
         phone: '',
         email: '',
         contactMethod: '', 
-        interests: [''], 
+        interests: ["Men's Group"], 
         prayerRequest: ''
     });
 
@@ -40,6 +41,24 @@ export default function Form() {
                 [currentKey]: (e.target as HTMLInputElement).value}
     });
     }
+
+    const buttonGroupChangeHandler = (e: React.MouseEvent<HTMLButtonElement>, dataPoint: string) => {
+        const selectedItem = e.target;
+
+        if (selectedItem instanceof HTMLButtonElement) {
+            const currentInterests = visitorDetails.interests.slice();
+            const selectedValue = [selectedItem.dataset.value as string];
+            const addedInterests = currentInterests.concat(selectedValue);
+
+            setVisitorDetails({...visitorDetails, 
+                interests: addedInterests,
+            });
+            
+        } else {
+            return;
+        }
+    }
+
 
     return (
         <div className="flex flex-col gap-8 w-6/12 m-auto">
@@ -74,11 +93,9 @@ export default function Form() {
                     changeHandler={() => console.log(test)}
                     vertical={true}
                 />
-                <InputField 
+                <ButtonGroup
                     dataArray={form.getInterests()}
-                    title="I am interested in learning more about:"
-                    changeHandler={() => console.log(test)}
-                    vertical={true}
+                    values={visitorDetails.interests}
                 />
             </form>
 
