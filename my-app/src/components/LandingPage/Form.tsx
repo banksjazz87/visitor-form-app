@@ -42,17 +42,37 @@ export default function Form() {
     });
     }
 
-    const buttonGroupChangeHandler = (e: React.MouseEvent<HTMLButtonElement>, dataPoint: string) => {
+    const checkIfExists = (array: string[], value: string): boolean => {
+        if (array.indexOf(value) > -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    const updatedInterests = (value: string): string[] => {
+        const currentInterests = visitorDetails.interests.slice();
+
+        if (!checkIfExists(currentInterests, value)) {
+            const newInterest = [value];
+            const newArray = currentInterests.concat(newInterest);
+            return newArray;
+
+        } else {
+            const indexOfInterest = currentInterests.indexOf(value);
+            currentInterests.splice(indexOfInterest, 1);
+            return currentInterests;
+        }  
+    }
+
+    const buttonGroupChangeHandler = (e: React.MouseEvent<HTMLButtonElement>, dataPoint: string): void => {
         const selectedItem = e.target;
 
         if (selectedItem instanceof HTMLButtonElement) {
-            const currentInterests = visitorDetails.interests.slice();
-            const selectedValue = [selectedItem.dataset.value as string];
-            const addedInterests = currentInterests.concat(selectedValue);
-
+            const selectedValue = selectedItem.dataset.value as string;
             setVisitorDetails({...visitorDetails, 
-                interests: addedInterests,
-            });
+                    interests: updatedInterests(selectedValue)
+                });
             
         } else {
             return;
@@ -96,6 +116,7 @@ export default function Form() {
                 <ButtonGroup
                     dataArray={form.getInterests()}
                     values={visitorDetails.interests}
+                    changeHandler={buttonGroupChangeHandler}
                 />
             </form>
 
