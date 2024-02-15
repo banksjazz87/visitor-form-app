@@ -4,26 +4,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 interface ButtonGroupProps {
+    title: string;
+    subTitle: string;
     dataArray: BtnGroup[];
     values: String[];
-    changeHandler: Function;
+    clickHandler: Function;
 }
 
-export default function ButtonGroup({dataArray, values, changeHandler}: ButtonGroupProps): JSX.Element {
+export default function ButtonGroup({dataArray, values, clickHandler, title, subTitle}: ButtonGroupProps): JSX.Element {
 
 
     const buttonElements: JSX.Element[] = dataArray.map((x: BtnGroup, y: number): JSX.Element => {
 
         if (values.indexOf(x.value) > -1) {
             return (
-                <div key={`btnGroupItem_${y}`}>
+                <div key={`btnGroupItem_${y}`} className="pb-4 flex flex-row justify-center gap-2">
                 <FontAwesomeIcon
                     icon={faCheck}
+                    style={{color: 'red'}}
                 />
                 <button 
                     type="button" 
                     data-value={x.value} 
-                    onClick={(event: React.MouseEvent<HTMLButtonElement>): void => changeHandler(event, x.value)}
+                    onClick={(event: React.MouseEvent<HTMLButtonElement>): void => clickHandler(event, x.value)}
                 >
                     {x.value}
                 </button>
@@ -31,11 +34,11 @@ export default function ButtonGroup({dataArray, values, changeHandler}: ButtonGr
             )
         } else {
         return (
-            <div key={`btnGroupItem_${y}`}>
+            <div key={`btnGroupItem_${y}`} className="pb-4 flex flex-row justify-center gap-2">
                 <button 
                     type="button" 
                     data-value={x.value}
-                    onClick={(event: React.MouseEvent<HTMLButtonElement>): void => changeHandler(event, x.value)}
+                    onClick={(event: React.MouseEvent<HTMLButtonElement>): void => clickHandler(event, x.value)}
             >
                 {x.value}
             </button>
@@ -45,8 +48,12 @@ export default function ButtonGroup({dataArray, values, changeHandler}: ButtonGr
     });
 
     return (
-        <div>
-            {buttonElements}
+        <div className="mt-4">
+            <p className="text-center font-bold text-lg">{title}</p>
+            <p className="text-center italic">{subTitle}</p>
+            <div className="mt-4">
+                {buttonElements}
+            </div>
         </div>
     )
 }

@@ -19,12 +19,13 @@ export default function Form() {
         phone: '',
         email: '',
         contactMethod: '', 
-        interests: ["Men's Group"], 
+        interests: [''], 
         prayerRequest: ''
     });
 
     const form = new FormConstructor();
 
+    //Change handler for the input fields.
     const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
         let currentKey = key as keyof Visitor;
         setVisitorDetails({...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value});
@@ -32,6 +33,7 @@ export default function Form() {
     }
     
 
+    //Change handler for the name field.
     const nameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
         let currentKey = key as keyof Visitor;
         setVisitorDetails({
@@ -42,6 +44,14 @@ export default function Form() {
     });
     }
 
+
+    /**
+     * 
+     * @param array string[]
+     * @param value string
+     * @returns boolean 
+     * @description checks to see if a value exists in an array.
+     */
     const checkIfExists = (array: string[], value: string): boolean => {
         if (array.indexOf(value) > -1) {
             return true;
@@ -50,6 +60,13 @@ export default function Form() {
         }
     }
 
+
+    /**
+     * 
+     * @param value string
+     * @returns string[]
+     * @description returns a new array that either has the value added, or removed depending on if it already exists.
+     */
     const updatedInterests = (value: string): string[] => {
         const currentInterests = visitorDetails.interests.slice();
 
@@ -65,7 +82,15 @@ export default function Form() {
         }  
     }
 
-    const buttonGroupChangeHandler = (e: React.MouseEvent<HTMLButtonElement>, dataPoint: string): void => {
+
+    /**
+     * 
+     * @param e HTML Event
+     * @param dataPoint string
+     * @returns void 
+     * @description the button click handler for the button group.
+     */
+    const buttonGroupClickHandler = (e: React.MouseEvent<HTMLButtonElement>, dataPoint: string): void => {
         const selectedItem = e.target;
 
         if (selectedItem instanceof HTMLButtonElement) {
@@ -81,8 +106,8 @@ export default function Form() {
 
 
     return (
-        <div className="flex flex-col gap-8 w-6/12 m-auto">
-            <form>
+        <div className="flex flex-col gap-8 lg:w-9/12 sm:w-screen m-auto mt-14 mb-14">
+            <form className='shadow-md p-4 sm:mx-10 shadow-slate-900 rounded-lg'>
                 <InputField 
                     dataArray={form.getTitleFields()}
                     title="Title"
@@ -114,10 +139,17 @@ export default function Form() {
                     vertical={true}
                 />
                 <ButtonGroup
+                    title="I am interested in learning more about"
+                    subTitle="(please click on all that apply)"
                     dataArray={form.getInterests()}
                     values={visitorDetails.interests}
-                    changeHandler={buttonGroupChangeHandler}
+                    clickHandler={buttonGroupClickHandler}
                 />
+
+                <div className="flex justify-center">
+                    <input type="submit" value="Submit" className="bg-sky-700 hover:bg-sky-900 transition-colors text-white ease-in-out delay-200  py-2 px-10 rounded-sm shadow-sm shadow-slate-700 m-auto"></input>
+                </div>
+               
             </form>
 
         </div>
