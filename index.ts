@@ -21,12 +21,12 @@ app.listen(port, ()=> {
 
     Db.connect();
 
-    console.log(`CRapp is listening on port ${port}`);
+    console.log(`CRpp is listening on port ${port}`);
 });
 
-app.use(express.static(path.join(__dirname, "../my-app/build")));
+app.use(express.static(path.join(__dirname, "../../my-app/build")));
 
 app.get('/', (req: Request, res: Response): void => {
-    res.sendFile(path.join(__dirname, "../my-app/build/index.html"));
+    res.sendFile(path.join(__dirname, "../../my-app/build/index.html"));
 });
 

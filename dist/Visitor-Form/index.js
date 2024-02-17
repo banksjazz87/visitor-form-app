@@ -19,9 +19,9 @@ app.use(express_1.default.json());
 app.listen(port, () => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     Db.connect();
-    console.log(`CRapp is listening on port ${port}`);
+    console.log(`CRpp is listening on port ${port}`);
 });
-app.use(express_1.default.static(path_1.default.join(__dirname, "../my-app/build")));
+app.use(express_1.default.static(path_1.default.join(__dirname, "../../my-app/build")));
 app.get('/', (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, "../my-app/build/index.html"));
+    res.sendFile(path_1.default.join(__dirname, "../../my-app/build/index.html"));
 });
