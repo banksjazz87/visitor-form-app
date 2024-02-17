@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {Visitor} from "../../interfaces.ts";
 import FormConstructor from "../../Lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
@@ -23,13 +23,13 @@ export default function Form() {
         prayerRequest: ''
     });
 
+    
     const form = new FormConstructor();
 
     //Change handler for the input fields.
     const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
         let currentKey = key as keyof Visitor;
         setVisitorDetails({...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value});
-        console.log(visitorDetails);
     }
     
 
@@ -86,11 +86,10 @@ export default function Form() {
     /**
      * 
      * @param e HTML Event
-     * @param dataPoint string
      * @returns void 
      * @description the button click handler for the button group.
      */
-    const buttonGroupClickHandler = (e: React.MouseEvent<HTMLButtonElement>, dataPoint: string): void => {
+    const buttonGroupClickHandler = (e: React.MouseEvent<HTMLButtonElement>): void => {
         const selectedItem = e.target;
 
         if (selectedItem instanceof HTMLButtonElement) {
