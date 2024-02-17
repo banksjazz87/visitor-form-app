@@ -1,9 +1,23 @@
 import React, {useState, useEffect} from "react";
 import {Visitor} from "../../interfaces.ts";
-import FormConstructor from "../../Lib/FormConstructor.ts";
+import FormConstructor from "../../lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
 
+interface States {
+    state: string,
+}
+
+interface StateData {
+    id: Number, 
+    state_name: string,
+    state_abbreviation: string
+}
+
+interface APIResponse<Type> {
+    message: string,
+    data: Type[]
+}
 
 export default function Form() {
 
@@ -22,6 +36,30 @@ export default function Form() {
         interests: [''], 
         prayerRequest: ''
     });
+
+    const [states, setStates] = useState<States[]>();
+
+    const getStateData = async(): Promise<APIResponse<StateData>> => {
+        const stateData = await fetch('/all-states');
+        const stateDataJSON: APIResponse<StateData> = await stateData.json();
+        return stateDataJSON;
+    }
+
+    useEffect(() => {
+        getStateData().then((allData: APIResponse<StateData>) => {
+            if (allData.message === 'Success') {
+                const stateValues = allData.data.map((x: StateData, y: number): States => {
+                    let currentObj: States = {
+                        state: x.state_name
+                    };
+                    return currentObj;
+                });
+                console.log(stateValues);
+            } else {
+                console.log(allData.data);
+            }
+        });
+    }, []);
 
     
     const form = new FormConstructor();

@@ -1,4 +1,4 @@
-import { FormFields, BtnGroup } from "../../src/interfaces.ts";
+import { FormFields, BtnGroup } from "../interfaces.ts";
 
 export default class FormConstructor {
 	titleFields: FormFields[] = [

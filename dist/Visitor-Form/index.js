@@ -25,3 +25,21 @@ app.use(express_1.default.static(path_1.default.join(__dirname, "../../my-app/bu
 app.get('/', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "../../my-app/build/index.html"));
 });
+app.get('/all-states', (req, res) => {
+    const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+    Db.getTable('States', 'ASC', 'state_name')
+        .then((data) => {
+        res.send({
+            "message": "Success",
+            "data": data
+        });
+        console.log(data);
+    })
+        .catch((err) => {
+        console.log('error', Db.getSqlError(err));
+        res.send({
+            "message": "Failure",
+            "error": err
+        });
+    });
+});
