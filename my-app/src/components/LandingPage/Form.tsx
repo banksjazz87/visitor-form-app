@@ -1,23 +1,10 @@
 import React, {useState, useEffect} from "react";
-import {Visitor} from "../../interfaces.ts";
+import {Visitor, States, StateData, APIResponse, FormFields} from "../../interfaces.ts";
 import FormConstructor from "../../lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
+import SelectField from "./SelectField.tsx";
 
-interface States {
-    state: string,
-}
-
-interface StateData {
-    id: Number, 
-    state_name: string,
-    state_abbreviation: string
-}
-
-interface APIResponse<Type> {
-    message: string,
-    data: Type[]
-}
 
 export default function Form() {
 
@@ -37,28 +24,46 @@ export default function Form() {
         prayerRequest: ''
     });
 
-    const [states, setStates] = useState<States[]>();
+    const [states, setStates] = useState<FormFields[]>([{
+        type: "select",
+        name: "",
+        placeHolder: '',
+        label: '',
+        id: "",
+        value: "",
+        visitorKey: 'state'
+    }]);
 
-    const getStateData = async(): Promise<APIResponse<StateData>> => {
+    const getStateData = async(): Promise<any> => {
         const stateData = await fetch('/all-states');
         const stateDataJSON: APIResponse<StateData> = await stateData.json();
-        return stateDataJSON;
-    }
 
-    useEffect(() => {
-        getStateData().then((allData: APIResponse<StateData>) => {
-            if (allData.message === 'Success') {
-                const stateValues = allData.data.map((x: StateData, y: number): States => {
-                    let currentObj: States = {
-                        state: x.state_name
+        try {
+            if (stateDataJSON.message === 'Success') {
+                const stateValues = stateDataJSON.data.map((x: StateData, y: number): FormFields => {
+                    let currentObj: FormFields = {
+                        type: "select",
+                        name: x.state_name,
+                        placeHolder: '',
+                        label: x.state_name,
+                        id: `${x.state_name}_option`,
+                        value: x.state_name,
+                        visitorKey: 'state'
                     };
                     return currentObj;
                 });
-                console.log(stateValues);
+                setStates(stateValues);
             } else {
-                console.log(allData.data);
+                alert(`The following error has occurred ${stateDataJSON.message}`);
             }
-        });
+            } catch(error) {
+                console.error(`Error with getting /all-states, ${error}`);
+            }
+        }
+
+
+    useEffect(() => {
+        getStateData();
     }, []);
 
     
@@ -163,6 +168,11 @@ export default function Form() {
                     changeHandler={inputChangeHandler}
                     vertical={false}
                 />
+
+                <SelectField 
+                    dataArray={states}
+                    changeHandler={() => alert('you changed the value')}
+                />
                 <InputField 
                     dataArray={form.getContactFields()}
                     title="Contact"
@@ -175,6 +185,7 @@ export default function Form() {
                     changeHandler={() => console.log(test)}
                     vertical={true}
                 />
+                
                 <ButtonGroup
                     title="I am interested in learning more about"
                     subTitle="(please click on all that apply)"

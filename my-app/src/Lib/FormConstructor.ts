@@ -71,15 +71,6 @@ export default class FormConstructor {
 			value: "",
 			visitorKey: "city",
 		},
-		{
-			type: "select",
-			name: "address",
-			placeHolder: "",
-			label: "State",
-			id: "state",
-			value: "",
-			visitorKey: "state",
-		},
 	];
 
 	contactFields: FormFields[] = [

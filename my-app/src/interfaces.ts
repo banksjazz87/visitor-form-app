@@ -30,3 +30,19 @@ export interface BtnGroup {
     value: string;
     visitorKey: string;
 }
+
+export interface States {
+    state: string,
+}
+
+export interface StateData {
+    id: Number, 
+    state_name: string,
+    state_abbreviation: string
+}
+
+export interface APIResponse<Type> {
+    message: string,
+    data: Type[], 
+    error: string
+}
