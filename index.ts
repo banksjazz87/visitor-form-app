@@ -3,6 +3,8 @@ import path from "path";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from 'dotenv';
+import { DBMethods } from "./dbQueries/databaseMethods";
+import { SQLResponse } from "./interfaces/interfaces";
 
 dotenv.config();
 
@@ -15,7 +17,11 @@ app.use(cors());
 app.use(express.json());
 
 app.listen(port, ()=> {
-    console.log(`App is listening on port ${port}`);
+    const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+
+    Db.connect();
+
+    console.log(`CRapp is listening on port ${port}`);
 });
 
 app.use(express.static(path.join(__dirname, "../my-app/build")));
