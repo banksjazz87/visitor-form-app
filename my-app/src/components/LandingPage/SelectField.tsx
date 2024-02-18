@@ -4,9 +4,11 @@ import {FormFields} from "../../interfaces.ts";
 interface SelectFieldProps{
     dataArray: FormFields[];
     changeHandler: Function;
+    label: string;
+    selectID: string;
 }
 
-export default function SelectField({dataArray, changeHandler}: SelectFieldProps) {
+export default function SelectField({dataArray, changeHandler, label, selectID}: SelectFieldProps) {
 
     const returnOptions = dataArray.map((x: FormFields, y: number): JSX.Element => {
         return (
@@ -14,10 +16,20 @@ export default function SelectField({dataArray, changeHandler}: SelectFieldProps
         );
     });
 
+    const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+        changeHandler(e, dataArray[0].visitorKey);
+    }
+
     return (
         <div className="fields_wrapper flex flex-col gap-x-2 mt-6 gap-y-2">
-            <div className="flex flex-row flex-wrap gap-2 justify-center">
-                <select className="border border-slate-700 rounded-sm pl-2" onChange={() => changeHandler()}>
+            <div className="flex flex-col gap-2 flex-1 justify-start">
+                <label htmlFor={selectID}>{label}</label>
+                <select 
+                    id={selectID} 
+                    name={selectID} 
+                    className="border border-slate-700 rounded-sm pl-2" 
+                    onChange={selectHandler}
+                >
                 {returnOptions}
             </select>
             </div>

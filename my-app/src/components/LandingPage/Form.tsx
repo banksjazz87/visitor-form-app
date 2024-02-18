@@ -69,10 +69,11 @@ export default function Form() {
     
     const form = new FormConstructor();
 
-    //Change handler for the input fields.
+    //Change handler for the input and select fields.
     const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
         let currentKey = key as keyof Visitor;
         setVisitorDetails({...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value});
+        console.log(visitorDetails);
     }
     
 
@@ -171,7 +172,9 @@ export default function Form() {
 
                 <SelectField 
                     dataArray={states}
-                    changeHandler={() => alert('you changed the value')}
+                    changeHandler={inputChangeHandler}
+                    label="State"
+                    selectID="states_dropdown"
                 />
                 <InputField 
                     dataArray={form.getContactFields()}
