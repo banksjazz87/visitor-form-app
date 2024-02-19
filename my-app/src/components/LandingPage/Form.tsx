@@ -1,10 +1,14 @@
 import React, {useState, useEffect} from "react";
-import {Visitor, States, StateData, APIResponse, FormFields} from "../../interfaces.ts";
+import {Visitor, States, StateData, APIResponse, FormFields, BtnGroup} from "../../interfaces.ts";
 import FormConstructor from "../../lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
 import SelectField from "./SelectField.tsx";
 
+interface InterestData {
+    id: number;
+    interest: string;
+}
 
 export default function Form() {
 
@@ -24,18 +28,29 @@ export default function Form() {
         prayerRequest: ''
     });
 
-    const [states, setStates] = useState<FormFields[]>([{
-        type: "select",
-        name: "",
-        placeHolder: '',
-        label: '',
-        id: "",
-        value: "",
-        visitorKey: 'state'
-    }]);
+    const [states, setStates] = useState<FormFields[]>([
+        {
+            type: "select",
+            name: "",
+            placeHolder: '',
+            label: '',
+            id: "",
+            value: "",
+            visitorKey: 'state'
+        }
+    ]);
+
+    const [interestList, setInterestList] = useState<BtnGroup[]>([
+        {
+            value: '', 
+            visitorKey: ''
+        }
+    ]);
+
+    
 
     const getStateData = async(): Promise<any> => {
-        const stateData = await fetch('/all-states');
+        const stateData: Response = await fetch('/all-states');
         const stateDataJSON: APIResponse<StateData> = await stateData.json();
 
         try {
@@ -56,14 +71,41 @@ export default function Form() {
             } else {
                 alert(`The following error has occurred ${stateDataJSON.error}`);
             }
-            } catch(error) {
+            } catch(error: unknown) {
                 console.error(`Error with getting /all-states, ${error}`);
             }
         }
 
+    const getInterests = async(): Promise<any> => {
+        const allInterests: Response = await fetch('/all-interests');
+        const interestsJSON: APIResponse<InterestData> = await allInterests.json();
+
+        try {
+            console.log(interestsJSON);
+
+            if (interestsJSON.message === 'Success') {
+                const createInterests: BtnGroup[] = interestsJSON.data.map((x: InterestData, y: number ): BtnGroup => {
+                    let currentObj = {
+                        value: x.interest,
+                        visitorKey: 'interests'
+                    };
+
+                    return currentObj;
+                });
+                
+                setInterestList(createInterests);
+            } else {
+                alert(`The following error occured while accessing all interests: ${interestsJSON.error}`);
+            }
+        } catch (error: unknown) {
+            console.log(`Error getting the interests, ${error}`);
+        }
+    }
+
 
     useEffect(() => {
         getStateData();
+        getInterests();
     }, []);
 
     
