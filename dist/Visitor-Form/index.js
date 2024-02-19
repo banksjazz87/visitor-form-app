@@ -43,3 +43,20 @@ app.get('/all-states', (req, res) => {
         });
     });
 });
+app.get('/all-interests', (req, res) => {
+    const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+    Db.getTable('Interests', 'ASC', 'id')
+        .then((data) => {
+        res.send({
+            "message": "Success",
+            "data": data
+        });
+        console.log(data);
+    })
+        .catch((err) => {
+        res.send({
+            "message": "Failure",
+            "error": err
+        });
+    });
+});

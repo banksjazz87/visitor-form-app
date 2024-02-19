@@ -54,7 +54,7 @@ export default function Form() {
                 });
                 setStates(stateValues);
             } else {
-                alert(`The following error has occurred ${stateDataJSON.message}`);
+                alert(`The following error has occurred ${stateDataJSON.error}`);
             }
             } catch(error) {
                 console.error(`Error with getting /all-states, ${error}`);

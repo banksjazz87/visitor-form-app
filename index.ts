@@ -52,3 +52,22 @@ app.get('/all-states', (req: Request, res: Response): void => {
 
 });
 
+app.get('/all-interests', (req: Request, res: Response): void => {
+    const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+
+    Db.getTable('Interests', 'ASC', 'id')
+        .then((data: string[]): void => {
+            res.send({
+                "message": "Success", 
+                "data": data
+            });
+            console.log(data);
+        })
+        .catch((err: SQLResponse): void => {
+            res.send({
+                "message": "Failure", 
+                "error": err
+            });
+        });
+});
+
