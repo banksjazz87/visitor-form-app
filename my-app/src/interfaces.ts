@@ -46,3 +46,8 @@ export interface APIResponse<Type> {
     data: Type[], 
     error: string
 }
+
+export interface InterestData {
+    id: number;
+    interest: string;
+}
