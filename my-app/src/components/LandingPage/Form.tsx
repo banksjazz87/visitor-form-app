@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {Visitor, States, StateData, APIResponse, FormFields, BtnGroup} from "../../interfaces.ts";
+import SetupForm from "../../lib/form/constructors.ts";
 import FormConstructor from "../../lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
@@ -12,42 +13,10 @@ interface InterestData {
 
 export default function Form() {
 
-    const [visitorDetails, setVisitorDetails] = useState<Visitor>({
-        title: '',
-        visitorName: {
-            firstName: 'Burt', 
-            lastName: ''
-        },
-        address: '',
-        city: '',
-        state: '',
-        phone: '',
-        email: '',
-        contactMethod: '', 
-        interests: [''], 
-        prayerRequest: ''
-    });
-
-    const [states, setStates] = useState<FormFields[]>([
-        {
-            type: "select",
-            name: "",
-            placeHolder: '',
-            label: '',
-            id: "",
-            value: "",
-            visitorKey: 'state'
-        }
-    ]);
-
-    const [interestList, setInterestList] = useState<BtnGroup[]>([
-        {
-            value: '', 
-            visitorKey: ''
-        }
-    ]);
-
-    
+    const initForm = new SetupForm();
+    const [visitorDetails, setVisitorDetails] = useState<Visitor>(initForm.getInitVisitor());
+    const [states, setStates] = useState<FormFields[]>([initForm.getInitStates()]);
+    const [interestList, setInterestList] = useState<BtnGroup[]>([initForm.getInitInterests()]);
 
     const getStateData = async(): Promise<any> => {
         const stateData: Response = await fetch('/all-states');
@@ -55,7 +24,7 @@ export default function Form() {
 
         try {
             if (stateDataJSON.message === 'Success') {
-                const stateValues = stateDataJSON.data.map((x: StateData, y: number): FormFields => {
+                const stateValues: FormFields[] = stateDataJSON.data.map((x: StateData, y: number): FormFields => {
                     let currentObj: FormFields = {
                         type: "select",
                         name: x.state_name,
@@ -76,13 +45,12 @@ export default function Form() {
             }
         }
 
+ 
     const getInterests = async(): Promise<any> => {
         const allInterests: Response = await fetch('/all-interests');
         const interestsJSON: APIResponse<InterestData> = await allInterests.json();
-
+        
         try {
-            console.log(interestsJSON);
-
             if (interestsJSON.message === 'Success') {
                 const createInterests: BtnGroup[] = interestsJSON.data.map((x: InterestData, y: number ): BtnGroup => {
                     let currentObj = {
@@ -92,7 +60,6 @@ export default function Form() {
 
                     return currentObj;
                 });
-                
                 setInterestList(createInterests);
             } else {
                 alert(`The following error occured while accessing all interests: ${interestsJSON.error}`);
@@ -234,7 +201,7 @@ export default function Form() {
                 <ButtonGroup
                     title="I am interested in learning more about"
                     subTitle="(please click on all that apply)"
-                    dataArray={form.getInterests()}
+                    dataArray={interestList}
                     values={visitorDetails.interests}
                     clickHandler={buttonGroupClickHandler}
                 />
