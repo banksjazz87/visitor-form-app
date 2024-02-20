@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Visitor, States, StateData, APIResponse, FormFields, BtnGroup, InterestData} from "../../interfaces.ts";
+import {Visitor, FormFields, BtnGroup, APIResponse} from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
 import FormConstructor from "../../lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
@@ -10,6 +10,8 @@ import SelectField from "./SelectField.tsx";
 export default function Form() {
 
     const initForm = new SetupForm();
+    const form = new FormConstructor();
+
     const [visitorDetails, setVisitorDetails] = useState<Visitor>(initForm.getInitVisitor());
     const [states, setStates] = useState<FormFields[]>([initForm.getInitStates()]);
     const [interestList, setInterestList] = useState<BtnGroup[]>([initForm.getInitInterests()]);
@@ -28,13 +30,11 @@ export default function Form() {
     }, []);
 
     
-    const form = new FormConstructor();
 
     //Change handler for the input and select fields.
     const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
         let currentKey = key as keyof Visitor;
         setVisitorDetails({...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value});
-        console.log(visitorDetails);
     }
     
 
@@ -108,10 +108,45 @@ export default function Form() {
         }
     }
 
+    const postCall = async(url: string, data: object): Promise<any> => {
+        
+        try {
+            const response = await fetch(url, {
+                method: "Post", 
+                mode: "cors", 
+                cache: "no-cache",
+                credentials: "same-origin", 
+                headers: {
+                    "Content-Type": "application/json", 
+                }, 
+                redirect: "follow", 
+                referrerPolicy: "no-referrer", 
+                body: JSON.stringify(data)
+            });
+
+            return response.json();
+
+        } catch (e: any) {
+            console.error(`The following error occurred while submiting the form: ${e}`);
+        }
+    }
+
+    const submitHandler = (e: React.FormEvent <HTMLFormElement>): void => {
+        e.preventDefault();
+        postCall('/submit-form', visitorDetails).then((data: APIResponse<Visitor>): void => {
+            if (data.message === "Success") {
+                alert('This worked');
+                console.log(data.data);
+            } else {
+                alert('This failed!');
+            }
+        });
+    }
+
 
     return (
         <div className="flex flex-col gap-8 lg:w-9/12 sm:w-screen m-auto mt-14 mb-14">
-            <form className='shadow-md p-4 sm:mx-10 shadow-slate-900 rounded-lg'>
+            <form className='shadow-md p-4 sm:mx-10 shadow-slate-900 rounded-lg' onSubmit={submitHandler}>
                 <InputField 
                     dataArray={form.getTitleFields()}
                     title="Title"

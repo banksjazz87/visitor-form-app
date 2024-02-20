@@ -60,3 +60,9 @@ app.get('/all-interests', (req, res) => {
         });
     });
 });
+app.post('/submit-form', (req, res) => {
+    res.send({
+        "message": "Success",
+        "data": req.body,
+    });
+});

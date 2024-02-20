@@ -71,3 +71,11 @@ app.get('/all-interests', (req: Request, res: Response): void => {
         });
 });
 
+
+app.post('/submit-form', (req: Request, res: Response): void => {
+    res.send({
+        "message": "Success", 
+        "data": req.body,
+    });
+});
+

@@ -1,4 +1,4 @@
-import { FormFields, BtnGroup } from "../interfaces.ts";
+import { FormFields } from "../interfaces.ts";
 
 export default class FormConstructor {
 	titleFields: FormFields[] = [
@@ -124,56 +124,7 @@ export default class FormConstructor {
 		},
 	];
 
-	interests: BtnGroup[] = [
-		{
-			value: "Salvation",
-			visitorKey: "interests",
-		},
-		{
-			value: "Baptism/Water Baptism",
-			visitorKey: "interests",
-		},
-		{
-			value: "Baby Dedication",
-			visitorKey: "interests",
-		},
-		{
-			value: "Joining the Church/Membership",
-			visitorKey: "interests",
-		},
-		{
-			value: "Small Groups/Bible Studies",
-			visitorKey: "interests",
-		},
-		{
-			value: "Men's Group",
-			visitorKey: "interests",
-		},
-		{
-			value: "Women's Group",
-			visitorKey: "interests",
-		},
-		{
-			value: "Nursery (0-2 years)",
-			visitorKey: "interests",
-		},
-		{
-			value: "Pre-school (3-5 years)",
-			visitorKey: "interests",
-		},
-		{
-			value: "Kid's Church (K - 6th grade)",
-			visitorKey: "interests",
-		},
-		{
-			value: "Youth (7th-12th grade)",
-			visitorKey: "interests",
-		},
-		{
-			value: "Mom's Group",
-			visitorKey: "interests",
-		},
-	];
+	
 
 	getTitleFields() {
 		return this.titleFields;
@@ -195,7 +146,4 @@ export default class FormConstructor {
 		return this.contactMethodFields;
 	}
 
-	getInterests() {
-		return this.interests;
-	}
 }
