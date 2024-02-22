@@ -21,7 +21,7 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
                 <div key={`btnGroupItem_${y}`} className="pb-4 flex flex-row justify-center gap-2">
                 <FontAwesomeIcon
                     icon={faCheck}
-                    style={{color: 'red'}}
+                    style={{color: '#c026d3', marginTop: '4px'}}
                 />
                 <button 
                     type="button" 

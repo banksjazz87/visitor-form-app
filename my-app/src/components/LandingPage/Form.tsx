@@ -75,7 +75,12 @@ export default function Form() {
     const updatedInterests = (value: string): string[] => {
         const currentInterests = visitorDetails.interests.slice();
 
-        if (!checkIfExists(currentInterests, value)) {
+        if (currentInterests[0].length === 0) {
+            const newInterest = [value];
+            const newArray = newInterest;
+            return newArray;
+
+        } else if (!checkIfExists(currentInterests, value)) {
             const newInterest = [value];
             const newArray = currentInterests.concat(newInterest);
             return newArray;
@@ -99,8 +104,9 @@ export default function Form() {
 
         if (selectedItem instanceof HTMLButtonElement) {
             const selectedValue = selectedItem.dataset.value as string;
+
             setVisitorDetails({...visitorDetails, 
-                    interests: updatedInterests(selectedValue)
+                    interests: updatedInterests(selectedValue).length > 0 ? updatedInterests(selectedValue) : ['']
                 });
             
         } else {
@@ -175,13 +181,13 @@ export default function Form() {
                 <InputField 
                     dataArray={form.getContactFields()}
                     title="Contact"
-                    changeHandler={() => console.log(test)}
+                    changeHandler={inputChangeHandler}
                     vertical={false}
                 />
                 <InputField 
                     dataArray={form.getContactMethodFields() }
                     title="Preferred Contact Method"
-                    changeHandler={() => console.log(test)}
+                    changeHandler={inputChangeHandler}
                     vertical={true}
                 />
                 
