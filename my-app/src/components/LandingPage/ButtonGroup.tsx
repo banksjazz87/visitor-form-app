@@ -48,7 +48,7 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
     });
 
     return (
-        <div className="mt-4">
+        <div className="mt-12">
             <p className="text-center font-bold text-lg">{title}</p>
             <p className="text-center italic">{subTitle}</p>
             <div className="mt-4">
