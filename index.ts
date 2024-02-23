@@ -46,7 +46,7 @@ app.get('/all-states', (req: Request, res: Response): void => {
         console.log('error', Db.getSqlError(err));
         res.send({
             "message": "Failure", 
-            "error": err
+            "error": Db.getSqlError(err)
         });
     });
 
@@ -66,18 +66,11 @@ app.get('/all-interests', (req: Request, res: Response): void => {
         .catch((err: SQLResponse): void => {
             res.send({
                 "message": "Failure", 
-                "error": err
+                "error": Db.getSqlError(err)
             });
         });
 });
 
-
-app.post('/submit-form', (req: Request, res: Response): void => {
-    res.send({
-        "message": "Success", 
-        "data": req.body,
-    });
-});
 
 app.get('/get-person/:first/:last', (req: Request, res: Response): void => {
     const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
@@ -87,15 +80,37 @@ app.get('/get-person/:first/:last', (req: Request, res: Response): void => {
     Db.getPerson('Attendants', firstName, lastName)
         .then((data: string[]): void => {
             res.send({
-                message: "Success", 
-                data: data
+                "message": "Success", 
+                "data": data
             });
         })
         .catch((err: SQLResponse): void => {
             res.send({
                 "message": "Failure", 
-                "error": err
+                "error": Db.getSqlError(err)
             });
+        });
+});
+
+
+app.post('/submit-form', (req: Request, res: Response): void => {
+    const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+
+    const attendantColumns = "firstName, lastName, memberType";
+    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor'];
+
+    Db.insert('Attendants',attendantColumns, attendantValues )
+        .then((data: string[]): void => {
+            res.send({
+                "message": "Success", 
+                "data": data
+            })
+        })
+        .catch((err: SQLResponse): void => {
+            res.send({
+                "message": "Failure", 
+                "error": Db.getSqlError(err)
+            })
         });
 });
 

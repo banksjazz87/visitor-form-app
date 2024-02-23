@@ -39,7 +39,7 @@ app.get('/all-states', (req, res) => {
         console.log('error', Db.getSqlError(err));
         res.send({
             "message": "Failure",
-            "error": err
+            "error": Db.getSqlError(err)
         });
     });
 });
@@ -56,14 +56,8 @@ app.get('/all-interests', (req, res) => {
         .catch((err) => {
         res.send({
             "message": "Failure",
-            "error": err
+            "error": Db.getSqlError(err)
         });
-    });
-});
-app.post('/submit-form', (req, res) => {
-    res.send({
-        "message": "Success",
-        "data": req.body,
     });
 });
 app.get('/get-person/:first/:last', (req, res) => {
@@ -73,14 +67,32 @@ app.get('/get-person/:first/:last', (req, res) => {
     Db.getPerson('Attendants', firstName, lastName)
         .then((data) => {
         res.send({
-            message: "Success",
-            data: data
+            "message": "Success",
+            "data": data
         });
     })
         .catch((err) => {
         res.send({
             "message": "Failure",
-            "error": err
+            "error": Db.getSqlError(err)
+        });
+    });
+});
+app.post('/submit-form', (req, res) => {
+    const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+    const attendantColumns = "firstName, lastName, memberType";
+    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor'];
+    Db.insert('Attendants', attendantColumns, attendantValues)
+        .then((data) => {
+        res.send({
+            "message": "Success",
+            "data": data
+        });
+    })
+        .catch((err) => {
+        res.send({
+            "message": "Failure",
+            "error": Db.getSqlError(err)
         });
     });
 });

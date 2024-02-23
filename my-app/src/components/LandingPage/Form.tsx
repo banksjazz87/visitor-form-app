@@ -136,20 +136,22 @@ export default function Form() {
 
     const submitHandler = (e: React.FormEvent <HTMLFormElement>): void => {
         e.preventDefault();
-        // postCall('/submit-form', visitorDetails).then((data: APIResponse<Visitor>): void => {
-        //     if (data.message === "Success") {
-        //         alert('This worked');
-        //         console.log(data.data);
-        //     } else {
-        //         alert('This failed!');
-        //     }
-        // });
+       
 
         getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`)
             .then((data: APIResponse<AttendantData> | undefined): void => {
+
                 if (typeof data !== "undefined" && data.data.length === 0) {
-                    alert('This person doesn\'t exist');
-                    console.log(data);
+                    
+                    postCall('/submit-form', visitorDetails).then((data: APIResponse<Visitor>): void => {
+                        if (data.message === "Success") {
+                            alert('This worked');
+                            console.log(data.data);
+                        } else {
+                            alert('This failed!');
+                        }
+                    });
+
                 } else {
                     alert('This person is already in the database');
                 }
