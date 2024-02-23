@@ -66,3 +66,21 @@ app.post('/submit-form', (req, res) => {
         "data": req.body,
     });
 });
+app.get('/get-person/:first/:last', (req, res) => {
+    const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+    const firstName = req.params.first;
+    const lastName = req.params.last;
+    Db.getPerson('Attendants', firstName, lastName)
+        .then((data) => {
+        res.send({
+            message: "Success",
+            data: data
+        });
+    })
+        .catch((err) => {
+        res.send({
+            "message": "Failure",
+            "error": err
+        });
+    });
+});

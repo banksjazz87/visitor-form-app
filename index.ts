@@ -79,3 +79,23 @@ app.post('/submit-form', (req: Request, res: Response): void => {
     });
 });
 
+app.get('/get-person/:first/:last', (req: Request, res: Response): void => {
+    const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+    const firstName = req.params.first;
+    const lastName = req.params.last;
+
+    Db.getPerson('Attendants', firstName, lastName)
+        .then((data: string[]): void => {
+            res.send({
+                message: "Success", 
+                data: data
+            });
+        })
+        .catch((err: SQLResponse): void => {
+            res.send({
+                "message": "Failure", 
+                "error": err
+            });
+        });
+});
+

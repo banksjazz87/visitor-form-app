@@ -1,11 +1,20 @@
 import React, {useState, useEffect} from "react";
 import {Visitor, FormFields, BtnGroup, APIResponse} from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
+import postCall from "../../lib/methods/API/postCall.ts";
 import FormConstructor from "../../lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
 import SelectField from "./SelectField.tsx";
 
+interface AttendantData  {
+    id: number,
+    firstName: string,
+    lastName: string,
+    age: string,
+    memberType: string,
+    active: number
+}
 
 export default function Form() {
 
@@ -114,40 +123,39 @@ export default function Form() {
         }
     }
 
-    const postCall = async(url: string, data: object): Promise<any> => {
-        
+   
+    const getRecords = async(url: string): Promise<APIResponse<AttendantData> | undefined> => {
         try {
-            const response = await fetch(url, {
-                method: "Post", 
-                mode: "cors", 
-                cache: "no-cache",
-                credentials: "same-origin", 
-                headers: {
-                    "Content-Type": "application/json", 
-                }, 
-                redirect: "follow", 
-                referrerPolicy: "no-referrer", 
-                body: JSON.stringify(data)
-            });
-
-            return response.json();
-
-        } catch (e: any) {
-            console.error(`The following error occurred while submiting the form: ${e}`);
+            const record: Response = await fetch(`${url}`);
+            const recordJSON: APIResponse<AttendantData> = await record.json();
+            return recordJSON;
+        } catch (e) {
+            console.error(`The following error occurred with the /get-person endpoint: ${e}`);
         }
     }
 
     const submitHandler = (e: React.FormEvent <HTMLFormElement>): void => {
         e.preventDefault();
-        postCall('/submit-form', visitorDetails).then((data: APIResponse<Visitor>): void => {
-            if (data.message === "Success") {
-                alert('This worked');
-                console.log(data.data);
-            } else {
-                alert('This failed!');
-            }
-        });
+        // postCall('/submit-form', visitorDetails).then((data: APIResponse<Visitor>): void => {
+        //     if (data.message === "Success") {
+        //         alert('This worked');
+        //         console.log(data.data);
+        //     } else {
+        //         alert('This failed!');
+        //     }
+        // });
+
+        getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`)
+            .then((data: APIResponse<AttendantData> | undefined): void => {
+                if (typeof data !== "undefined" && data.data.length === 0) {
+                    alert('This person doesn\'t exist');
+                    console.log(data);
+                } else {
+                    alert('This person is already in the database');
+                }
+            });
     }
+
 
 
     return (
