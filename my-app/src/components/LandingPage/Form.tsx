@@ -142,11 +142,15 @@ export default function Form() {
             .then((data: APIResponse<AttendantData> | undefined): void => {
 
                 if (typeof data !== "undefined" && data.data.length === 0) {
-                    
-                    postCall('/submit-form', visitorDetails).then((data: APIResponse<Visitor>): void => {
+
+                    postCall('/add-attendant', visitorDetails).then((data: APIResponse<Visitor>): void => {
                         if (data.message === "Success") {
-                            alert('This worked');
-                            console.log(data.data);
+
+                            getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`)
+                                .then((data: APIResponse<AttendantData> | undefined): void => {
+                                    typeof data !== "undefined" && data.data.length > 0 ? console.log(data.data) : alert('error');
+                                });
+                                
                         } else {
                             alert('This failed!');
                         }

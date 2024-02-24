@@ -93,11 +93,11 @@ app.get('/get-person/:first/:last', (req: Request, res: Response): void => {
 });
 
 
-app.post('/submit-form', (req: Request, res: Response): void => {
+app.post('/add-attendant', (req: Request, res: Response): void => {
     const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
 
-    const attendantColumns = "firstName, lastName, memberType";
-    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor'];
+    const attendantColumns = "firstName, lastName, memberType, age";
+    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor', 'adult'];
 
     Db.insert('Attendants',attendantColumns, attendantValues )
         .then((data: string[]): void => {
