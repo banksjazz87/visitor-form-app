@@ -11,3 +11,11 @@ export interface SQLResponse {
     active: number;
     id: number;
   }
+
+  export interface ProcessEnv {
+    MYSQL_USER: string;
+    MYSQL_PASSWORD: string;
+    MYSQL_HOST: string;
+    MYSQL_DATABASE: string;
+    GENERAL_ATTENDANCE: string;
+  }

@@ -80,8 +80,8 @@ app.get('/get-person/:first/:last', (req, res) => {
 });
 app.post('/add-attendant', (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
-    const attendantColumns = "firstName, lastName, memberType";
-    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor'];
+    const attendantColumns = "firstName, lastName, memberType, age";
+    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor', 'adult'];
     Db.insert('Attendants', attendantColumns, attendantValues)
         .then((data) => {
         res.send({
@@ -94,5 +94,26 @@ app.post('/add-attendant', (req, res) => {
             "message": "Failure",
             "error": Db.getSqlError(err)
         });
+    });
+});
+app.post('/add-visitor-to-all', (req, res) => {
+    const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+    const attendantData = req.body.attendantData;
+    const attendanceGroupTable = process.env.GENERAL_ATTENDANCE;
+    const groupTableColumns = "id, firstName, lastName, age, memberType";
+    const groupTableValues = [attendantData.id, attendantData.firstName, attendantData.lastName, attendantData.age, attendantData.memberType];
+    Db.insert(attendanceGroupTable, groupTableColumns, groupTableValues)
+        .then((data) => {
+        res.send({
+            "message": "Success",
+            "data": data
+        });
+    })
+        .catch((err) => {
+        res.send({
+            "message": "Failure",
+            "error": Db.getSqlError(err)
+        });
+        console.log('OH NOOOOO', err);
     });
 });

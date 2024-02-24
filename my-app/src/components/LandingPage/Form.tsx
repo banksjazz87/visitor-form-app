@@ -16,6 +16,11 @@ interface AttendantData  {
     active: number
 }
 
+interface AllVisitorData {
+    visitorData: Visitor;
+    attendantData: AttendantData;
+}
+
 export default function Form() {
 
     const initForm = new SetupForm();
@@ -24,6 +29,15 @@ export default function Form() {
     const [visitorDetails, setVisitorDetails] = useState<Visitor>(initForm.getInitVisitor());
     const [states, setStates] = useState<FormFields[]>([initForm.getInitStates()]);
     const [interestList, setInterestList] = useState<BtnGroup[]>([initForm.getInitInterests()]);
+
+    const [attendantDetails, setAttendantDetails] = useState<AttendantData>({
+        id: 0,
+        firstName: '',
+        lastName: '',
+        age: 'adult',
+        memberType: 'visitor',
+        active: 1
+    });
 
     useEffect(() => {
         initForm.getStateData().then((data) => {
@@ -148,9 +162,44 @@ export default function Form() {
 
                             getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`)
                                 .then((data: APIResponse<AttendantData> | undefined): void => {
-                                    typeof data !== "undefined" && data.data.length > 0 ? console.log(data.data) : alert('error');
+                                    if (typeof data !== "undefined" && data.data.length > 0) {
+                                        setAttendantDetails({...attendantDetails, 
+                                            id: data.data[0].id,
+                                            firstName: data.data[0].firstName,
+                                            lastName: data.data[0].lastName,
+                                        });
+
+                                        //Get the values needed and put them in an object.
+                                        const neededAttendantData = {
+                                            id: data.data[0].id,
+                                            firstName: data.data[0].firstName,
+                                            lastName: data.data[0].lastName,
+                                            age: 'adult',
+                                            memberType: 'visitor',
+                                            active: 1 
+                                        }
+
+                                        //This is the object that will be sent over for the post.
+                                        const allVisitorData: AllVisitorData = {
+                                            visitorData: visitorDetails,
+                                            attendantData: neededAttendantData
+                                        };
+
+                                        postCall('/add-visitor-to-all', allVisitorData)
+                                            .then((data: APIResponse<Visitor>): void => {
+                                                if (data.message === 'Success') {
+                                                    alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
+                                                } else {
+                                                    alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
+                                                }
+                                            });
+
+
+                                    } else {
+                                        console.error('There was an error in retrieving the newly created visitor.');
+                                    }
                                 });
-                                
+
                         } else {
                             alert('This failed!');
                         }

@@ -4,7 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from 'dotenv';
 import { DBMethods } from "./dbQueries/databaseMethods";
-import { SQLResponse } from "./interfaces/interfaces";
+import { SQLResponse, ProcessEnv } from "./interfaces/interfaces";
 import { MysqlError } from 'mysql';
 
 dotenv.config();
@@ -112,5 +112,34 @@ app.post('/add-attendant', (req: Request, res: Response): void => {
                 "error": Db.getSqlError(err)
             })
         });
+});
+
+
+app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
+    const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+
+    const attendantData = req.body.attendantData;
+    const attendanceGroupTable = process.env.GENERAL_ATTENDANCE as string;
+
+    const groupTableColumns = "id, firstName, lastName, age, memberType";
+    const groupTableValues = [attendantData.id, attendantData.firstName, attendantData.lastName, attendantData.age, attendantData.memberType];
+
+
+    Db.insert(attendanceGroupTable, groupTableColumns, groupTableValues)
+    .then((data: string[]): void => {
+        res.send({
+            "message": "Success", 
+            "data": data
+        })
+    })
+    .catch((err: SQLResponse): void => {
+        res.send({
+            "message": "Failure", 
+            "error": Db.getSqlError(err)
+        })
+
+        console.log('OH NOOOOO', err);
+    });
+
 });
 
