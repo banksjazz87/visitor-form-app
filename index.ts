@@ -4,7 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from 'dotenv';
 import { DBMethods } from "./dbQueries/databaseMethods";
-import { SQLResponse, ProcessEnv } from "./interfaces/interfaces";
+import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfaces";
 import { MysqlError } from 'mysql';
 
 dotenv.config();
@@ -120,26 +120,45 @@ app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
 
     const attendantData = req.body.attendantData;
     const attendanceGroupTable = process.env.GENERAL_ATTENDANCE as string;
-
     const groupTableColumns = "id, firstName, lastName, age, memberType";
     const groupTableValues = [attendantData.id, attendantData.firstName, attendantData.lastName, attendantData.age, attendantData.memberType];
+    
+    const visitorTable = process.env.VISITOR_TABLE as string;
+    const visitorData = req.body.visitorData;
+    const visitorColumnValues: VisitorDataPoints = {
+        id: attendantData.id,
+        firstName: visitorData.visitorName.firstName,
+        lastName: visitorData.visitorName.lastName,
+        title: visitorData.title,
+        address: visitorData.address,
+        city: visitorData.city, 
+        state: visitorData.state,
+        phone: visitorData.phone,
+        email: visitorData.email,
+        contact_method: visitorData.contactMethod,
+        prayer_requests: visitorData.prayerRequest 
+    };
+    const visitorTableColumns = Object.keys(visitorColumnValues).join(', ');
+    const visitorValues = Object.values(visitorColumnValues);
 
 
-    Db.insert(attendanceGroupTable, groupTableColumns, groupTableValues)
-    .then((data: string[]): void => {
+    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.endDb()])
+    .then((data: [string[], string[], void]): void => {
         res.send({
             "message": "Success", 
             "data": data
-        })
+        });
     })
     .catch((err: SQLResponse): void => {
         res.send({
-            "message": "Failure", 
+            "message": "Failure",
             "error": Db.getSqlError(err)
-        })
+        });
 
         console.log('OH NOOOOO', err);
     });
 
 });
+
+
 

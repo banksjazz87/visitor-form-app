@@ -102,7 +102,24 @@ app.post('/add-visitor-to-all', (req, res) => {
     const attendanceGroupTable = process.env.GENERAL_ATTENDANCE;
     const groupTableColumns = "id, firstName, lastName, age, memberType";
     const groupTableValues = [attendantData.id, attendantData.firstName, attendantData.lastName, attendantData.age, attendantData.memberType];
-    Db.insert(attendanceGroupTable, groupTableColumns, groupTableValues)
+    const visitorTable = process.env.VISITOR_TABLE;
+    const visitorData = req.body.visitorData;
+    const visitorColumnValues = {
+        id: attendantData.id,
+        firstName: visitorData.visitorName.firstName,
+        lastName: visitorData.visitorName.lastName,
+        title: visitorData.title,
+        address: visitorData.address,
+        city: visitorData.city,
+        state: visitorData.state,
+        phone: visitorData.phone,
+        email: visitorData.email,
+        contact_method: visitorData.contact_method,
+        prayer_requests: visitorData.prayer_requests
+    };
+    const visitorTableColumns = Object.keys(visitorColumnValues).join(', ');
+    const visitorValues = Object.values(visitorColumnValues);
+    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.endDb()])
         .then((data) => {
         res.send({
             "message": "Success",

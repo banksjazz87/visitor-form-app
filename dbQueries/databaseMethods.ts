@@ -50,7 +50,7 @@ export class DBMethods {
     database.end((err: any): void => (err ? console.log("error, disconnecting") : console.log("disconnected")));
   }
 
-  endDb() {
+  endDb(): void {
     const database = this.dbConnection;
     database.end((err: any): void => {
       err ? console.log("error, disconnecting") : console.log("disconnected");
