@@ -411,4 +411,24 @@ export class DBMethods {
     });
   }
 
+  addMultipleValuesNoEnd(tableName: string, columns: string, id: number, values: string[]): Promise <string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const allValues = values.map((x: string, y: number) => {
+        let current = `(${id}, "${x}"), `;
+        return current;
+      });
+    
+      let allValuesString = allValues.join('');
+      let finalValues = allValuesString.slice(0, -2);
+  
+      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
+
+      database.query(neededSql, (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+    });
+  }
+
 }

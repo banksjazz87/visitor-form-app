@@ -141,9 +141,13 @@ app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
     const visitorTableColumns = Object.keys(visitorColumnValues).join(', ');
     const visitorValues = Object.values(visitorColumnValues);
 
+    const interestTable = process.env.INTERESTS_TABLE as string;
+    const interestColumns = "visitor_id, interest";
+    const interests = visitorData.interests;
+    
 
-    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.endDb()])
-    .then((data: [string[], string[], void]): void => {
+    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb()])
+    .then((data: [string[], string[], string[], void]): void => {
         res.send({
             "message": "Success", 
             "data": data

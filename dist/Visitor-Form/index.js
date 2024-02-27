@@ -114,12 +114,15 @@ app.post('/add-visitor-to-all', (req, res) => {
         state: visitorData.state,
         phone: visitorData.phone,
         email: visitorData.email,
-        contact_method: visitorData.contact_method,
-        prayer_requests: visitorData.prayer_requests
+        contact_method: visitorData.contactMethod,
+        prayer_requests: visitorData.prayerRequest
     };
     const visitorTableColumns = Object.keys(visitorColumnValues).join(', ');
     const visitorValues = Object.values(visitorColumnValues);
-    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.endDb()])
+    const interestTable = process.env.INTERESTS_TABLE;
+    const interestColumns = "visitor_id, interest";
+    const interests = visitorData.interests;
+    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb()])
         .then((data) => {
         res.send({
             "message": "Success",
