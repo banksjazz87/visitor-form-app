@@ -6,6 +6,7 @@ import FormConstructor from "../../lib/FormConstructor.ts";
 import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
 import SelectField from "./SelectField.tsx";
+import MathFunctions from "../../lib/methods/MathFunctions.ts";
 
 interface AttendantData {
 	id: number;
@@ -67,6 +68,20 @@ export default function Form() {
 				[currentKey]: (e.target as HTMLInputElement).value.trim(),
 			},
 		});
+	};
+
+    const phoneNumberChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+		const currentKey = key as keyof Visitor;
+        const currentValue = (e.target as HTMLInputElement).value;
+        const currentEntry = currentValue[currentValue.length -1];
+        
+        if (isNaN(parseInt(currentEntry))) {
+            alert('Please insert a valid number');
+            e.target.value = e.target.value.slice(0, -1);
+        } else {
+            MathFunctions.createPhoneNumber();
+            setVisitorDetails({ ...visitorDetails, [currentKey]: currentValue.trim() });
+        }
 	};
 
 	/**
@@ -225,6 +240,7 @@ export default function Form() {
 					dataArray={form.getContactFields()}
 					title="Contact"
 					changeHandler={inputChangeHandler}
+                    phoneChangeHandler={phoneNumberChangeHandler}
 					vertical={false}
 				/>
 				<InputField
