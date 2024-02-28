@@ -72,17 +72,26 @@ export default function Form() {
 
     const phoneNumberChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		const currentKey = key as keyof Visitor;
-        const currentValue = (e.target as HTMLInputElement).value;
-        const currentEntry = currentValue[currentValue.length -1];
+        const prevValue = visitorDetails[currentKey] as string;
+        const newValue = (e.target as HTMLInputElement).value;
+        const newEntry = newValue[newValue.length -1];
         
-        if (isNaN(parseInt(currentEntry))) {
-            alert('Please insert a valid number');
-            e.target.value = e.target.value.slice(0, -1);
+        if (newValue.length > prevValue.length) {
+            if (isNaN(parseInt(newEntry))) {
+                alert('Please insert a valid number');
+                e.target.value = e.target.value.slice(0, -1);
+            } else {
+                let phoneNum = MathFunctions.createPhoneNumber(newValue);
+                e.target.value = phoneNum;
+                setVisitorDetails({ ...visitorDetails, [currentKey]: phoneNum });
+            }
+
         } else {
-            MathFunctions.createPhoneNumber();
-            setVisitorDetails({ ...visitorDetails, [currentKey]: currentValue.trim() });
+            setVisitorDetails({...visitorDetails, [currentKey]: newValue});
         }
+        
 	};
+
 
 	/**
 	 *
