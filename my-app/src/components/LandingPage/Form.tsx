@@ -52,10 +52,24 @@ export default function Form() {
 		});
 	}, []);
 
+    // useEffect((): void => {
+    //     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    //     setTimeout(() => {
+    //     if (!emailRegex.test(visitorDetails.email)){
+    //         alert('Please insert a valid email address');
+    //     }
+    //     }, 5000);
+        
+      
+    // }, [visitorDetails.email]);
+
 	//Change handler for the input and select fields.
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey = key as keyof Visitor;
 		setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
+
+        emailChecker(e, key);
 	};
 
 	//Change handler for the name field.
@@ -88,9 +102,25 @@ export default function Form() {
 
         } else {
             setVisitorDetails({...visitorDetails, [currentKey]: newValue});
-        }
-        
+        } 
 	};
+
+    const emailChecker = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+        if (key === 'email') {
+            const validator = () => {
+                const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                const currentValue: string = (e.target as HTMLInputElement).value;
+                if (!emailRegex.test(currentValue)) {
+                    alert('Please provide a valid email.');
+                    clearInterval(validatorInterval);
+                } else {
+                    clearInterval(validatorInterval);
+                }
+            };
+
+            const validatorInterval = setInterval(validator, 800);    
+        }
+    }
 
 
 	/**
