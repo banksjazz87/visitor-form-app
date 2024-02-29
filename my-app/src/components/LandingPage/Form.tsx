@@ -208,20 +208,36 @@ export default function Form() {
 		}
 	};
 
-    const verifyNoneEmpty = (obj: Visitor): void => {
+    const verifyNoneEmpty = (obj: Visitor, required: String[]): boolean => {
         let valid: boolean = true;
         
         for (const key in obj) {
-            console.log(obj[key as keyof Visitor]);
+            if (required.indexOf(key) > -1) {
+                let currentKey = key as keyof Visitor;
+                
+                if (((obj[currentKey] as string).length === 0 )) {
+                    let validateKey = key as keyof Validate;
+                    setShowValidateMessage({...validateMessage, [validateKey]: true});
+
+                    console.log(validateMessage[validateKey]);
+                    valid = false;
+               }
+            }
         }
 
-        
-
+        return valid;
     }
 
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-        verifyNoneEmpty(visitorDetails);
+        if (verifyNoneEmpty(visitorDetails, ['address'])) {
+            console.log('Success');
+        } else {
+            console.log('Can you please provide information for the required fields?');
+        }
+
+       
+        
 
 		// getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
 		// 	if (typeof data !== "undefined" && data.data.length === 0) {
