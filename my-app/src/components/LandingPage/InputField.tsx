@@ -5,12 +5,11 @@ interface FormFieldProps {
     dataArray: FormFields[];
     title: string;
     changeHandler: Function;
-    phoneChangeHandler?: Function;
     vertical: boolean;
     showValidMessage: boolean;
 }
 
-export default function InputField({dataArray, title, vertical, changeHandler, phoneChangeHandler, showValidMessage}: FormFieldProps) {
+export default function InputField({dataArray, title, vertical, changeHandler, showValidMessage}: FormFieldProps) {
 
     const createFormFields = (arr: FormFields[]): JSX.Element[] => {
         const elements = arr.map((x: FormFields, y: number) => {
@@ -42,13 +41,7 @@ export default function InputField({dataArray, title, vertical, changeHandler, p
                             type={x.type} 
                             placeholder={x.placeHolder} 
                             name={x.name} 
-                            onChange={(event) => {
-                                if (x.id === "phone" && phoneChangeHandler) {
-                                    console.log('working');
-                                    phoneChangeHandler(event, x.visitorKey);
-                                } else {
-                                    changeHandler(event, x.visitorKey)
-                                }}} 
+                            onChange={(event) => changeHandler(event, x.visitorKey)} 
                             className="border border-slate-700 rounded-sm pl-2"></input>
                             <p className="absolute -bottom-7"style={showValidMessage && x.id === "email" ? {"display": ''} : {"display": "none"}}>{`Please provide a valid ${x.id}.`}</p>
                     </div>

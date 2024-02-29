@@ -67,24 +67,18 @@ export default function Form() {
 		});
 	}, []);
 
-    // useEffect((): void => {
-    //     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-    //     setTimeout(() => {
-    //     if (!emailRegex.test(visitorDetails.email)){
-    //         alert('Please insert a valid email address');
-    //     }
-    //     }, 5000);
-        
-      
-    // }, [visitorDetails.email]);
-
+    
 	//Change handler for the input and select fields.
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey = key as keyof Visitor;
-		setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
 
-        emailChecker(e, key);
+        if (currentKey === 'phone') {
+            phoneNumberChangeHandler(e, key);
+        } else if (currentKey === 'email') {
+            emailChecker(e);
+        } else {
+            setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
+        }
 	};
 
 	//Change handler for the name field.
@@ -100,7 +94,7 @@ export default function Form() {
 	};
 
     const phoneNumberChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
-		const currentKey = key as keyof Visitor;
+        const currentKey = key as keyof Visitor;
         const prevValue = visitorDetails[currentKey] as string;
         const newValue = (e.target as HTMLInputElement).value;
         const newEntry = newValue[newValue.length -1];
@@ -109,6 +103,7 @@ export default function Form() {
             if (isNaN(parseInt(newEntry))) {
                 alert('Please insert a valid number');
                 e.target.value = e.target.value.slice(0, -1);
+
             } else {
                 let phoneNum = MathFunctions.createPhoneNumber(newValue);
                 e.target.value = phoneNum;
@@ -120,22 +115,23 @@ export default function Form() {
         } 
 	};
 
-    const emailChecker = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
-        if (key === 'email') {
-            const validator = () => {
-                const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-                const currentValue: string = (e.target as HTMLInputElement).value;
-                if (!emailRegex.test(currentValue)) {
-                    setShowValidateMessage({...validateMessage, contact: true});
-                    clearInterval(validatorInterval);
-                } else {
-                    setShowValidateMessage({...validateMessage, contact: false});
-                    clearInterval(validatorInterval);
-                }
-            };
 
-            const validatorInterval = setInterval(validator, 800);    
-        }
+    const emailChecker = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const validator = () => {
+            const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            const currentValue: string = (e.target as HTMLInputElement).value;
+
+            if (!emailRegex.test(currentValue)) {
+                setShowValidateMessage({...validateMessage, contact: true});
+                clearInterval(validatorInterval);
+
+            } else {
+                setShowValidateMessage({...validateMessage, contact: false});
+                clearInterval(validatorInterval);
+            }
+        };
+
+        const validatorInterval = setInterval(validator, 2000);    
     }
 
 
@@ -212,52 +208,64 @@ export default function Form() {
 		}
 	};
 
+    const verifyNoneEmpty = (obj: Visitor): void => {
+        let valid: boolean = true;
+        
+        for (const key in obj) {
+            console.log(obj[key as keyof Visitor]);
+        }
+
+        
+
+    }
+
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
+        verifyNoneEmpty(visitorDetails);
 
-		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
-			if (typeof data !== "undefined" && data.data.length === 0) {
-				postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
-					if (data.message === "Success") {
-						getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
-							if (typeof data !== "undefined" && data.data.length > 0) {
-								setAttendantDetails({ ...attendantDetails, id: data.data[0].id, firstName: data.data[0].firstName, lastName: data.data[0].lastName });
+		// getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+		// 	if (typeof data !== "undefined" && data.data.length === 0) {
+		// 		postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
+		// 			if (data.message === "Success") {
+		// 				getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+		// 					if (typeof data !== "undefined" && data.data.length > 0) {
+		// 						setAttendantDetails({ ...attendantDetails, id: data.data[0].id, firstName: data.data[0].firstName, lastName: data.data[0].lastName });
 
-								//Get the values needed and put them in an object.
-								const neededAttendantData = {
-									id: data.data[0].id,
-									firstName: data.data[0].firstName,
-									lastName: data.data[0].lastName,
-									age: "adult",
-									memberType: "visitor",
-									active: 1,
-								};
+		// 						//Get the values needed and put them in an object.
+		// 						const neededAttendantData = {
+		// 							id: data.data[0].id,
+		// 							firstName: data.data[0].firstName,
+		// 							lastName: data.data[0].lastName,
+		// 							age: "adult",
+		// 							memberType: "visitor",
+		// 							active: 1,
+		// 						};
 
-								//This is the object that will be sent over for the post.
-								const allVisitorData: AllVisitorData = {
-									visitorData: visitorDetails,
-									attendantData: neededAttendantData,
-								};
+		// 						//This is the object that will be sent over for the post.
+		// 						const allVisitorData: AllVisitorData = {
+		// 							visitorData: visitorDetails,
+		// 							attendantData: neededAttendantData,
+		// 						};
 
-								postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
-									if (data.message === "Success") {
-										alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
-									} else {
-										alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
-									}
-								});
-							} else {
-								console.error("There was an error in retrieving the newly created visitor.");
-							}
-						});
-					} else {
-						alert("This failed!");
-					}
-				});
-			} else {
-				alert("This person is already in the database");
-			}
-		});
+		// 						postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
+		// 							if (data.message === "Success") {
+		// 								alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
+		// 							} else {
+		// 								alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
+		// 							}
+		// 						});
+		// 					} else {
+		// 						console.error("There was an error in retrieving the newly created visitor.");
+		// 					}
+		// 				});
+		// 			} else {
+		// 				alert("This failed!");
+		// 			}
+		// 		});
+		// 	} else {
+		// 		alert("This person is already in the database");
+		// 	}
+		// });
 	};
 
 	return (
@@ -298,7 +306,6 @@ export default function Form() {
 					dataArray={form.getContactFields()}
 					title="Contact"
 					changeHandler={inputChangeHandler}
-                    phoneChangeHandler={phoneNumberChangeHandler}
 					vertical={false}
                     showValidMessage={validateMessage.contact}
 				/>
