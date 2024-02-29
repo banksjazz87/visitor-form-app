@@ -22,6 +22,14 @@ interface AllVisitorData {
 	attendantData: AttendantData;
 }
 
+interface Validate {
+    title: boolean;
+    name: boolean;
+    address: boolean;
+    contact: boolean;
+    preferredContact: boolean;
+}
+
 export default function Form() {
 	const initForm = new SetupForm();
 	const form = new FormConstructor();
@@ -29,6 +37,13 @@ export default function Form() {
 	const [visitorDetails, setVisitorDetails] = useState<Visitor>(initForm.getInitVisitor());
 	const [states, setStates] = useState<FormFields[]>([initForm.getInitStates()]);
 	const [interestList, setInterestList] = useState<BtnGroup[]>([initForm.getInitInterests()]);
+    const [validateMessage, setShowValidateMessage] = useState<Validate>({
+        title: false,
+        name: false,
+        address: false,
+        contact: false,
+        preferredContact: false,
+    });
 
 	const [attendantDetails, setAttendantDetails] = useState<AttendantData>({
 		id: 0,
@@ -111,9 +126,10 @@ export default function Form() {
                 const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
                 const currentValue: string = (e.target as HTMLInputElement).value;
                 if (!emailRegex.test(currentValue)) {
-                    alert('Please provide a valid email.');
+                    setShowValidateMessage({...validateMessage, contact: true});
                     clearInterval(validatorInterval);
                 } else {
+                    setShowValidateMessage({...validateMessage, contact: false});
                     clearInterval(validatorInterval);
                 }
             };
@@ -255,18 +271,21 @@ export default function Form() {
 					title="Title"
 					changeHandler={inputChangeHandler}
 					vertical={false}
+                    showValidMessage={validateMessage.title}
 				/>
 				<InputField
 					dataArray={form.getNameFields()}
 					title="Name"
 					changeHandler={nameChangeHandler}
 					vertical={false}
+                    showValidMessage={validateMessage.name}
 				/>
 				<InputField
 					dataArray={form.getAddressFields()}
 					title="Address"
 					changeHandler={inputChangeHandler}
 					vertical={false}
+                    showValidMessage={validateMessage.address}
 				/>
 
 				<SelectField
@@ -281,12 +300,14 @@ export default function Form() {
 					changeHandler={inputChangeHandler}
                     phoneChangeHandler={phoneNumberChangeHandler}
 					vertical={false}
+                    showValidMessage={validateMessage.contact}
 				/>
 				<InputField
 					dataArray={form.getContactMethodFields()}
 					title="Preferred Contact Method"
 					changeHandler={inputChangeHandler}
 					vertical={false}
+                    showValidMessage={validateMessage.preferredContact}
 				/>
 
 				<ButtonGroup
