@@ -6,9 +6,10 @@ interface SelectFieldProps{
     changeHandler: Function;
     label: string;
     selectID: string;
+    showRequired: boolean;
 }
 
-export default function SelectField({dataArray, changeHandler, label, selectID}: SelectFieldProps) {
+export default function SelectField({dataArray, changeHandler, label, selectID, showRequired}: SelectFieldProps) {
 
     const returnOptions = dataArray.map((x: FormFields, y: number): JSX.Element => {
         return (
@@ -27,7 +28,7 @@ export default function SelectField({dataArray, changeHandler, label, selectID}:
                 <select 
                     id={selectID} 
                     name={selectID} 
-                    className="border border-slate-700 rounded-sm pl-2" 
+                    className={!showRequired ? "border border-slate-700 rounded-sm pl-2" : "border border-rose-400 rounded-sm pl-2"} 
                     onChange={selectHandler}
                 >
                 {returnOptions}

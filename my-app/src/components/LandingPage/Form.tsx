@@ -23,11 +23,16 @@ interface AllVisitorData {
 }
 
 interface Validate {
+    contact: boolean;
+}
+
+interface RequiredFields{
     title: boolean;
     name: boolean;
     address: boolean;
     contact: boolean;
     preferredContact: boolean;
+    state: boolean;
 }
 
 export default function Form() {
@@ -38,12 +43,17 @@ export default function Form() {
 	const [states, setStates] = useState<FormFields[]>([initForm.getInitStates()]);
 	const [interestList, setInterestList] = useState<BtnGroup[]>([initForm.getInitInterests()]);
     const [validateMessage, setShowValidateMessage] = useState<Validate>({
+        contact: false,
+    });
+
+    const [showRequiredField, setShowRequiredField] = useState<RequiredFields>({
         title: false,
         name: false,
         address: false,
         contact: false,
         preferredContact: false,
-    });
+        state: false,
+    })
 
 	const [attendantDetails, setAttendantDetails] = useState<AttendantData>({
 		id: 0,
@@ -217,7 +227,7 @@ export default function Form() {
                 
                 if (((obj[currentKey] as string).length === 0 )) {
                     let validateKey = key as keyof Validate;
-                    setShowValidateMessage({...validateMessage, [validateKey]: true});
+                    setShowRequiredField({...showRequiredField, [validateKey]: true});
 
                     console.log(validateMessage[validateKey]);
                     valid = false;
@@ -230,7 +240,7 @@ export default function Form() {
 
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-        if (verifyNoneEmpty(visitorDetails, ['address'])) {
+        if (verifyNoneEmpty(visitorDetails, ['address', 'state'])) {
             console.log('Success');
         } else {
             console.log('Can you please provide information for the required fields?');
@@ -295,21 +305,21 @@ export default function Form() {
 					title="Title"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showValidMessage={validateMessage.title}
+                    showRequired={showRequiredField.title}
 				/>
 				<InputField
 					dataArray={form.getNameFields()}
 					title="Name"
 					changeHandler={nameChangeHandler}
 					vertical={false}
-                    showValidMessage={validateMessage.name}
+                    showRequired={showRequiredField.name}
 				/>
 				<InputField
 					dataArray={form.getAddressFields()}
 					title="Address"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showValidMessage={validateMessage.address}
+                    showRequired={showRequiredField.address}
 				/>
 
 				<SelectField
@@ -317,6 +327,7 @@ export default function Form() {
 					changeHandler={inputChangeHandler}
 					label="State"
 					selectID="states_dropdown"
+                    showRequired={showRequiredField.state}
 				/>
 				<InputField
 					dataArray={form.getContactFields()}
@@ -324,13 +335,14 @@ export default function Form() {
 					changeHandler={inputChangeHandler}
 					vertical={false}
                     showValidMessage={validateMessage.contact}
+                    showRequired={showRequiredField.contact}
 				/>
 				<InputField
 					dataArray={form.getContactMethodFields()}
 					title="Preferred Contact Method"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showValidMessage={validateMessage.preferredContact}
+                    showRequired={showRequiredField.state}
 				/>
 
 				<ButtonGroup
