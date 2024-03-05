@@ -230,19 +230,58 @@ export default function Form() {
         for (let i = 0; i < entries.length; i++) {
             if (required.indexOf(entries[i]) > -1) {
                 let currentKey = entries[i] as keyof Visitor;
-
                 if ((obj[currentKey] as string).length < 1) {
-
-                    console.log('less than 1', currentKey);
-                    let validateKey = currentKey as keyof RequiredFields;
-                    console.log('lessThan 1', validateKey);
-                    setShowRequiredField({...showRequiredField, [validateKey]: true});
-                    
                     valid = false;
                 }
             }
         } 
         return valid;
+    }
+
+    const showRequired = (arr: string[]): void => {
+        hideRequiredOutline(arr);
+        hideRequiredText();
+
+        setTimeout(() => {
+            checkForRequired(arr);
+        }, 1000);
+}
+
+    const checkForRequired = (arr: string[]): void => {
+        for (let i = 0; i < arr.length; i++) {
+            let currentElement = document.getElementById(arr[i]) as HTMLInputElement;
+
+            if (currentElement.value.length === 0) {
+                currentElement.style.border = "1px solid red";
+                let newElement = document.createElement('p');
+                newElement.classList.add('required-text');
+                newElement.style.color = "red";
+                newElement.style.fontSize = "12px";
+                newElement.innerHTML = "*Please complete this field."
+                let parentDiv = currentElement.closest('div');
+
+                if (parentDiv) {
+                    parentDiv.appendChild(newElement);
+                }
+            }
+        }
+    }
+
+    const hideRequiredOutline = (arr: string[]): void => {
+        for (let i = 0; i < arr.length; i++) {
+            let currentElement = document.getElementById(arr[i]) as HTMLInputElement;
+            currentElement.style.borderColor = 'black';
+        }
+    }
+
+    const hideRequiredText = (): void => {
+        const requiredText = document.getElementsByClassName('required-text');
+
+        if (requiredText.length > 0) {
+            document.querySelectorAll('.required-text').forEach((e) => {
+                e.remove();
+            });
+        }
     }
 
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -253,7 +292,9 @@ export default function Form() {
         //     console.log('Can you please provide information for the required fields?');
         // }
 
-        verifyNoneEmpty(visitorDetails, ['address', 'state', 'contactMethod', 'title'])
+        // verifyNoneEmpty(visitorDetails, ['address', 'state', 'contactMethod', 'title'])
+
+        showRequired(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email']);
 
        
         
