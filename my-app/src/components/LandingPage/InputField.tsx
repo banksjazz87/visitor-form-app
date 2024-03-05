@@ -42,9 +42,9 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                             placeholder={x.placeHolder} 
                             name={x.name} 
                             onChange={(event) => changeHandler(event, x.visitorKey)} 
-                            className={!showRequired ? "border border-slate-700 rounded-sm pl-2" : "border-2 border-rose-400 rounded-sm pl-2"}></input>
-                            <p className="absolute -bottom-7"style={showValidMessage && x.id === 
-                            'email' ? {"display": ''} : {"display": "none"}}>{`Please provide a valid ${x.id}.`}</p>
+                            className={showRequired ? "border-2 border-rose-400 rounded-sm pl-2" : "border border-slate-700 rounded-sm pl-2"}></input>
+                            {/* <p className="absolute -bottom-7"style={showValidMessage && x.id === 
+                            'email' ? {"display": ''} : {"display": "none"}}>{`Please provide a valid ${x.id}.`}</p> */}
                     </div>
                 );
             }
@@ -56,6 +56,7 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
     return (
        <div className="fields_wrapper flex flex-col gap-x-2 mt-12 gap-y-2">
             <p className="text-lg font-bold text-center">{title}</p>
+            <p className={ showRequired ? "text-sm font-bold text-center text-rose-900" : "hidden"}>*Please provide a response for each item in this section.</p>
             <div className="flex flex-row flex-wrap gap-2 justify-center">
                 {createFormFields(dataArray)}
             </div>

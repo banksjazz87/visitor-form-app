@@ -58,7 +58,7 @@ export default class FormConstructor {
 			name: "address",
 			placeHolder: "",
 			label: "Street Address",
-			id: "street-address",
+			id: "streetAddress",
 			value: "",
 			visitorKey: "address",
 		},
@@ -76,7 +76,7 @@ export default class FormConstructor {
 	contactFields: FormFields[] = [
 		{
 			type: "text",
-			name: "contact",
+			name: "phone",
 			placeHolder: "",
 			label: "Phone Number",
 			id: "phone",
@@ -85,7 +85,7 @@ export default class FormConstructor {
 		},
 		{
 			type: "text",
-			name: "contact",
+			name: "email",
 			placeHolder: "",
 			label: "Email",
 			id: "email",

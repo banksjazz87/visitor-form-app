@@ -27,11 +27,11 @@ interface Validate {
 }
 
 interface RequiredFields{
-    title: boolean;
     name: boolean;
+    title: boolean;
     address: boolean;
     contact: boolean;
-    preferredContact: boolean;
+    contactMethod: boolean;
     state: boolean;
 }
 
@@ -47,13 +47,13 @@ export default function Form() {
     });
 
     const [showRequiredField, setShowRequiredField] = useState<RequiredFields>({
-        title: false,
         name: false,
         address: false,
+        title: false,
         contact: false,
-        preferredContact: false,
+        contactMethod: false,
         state: false,
-    })
+    });
 
 	const [attendantDetails, setAttendantDetails] = useState<AttendantData>({
 		id: 0,
@@ -76,6 +76,11 @@ export default function Form() {
 			}
 		});
 	}, []);
+
+
+    useEffect(() => {
+        console.log(showRequiredField);
+    }, [showRequiredField]);
 
     
 	//Change handler for the input and select fields.
@@ -220,31 +225,35 @@ export default function Form() {
 
     const verifyNoneEmpty = (obj: Visitor, required: String[]): boolean => {
         let valid: boolean = true;
-        
-        for (const key in obj) {
-            if (required.indexOf(key) > -1) {
-                let currentKey = key as keyof Visitor;
-                
-                if (((obj[currentKey] as string).length === 0 )) {
-                    let validateKey = key as keyof Validate;
+        let entries = Object.keys(obj);
+
+        for (let i = 0; i < entries.length; i++) {
+            if (required.indexOf(entries[i]) > -1) {
+                let currentKey = entries[i] as keyof Visitor;
+
+                if ((obj[currentKey] as string).length < 1) {
+
+                    console.log('less than 1', currentKey);
+                    let validateKey = currentKey as keyof RequiredFields;
+                    console.log('lessThan 1', validateKey);
                     setShowRequiredField({...showRequiredField, [validateKey]: true});
-
-                    console.log(validateMessage[validateKey]);
+                    
                     valid = false;
-               }
+                }
             }
-        }
-
+        } 
         return valid;
     }
 
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-        if (verifyNoneEmpty(visitorDetails, ['address', 'state'])) {
-            console.log('Success');
-        } else {
-            console.log('Can you please provide information for the required fields?');
-        }
+        // if (verifyNoneEmpty(visitorDetails, ['address', 'state', 'contactMethod', 'title'])) {
+        //     console.log('Success');
+        // } else {
+        //     console.log('Can you please provide information for the required fields?');
+        // }
+
+        verifyNoneEmpty(visitorDetails, ['address', 'state', 'contactMethod', 'title'])
 
        
         
@@ -334,7 +343,6 @@ export default function Form() {
 					title="Contact"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showValidMessage={validateMessage.contact}
                     showRequired={showRequiredField.contact}
 				/>
 				<InputField
@@ -342,7 +350,7 @@ export default function Form() {
 					title="Preferred Contact Method"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showRequired={showRequiredField.state}
+                    showRequired={showRequiredField.contactMethod}
 				/>
 
 				<ButtonGroup
