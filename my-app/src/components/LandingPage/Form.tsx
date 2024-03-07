@@ -276,7 +276,7 @@ export default function Form() {
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
 		const FormCheck = new FormChecker(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email']);
-		if (!FormCheck.verifyNoneRequiredEmpty()) {
+		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
 			FormCheck.showRequired();
 		} else {
 			submitForm();
@@ -324,6 +324,7 @@ export default function Form() {
 					changeHandler={inputChangeHandler}
 					vertical={false}
                     showRequired={showRequiredField.contact}
+					showValidMessage={validateMessage.contact}
 				/>
 				<InputField
 					dataArray={form.getContactMethodFields()}
