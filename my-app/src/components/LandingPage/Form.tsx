@@ -7,6 +7,7 @@ import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
 import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
+import FormChecker from "../../lib/form/FormChecker.ts";
 
 interface AttendantData {
 	id: number;
@@ -223,125 +224,59 @@ export default function Form() {
 		}
 	};
 
-    const verifyNoneEmpty = (obj: Visitor, required: String[]): boolean => {
-        let valid: boolean = true;
-        let entries = Object.keys(obj);
-
-        for (let i = 0; i < entries.length; i++) {
-            if (required.indexOf(entries[i]) > -1) {
-                let currentKey = entries[i] as keyof Visitor;
-                if ((obj[currentKey] as string).length < 1) {
-                    valid = false;
-                }
-            }
-        } 
-        return valid;
-    }
-
-    const showRequired = (arr: string[]): void => {
-        hideRequiredOutline(arr);
-        hideRequiredText();
-
-        setTimeout(() => {
-            checkForRequired(arr);
-        }, 1000);
-}
-
-    const checkForRequired = (arr: string[]): void => {
-        for (let i = 0; i < arr.length; i++) {
-            let currentElement = document.getElementById(arr[i]) as HTMLInputElement;
-
-            if (currentElement.value.length === 0) {
-                currentElement.style.border = "1px solid red";
-                let newElement = document.createElement('p');
-                newElement.classList.add('required-text');
-                newElement.style.color = "red";
-                newElement.style.fontSize = "12px";
-                newElement.innerHTML = "*Please complete this field."
-                let parentDiv = currentElement.closest('div');
-
-                if (parentDiv) {
-                    parentDiv.appendChild(newElement);
-                }
-            }
-        }
-    }
-
-    const hideRequiredOutline = (arr: string[]): void => {
-        for (let i = 0; i < arr.length; i++) {
-            let currentElement = document.getElementById(arr[i]) as HTMLInputElement;
-            currentElement.style.borderColor = 'black';
-        }
-    }
-
-    const hideRequiredText = (): void => {
-        const requiredText = document.getElementsByClassName('required-text');
-
-        if (requiredText.length > 0) {
-            document.querySelectorAll('.required-text').forEach((e) => {
-                e.remove();
-            });
-        }
-    }
+   
 
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-        // if (verifyNoneEmpty(visitorDetails, ['address', 'state', 'contactMethod', 'title'])) {
-        //     console.log('Success');
-        // } else {
-        //     console.log('Can you please provide information for the required fields?');
-        // }
+		const FormCheck = new FormChecker(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email']);
 
-        // verifyNoneEmpty(visitorDetails, ['address', 'state', 'contactMethod', 'title'])
+		if (!FormCheck.verifyNoneRequiredEmpty()) {
+			FormCheck.showRequired();
+		} else {
+			getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+				if (typeof data !== "undefined" && data.data.length === 0) {
+					postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
+						if (data.message === "Success") {
+							getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+								if (typeof data !== "undefined" && data.data.length > 0) {
+									setAttendantDetails({ ...attendantDetails, id: data.data[0].id, firstName: data.data[0].firstName, lastName: data.data[0].lastName });
 
-        showRequired(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email']);
+									//Get the values needed and put them in an object.
+									const neededAttendantData = {
+										id: data.data[0].id,
+										firstName: data.data[0].firstName,
+										lastName: data.data[0].lastName,
+										age: "adult",
+										memberType: "visitor",
+										active: 1,
+									};
 
-       
-        
+									//This is the object that will be sent over for the post.
+									const allVisitorData: AllVisitorData = {
+										visitorData: visitorDetails,
+										attendantData: neededAttendantData,
+									};
 
-		// getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
-		// 	if (typeof data !== "undefined" && data.data.length === 0) {
-		// 		postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
-		// 			if (data.message === "Success") {
-		// 				getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
-		// 					if (typeof data !== "undefined" && data.data.length > 0) {
-		// 						setAttendantDetails({ ...attendantDetails, id: data.data[0].id, firstName: data.data[0].firstName, lastName: data.data[0].lastName });
-
-		// 						//Get the values needed and put them in an object.
-		// 						const neededAttendantData = {
-		// 							id: data.data[0].id,
-		// 							firstName: data.data[0].firstName,
-		// 							lastName: data.data[0].lastName,
-		// 							age: "adult",
-		// 							memberType: "visitor",
-		// 							active: 1,
-		// 						};
-
-		// 						//This is the object that will be sent over for the post.
-		// 						const allVisitorData: AllVisitorData = {
-		// 							visitorData: visitorDetails,
-		// 							attendantData: neededAttendantData,
-		// 						};
-
-		// 						postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
-		// 							if (data.message === "Success") {
-		// 								alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
-		// 							} else {
-		// 								alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
-		// 							}
-		// 						});
-		// 					} else {
-		// 						console.error("There was an error in retrieving the newly created visitor.");
-		// 					}
-		// 				});
-		// 			} else {
-		// 				alert("This failed!");
-		// 			}
-		// 		});
-		// 	} else {
-		// 		alert("This person is already in the database");
-		// 	}
-		// });
+									postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
+										if (data.message === "Success") {
+											alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
+										} else {
+											alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
+										}
+									});
+								} else {
+									console.error("There was an error in retrieving the newly created visitor.");
+								}
+							});
+						} else {
+							alert("This failed!");
+						}
+					});
+				} else {
+					alert("This person is already in the database");
+				}
+			});
+		}
 	};
 
 	return (

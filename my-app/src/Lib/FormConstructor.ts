@@ -75,7 +75,7 @@ export default class FormConstructor {
 
 	contactFields: FormFields[] = [
 		{
-			type: "text",
+			type: "tel",
 			name: "phone",
 			placeHolder: "",
 			label: "Phone Number",
