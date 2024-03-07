@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Visitor, FormFields, BtnGroup, APIResponse } from "../../interfaces.ts";
+import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, RequiredFields } from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
 import postCall from "../../lib/methods/API/postCall.ts";
 import FormConstructor from "../../lib/FormConstructor.ts";
@@ -8,33 +8,6 @@ import ButtonGroup from "./ButtonGroup.tsx";
 import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
 import FormChecker from "../../lib/form/FormChecker.ts";
-
-interface AttendantData {
-	id: number;
-	firstName: string;
-	lastName: string;
-	age: string;
-	memberType: string;
-	active: number;
-}
-
-interface AllVisitorData {
-	visitorData: Visitor;
-	attendantData: AttendantData;
-}
-
-interface Validate {
-    contact: boolean;
-}
-
-interface RequiredFields{
-    name: boolean;
-    title: boolean;
-    address: boolean;
-    contact: boolean;
-    contactMethod: boolean;
-    state: boolean;
-}
 
 export default function Form() {
 	const initForm = new SetupForm();
@@ -78,11 +51,6 @@ export default function Form() {
 		});
 	}, []);
 
-
-    useEffect(() => {
-        console.log(showRequiredField);
-    }, [showRequiredField]);
-
     
 	//Change handler for the input and select fields.
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
@@ -109,6 +77,14 @@ export default function Form() {
 		});
 	};
 
+
+	/**
+	 * 
+	 * @param e Change Event on an HTML Input Element
+	 * @param key string pertaining to the relevant key of the visitorDetails.
+	 * @returns void
+	 * @description changeHandler for the phone number field.
+	 */
     const phoneNumberChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
         const currentKey = key as keyof Visitor;
         const prevValue = visitorDetails[currentKey] as string;
@@ -132,6 +108,13 @@ export default function Form() {
 	};
 
 
+
+	/**
+	 * 
+	 * @param e Change event on an HTML Input Element
+	 * @returns void
+	 * @description checks to make sure an email is vaild as the user fills in the field.
+	 */
     const emailChecker = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const validator = () => {
             const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -146,7 +129,6 @@ export default function Form() {
                 clearInterval(validatorInterval);
             }
         };
-
         const validatorInterval = setInterval(validator, 2000);    
     }
 
@@ -224,13 +206,27 @@ export default function Form() {
 		}
 	};
 
+
+	/**
+	 * @returns void
+	 * @description this is the function that is called as long as if none of the required fields are empty.
+	 */
 	const submitForm = (): void => {
+		//Check if the user is already in the database
 		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+
 			if (typeof data !== "undefined" && data.data.length === 0) {
+
+				//Add the user only if they don't already exist.
 				postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
 					if (data.message === "Success") {
+
+						//Get the records for the newly created user.
 						getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+
 							if (typeof data !== "undefined" && data.data.length > 0) {
+
+								//update the attendant details object.
 								setAttendantDetails({ ...attendantDetails, id: data.data[0].id, firstName: data.data[0].firstName, lastName: data.data[0].lastName });
 
 								//Get the values needed and put them in an object.
@@ -249,29 +245,34 @@ export default function Form() {
 									attendantData: neededAttendantData,
 								};
 
+								//Add visitor to all of the needed tables.
 								postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
+
 									if (data.message === "Success") {
 										alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
+
 									} else {
 										alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
 									}
 								});
 							} else {
+								//Error in the getRecords function for the newly created user.
 								console.error("There was an error in retrieving the newly created visitor.");
 							}
 						});
 					} else {
+						//Error in adding the visitor
 						alert("This failed!");
 					}
 				});
 			} else {
+				//Alert that this person already exists in the database.
 				alert("This person is already in the database");
 			}
 		});
 	}
 
    
-
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
 		const FormCheck = new FormChecker(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email']);

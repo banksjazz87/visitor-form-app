@@ -8,6 +8,8 @@ export default class FormChecker {
         this.requiredFields = requiredFields;
     }
 
+
+   //Look through all of the required fields and verify that none are empty.
    verifyNoneRequiredEmpty(): boolean {
         let valid: boolean = true;
         for (let i = 0; i < this.requiredFields.length; i++) {
@@ -19,6 +21,7 @@ export default class FormChecker {
         return valid;
     }
 
+    //Hide the required outline.
     hideRequiredOutline(): void {
         for (let i = 0; i < this.requiredFields.length; i++) {
             let currentElement = document.getElementById(this.requiredFields[i]) as HTMLInputElement;
@@ -26,9 +29,9 @@ export default class FormChecker {
         }
     }
 
+
     hideRequiredText(): void {
         const requiredText = document.getElementsByClassName('required-text');
-
         if (requiredText.length > 0) {
             document.querySelectorAll('.required-text').forEach((e) => {
                 e.remove();
@@ -36,15 +39,16 @@ export default class FormChecker {
         }
     }
 
+
     checkForRequired (): void {
         for (let i = 0; i < this.requiredFields.length; i++) {
             let currentElement = document.getElementById(this.requiredFields[i]) as HTMLInputElement;
 
             if (currentElement.value.length === 0) {
-                currentElement.style.border = "1px solid red";
+                currentElement.style.border = "1px solid #881337";
                 let newElement = document.createElement('p');
                 newElement.classList.add('required-text');
-                newElement.style.color = "red";
+                newElement.style.color = "#881337";
                 newElement.style.fontSize = "12px";
                 newElement.innerHTML = "*Please complete this field."
                 let parentDiv = currentElement.closest('div');
@@ -55,6 +59,7 @@ export default class FormChecker {
             }
         }
     }
+
 
    showRequired (): void {
         this.hideRequiredOutline();

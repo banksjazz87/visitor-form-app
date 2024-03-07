@@ -51,3 +51,30 @@ export interface InterestData {
     id: number;
     interest: string;
 }
+
+export interface AttendantData {
+	id: number;
+	firstName: string;
+	lastName: string;
+	age: string;
+	memberType: string;
+	active: number;
+}
+
+export interface AllVisitorData {
+	visitorData: Visitor;
+	attendantData: AttendantData;
+}
+
+export interface Validate {
+    contact: boolean;
+}
+
+export interface RequiredFields{
+    name: boolean;
+    title: boolean;
+    address: boolean;
+    contact: boolean;
+    contactMethod: boolean;
+    state: boolean;
+}
