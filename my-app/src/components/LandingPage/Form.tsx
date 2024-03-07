@@ -224,58 +224,61 @@ export default function Form() {
 		}
 	};
 
+	const submitForm = (): void => {
+		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+			if (typeof data !== "undefined" && data.data.length === 0) {
+				postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
+					if (data.message === "Success") {
+						getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+							if (typeof data !== "undefined" && data.data.length > 0) {
+								setAttendantDetails({ ...attendantDetails, id: data.data[0].id, firstName: data.data[0].firstName, lastName: data.data[0].lastName });
+
+								//Get the values needed and put them in an object.
+								const neededAttendantData = {
+									id: data.data[0].id,
+									firstName: data.data[0].firstName,
+									lastName: data.data[0].lastName,
+									age: "adult",
+									memberType: "visitor",
+									active: 1,
+								};
+
+								//This is the object that will be sent over for the post.
+								const allVisitorData: AllVisitorData = {
+									visitorData: visitorDetails,
+									attendantData: neededAttendantData,
+								};
+
+								postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
+									if (data.message === "Success") {
+										alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
+									} else {
+										alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
+									}
+								});
+							} else {
+								console.error("There was an error in retrieving the newly created visitor.");
+							}
+						});
+					} else {
+						alert("This failed!");
+					}
+				});
+			} else {
+				alert("This person is already in the database");
+			}
+		});
+	}
+
    
 
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
 		const FormCheck = new FormChecker(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email']);
-
 		if (!FormCheck.verifyNoneRequiredEmpty()) {
 			FormCheck.showRequired();
 		} else {
-			getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
-				if (typeof data !== "undefined" && data.data.length === 0) {
-					postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
-						if (data.message === "Success") {
-							getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
-								if (typeof data !== "undefined" && data.data.length > 0) {
-									setAttendantDetails({ ...attendantDetails, id: data.data[0].id, firstName: data.data[0].firstName, lastName: data.data[0].lastName });
-
-									//Get the values needed and put them in an object.
-									const neededAttendantData = {
-										id: data.data[0].id,
-										firstName: data.data[0].firstName,
-										lastName: data.data[0].lastName,
-										age: "adult",
-										memberType: "visitor",
-										active: 1,
-									};
-
-									//This is the object that will be sent over for the post.
-									const allVisitorData: AllVisitorData = {
-										visitorData: visitorDetails,
-										attendantData: neededAttendantData,
-									};
-
-									postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
-										if (data.message === "Success") {
-											alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
-										} else {
-											alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
-										}
-									});
-								} else {
-									console.error("There was an error in retrieving the newly created visitor.");
-								}
-							});
-						} else {
-							alert("This failed!");
-						}
-					});
-				} else {
-					alert("This person is already in the database");
-				}
-			});
+			submitForm();
 		}
 	};
 
