@@ -19,16 +19,6 @@ export default function Form() {
     const [validateMessage, setShowValidateMessage] = useState<Validate>({
         contact: false,
     });
-
-    const [showRequiredField, setShowRequiredField] = useState<RequiredFields>({
-        name: false,
-        address: false,
-        title: false,
-        contact: false,
-        contactMethod: false,
-        state: false,
-    });
-
 	const [attendantDetails, setAttendantDetails] = useState<AttendantData>({
 		id: 0,
 		firstName: "",
@@ -60,6 +50,7 @@ export default function Form() {
             phoneNumberChangeHandler(e, key);
         } else if (currentKey === 'email') {
             emailChecker(e);
+			setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
         } else {
             setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
         }
@@ -248,11 +239,14 @@ export default function Form() {
 								//Add visitor to all of the needed tables.
 								postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
 
+									const firstName = visitorDetails.visitorName.firstName;
+									const lastName = visitorDetails.visitorName.lastName;
+
 									if (data.message === "Success") {
-										alert(`${attendantDetails.firstName} ${attendantDetails.lastName} has been added to the group table`);
+										alert(`${firstName} ${lastName} has been added to the group table`);
 
 									} else {
-										alert(`The following error has occurred while inserting ${attendantDetails.firstName} ${attendantDetails.lastName} into the group table: ${data.error}`);
+										alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
 									}
 								});
 							} else {
@@ -275,7 +269,7 @@ export default function Form() {
    
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-		const FormCheck = new FormChecker(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email']);
+		const FormCheck = new FormChecker(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email', 'states_dropdown']);
 		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
 			FormCheck.showRequired();
 		} else {
@@ -294,21 +288,18 @@ export default function Form() {
 					title="Title"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showRequired={showRequiredField.title}
 				/>
 				<InputField
 					dataArray={form.getNameFields()}
 					title="Name"
 					changeHandler={nameChangeHandler}
 					vertical={false}
-                    showRequired={showRequiredField.name}
 				/>
 				<InputField
 					dataArray={form.getAddressFields()}
 					title="Address"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showRequired={showRequiredField.address}
 				/>
 
 				<SelectField
@@ -316,14 +307,12 @@ export default function Form() {
 					changeHandler={inputChangeHandler}
 					label="State"
 					selectID="states_dropdown"
-                    showRequired={showRequiredField.state}
 				/>
 				<InputField
 					dataArray={form.getContactFields()}
 					title="Contact"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showRequired={showRequiredField.contact}
 					showValidMessage={validateMessage.contact}
 				/>
 				<InputField
@@ -331,7 +320,6 @@ export default function Form() {
 					title="Preferred Contact Method"
 					changeHandler={inputChangeHandler}
 					vertical={false}
-                    showRequired={showRequiredField.contactMethod}
 				/>
 
 				<ButtonGroup
