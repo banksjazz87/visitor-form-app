@@ -4,5 +4,11 @@
 
 body {
     background-color: white;
-    @apply font-mono;
 }
+
+@layer base {
+    html {
+        font-family: "Ubuntu";
+    }
+}
+

@@ -19,14 +19,7 @@ export default function Form() {
     const [validateMessage, setShowValidateMessage] = useState<Validate>({
         contact: false,
     });
-	const [attendantDetails, setAttendantDetails] = useState<AttendantData>({
-		id: 0,
-		firstName: "",
-		lastName: "",
-		age: "adult",
-		memberType: "visitor",
-		active: 1,
-	});
+	
 
 	useEffect(() => {
 		initForm.getStateData().then((data) => {
@@ -217,9 +210,6 @@ export default function Form() {
 
 							if (typeof data !== "undefined" && data.data.length > 0) {
 
-								//update the attendant details object.
-								setAttendantDetails({ ...attendantDetails, id: data.data[0].id, firstName: data.data[0].firstName, lastName: data.data[0].lastName });
-
 								//Get the values needed and put them in an object.
 								const neededAttendantData = {
 									id: data.data[0].id,
@@ -267,9 +257,12 @@ export default function Form() {
 	}
 
    
+	//Submit handler for the form
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
 		const FormCheck = new FormChecker(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email', 'states_dropdown']);
+
+		//Check to see if any required fields are empty and also check for a valid email address.
 		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
 			FormCheck.showRequired();
 		} else {

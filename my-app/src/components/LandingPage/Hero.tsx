@@ -1,13 +1,16 @@
 import React from "react";
+import logo from "../../assets/images/chapel-no-background-logo.png";
+
 
 export default function Hero() {
     return (
-        <div id="landing-page-screen" className="bg-slate-900 text-white h-screen flex items-center">
-        <div className="h10 flex-col m-auto ">
-            <h1 className="text-5xl text-center font-extrabold text-fuchsia-600">Welcome to our Church!</h1>
-            <p className="text-center w-9/12 m-auto mt-5 font-light">We're so glad you've come to worship with us this morning!  Help us get to know you by filling out this form.</p>
+    <div id="landing-page-screen" className="bg-gradient-to-br from-slate-900 to-gray-800 text-white h-screen flex flex-col items-center justify-start">
+        <div className="h10 flex flex-col mt-32">
+        <img src={logo} alt="Chapel on the Hill logo" className="mx-auto w-100" width="300" height="163"></img>
+            <h1 className="text-5xl text-center font-extrabold text-white mt-10">Welcome to our Church!</h1>
+            <p className="text-center text-xl m-auto mt-5 font-thin tracking-wider leading-8">We're so glad you've come to worship with us this morning! <br/> Help us get to know you by filling out this form.</p>
             <div className="flex justify-center mt-10">
-                <button className="bg-sky-700 hover:bg-sky-900 transition-colors ease-in-out delay-200 py-2 px-10 rounded-sm shadow-sm shadow-slate-700"><a href="/">Fill out form</a></button>
+                <button className="bg-fuchsia-800 hover:bg-fuchsia-900 transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full shadow-sm shadow-slate-700 capitalize"><a href="/">Fill out form</a></button>
             </div>
         </div>
     </div>
