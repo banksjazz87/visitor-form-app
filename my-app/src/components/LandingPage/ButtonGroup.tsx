@@ -24,6 +24,7 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
                     style={{color: '#c026d3', marginTop: '4px'}}
                 />
                 <button 
+                    className="text-white"
                     type="button" 
                     data-value={x.value} 
                     onClick={(event: React.MouseEvent<HTMLButtonElement>): void => clickHandler(event, x.value)}
@@ -36,6 +37,7 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
         return (
             <div key={`btnGroupItem_${y}`} className="pb-4 flex flex-row justify-center gap-2">
                 <button 
+                    className="text-white"
                     type="button" 
                     data-value={x.value}
                     onClick={(event: React.MouseEvent<HTMLButtonElement>): void => clickHandler(event, x.value)}
@@ -49,8 +51,8 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
 
     return (
         <div className="mt-12">
-            <p className="text-center font-bold text-lg">{title}</p>
-            <p className="text-center italic">{subTitle}</p>
+            <p className="text-center text-white font-bold text-lg">{title}</p>
+            <p className="text-center text-white italic">{subTitle}</p>
             <div className="mt-4">
                 {buttonElements}
             </div>

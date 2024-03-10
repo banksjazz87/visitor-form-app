@@ -271,7 +271,8 @@ export default function Form() {
 	};
 
 	return (
-		<div className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto mt-14 mb-14">
+		<div className="bg-gradient-to-bl from-slate-800 to-gray-900 w-full mt-0">
+		<div className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14">
 			<form
 				className="shadow-md p-4 sm:mx-10 shadow-slate-900 rounded-lg"
 				onSubmit={submitHandler}
@@ -324,14 +325,14 @@ export default function Form() {
 				/>
 
 				<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-2">
-					<p className="text-lg font-bold text-center">Prayer Request</p>
-					<p className="text-center">
+					<p className="text-white text-lg font-bold text-center">Prayer Request</p>
+					<p className="text-center text-white">
 						We will be glad to join you in praying for your specific needs.
 						<br />
 						How can we pray for you?
 					</p>
 					<textarea
-						className="border border-slate-700 rounded-sm w-11/12 h-60 mt-2 m-auto p-2"
+						className="border border-slate-700 rounded-sm w-11/12 h-60 mt-2 m-auto p-2 text-white"
 						data-value="prayer-request"
 						onChange={textAreaChangeHandler}
 					></textarea>
@@ -341,10 +342,11 @@ export default function Form() {
 					<input
 						type="submit"
 						value="Submit"
-						className="bg-sky-700 hover:bg-sky-900 transition-colors text-white ease-in-out delay-200  py-2 px-10 rounded-sm shadow-sm shadow-slate-700 m-auto"
+						className="bg-fuchsia-800 hover:bg-fuchsia-900 transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
 					></input>
 				</div>
 			</form>
+		</div>
 		</div>
 	);
 }

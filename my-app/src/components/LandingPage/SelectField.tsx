@@ -23,11 +23,11 @@ export default function SelectField({dataArray, changeHandler, label, selectID}:
     return (
         <div className="fields_wrapper flex flex-col gap-x-2 mt-6 gap-y-2">
             <div className="flex flex-col gap-2 flex-1 justify-start">
-                <label htmlFor={selectID}>{label}</label>
+                <label className="text-white" htmlFor={selectID}>{label}</label>
                 <select 
                     id={selectID} 
                     name={selectID} 
-                    className="border border-slate-700 rounded-sm pl-2" 
+                    className="border border-slate-700 rounded-sm pl-2 text-white" 
                     onChange={selectHandler}
                 >
                 {returnOptions}
