@@ -277,19 +277,15 @@ export default function Form() {
 				className="shadow-md p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
 				onSubmit={submitHandler}
 			>
-				<h2 className="text-4xl font-extrabold text-center">Visitor Form</h2>
-				<InputField
-					dataArray={form.getTitleFields()}
-					title="Title"
-					changeHandler={inputChangeHandler}
-					vertical={false}
-				/>
+				<h2 className="text-4xl font-extrabold text-center mb-6">Visitor Form</h2>
+
 				<InputField
 					dataArray={form.getNameFields()}
 					title="Name"
-					changeHandler={nameChangeHandler}
+					changeHandler={inputChangeHandler}
 					vertical={false}
 				/>
+				
 				<InputField
 					dataArray={form.getAddressFields()}
 					title="Address"
@@ -310,12 +306,23 @@ export default function Form() {
 					vertical={false}
 					showValidMessage={validateMessage.contact}
 				/>
+
+<div className="grid sm:grid-cols-2">
+				<InputField
+					dataArray={form.getTitleFields()}
+					title="Title"
+					changeHandler={inputChangeHandler}
+					vertical={false}
+				/>
+
 				<InputField
 					dataArray={form.getContactMethodFields()}
 					title="Preferred Contact Method"
 					changeHandler={inputChangeHandler}
 					vertical={false}
 				/>
+				</div>
+				
 
 				<ButtonGroup
 					title="I am interested in learning more about"
@@ -348,6 +355,5 @@ export default function Form() {
 				</div>
 			</form>
 		</div>
-		// </div>
 	);
 }

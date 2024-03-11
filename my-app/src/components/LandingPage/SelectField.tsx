@@ -21,7 +21,7 @@ export default function SelectField({dataArray, changeHandler, label, selectID}:
     }
 
     return (
-        <div className="fields_wrapper flex flex-col gap-x-2 mt-6 gap-y-2">
+        <div className="fields_wrapper flex flex-col gap-x-2 mt-2 sm:mt-6 gap-y-2">
             <div className="flex flex-col gap-2 flex-1 justify-start">
                 <label className="text-white sr-only" htmlFor={selectID}>{label}</label>
                 <select 

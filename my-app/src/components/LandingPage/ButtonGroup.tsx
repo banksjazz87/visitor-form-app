@@ -22,11 +22,13 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
                 <FontAwesomeIcon
                     icon={faCheck}
                     style={{color: '#c026d3', marginTop: '4px'}}
+                    className="text-xl"
                 />
                 <button 
                     type="button" 
                     data-value={x.value} 
                     onClick={(event: React.MouseEvent<HTMLButtonElement>): void => clickHandler(event, x.value)}
+                    className="text-xl font-light"
                 >
                     {x.value}
                 </button>
@@ -35,9 +37,15 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
         } else {
         return (
             <div key={`btnGroupItem_${y}`} className="pb-4 flex flex-row justify-center gap-2">
+                <FontAwesomeIcon
+                    icon={faCheck}
+                    style={{opacity: '0', marginTop: '4px'}}
+                    className="text-xl"
+                />
                 <button 
                     type="button" 
                     data-value={x.value}
+                    className="text-xl font-light"
                     onClick={(event: React.MouseEvent<HTMLButtonElement>): void => clickHandler(event, x.value)}
             >
                 {x.value}
@@ -48,8 +56,8 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
     });
 
     return (
-        <div className="mt-12">
-            <p className="text-center font-bold text-lg">{title}</p>
+        <div className="mt-24">
+            <p className="text-center font-bold text-xl">{title}</p>
             <p className="text-center italic">{subTitle}</p>
             <div className="mt-4">
                 {buttonElements}
