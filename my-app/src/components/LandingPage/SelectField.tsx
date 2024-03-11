@@ -23,13 +23,14 @@ export default function SelectField({dataArray, changeHandler, label, selectID}:
     return (
         <div className="fields_wrapper flex flex-col gap-x-2 mt-6 gap-y-2">
             <div className="flex flex-col gap-2 flex-1 justify-start">
-                <label className="text-white" htmlFor={selectID}>{label}</label>
+                <label className="text-white sr-only" htmlFor={selectID}>{label}</label>
                 <select 
                     id={selectID} 
                     name={selectID} 
-                    className="border border-slate-700 rounded-sm pl-2 text-white" 
+                    className="border border-slate-800 text-slate-600 focus:outline-fuchsia-800 text-xl font-light tracking-wider leading-relaxed rounded-sm pl-2 min-h-8" 
                     onChange={selectHandler}
                 >
+                <option>State</option>
                 {returnOptions}
             </select>
             </div>

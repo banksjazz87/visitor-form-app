@@ -9,6 +9,7 @@ body {
     overscroll-behavior: none;
 }
 
+
 @layer base {
     html {
         font-family: "Ubuntu";

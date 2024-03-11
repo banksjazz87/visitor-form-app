@@ -271,12 +271,13 @@ export default function Form() {
 	};
 
 	return (
-		<div className="bg-gradient-to-bl from-slate-800 to-gray-900 w-full mt-0">
-		<div className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14">
+		// <div className="bg-gradient-to-bl from-slate-800 to-gray-900 w-full mt-0">
+		<div id="visitor-form" className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14">
 			<form
-				className="shadow-md p-4 sm:mx-10 shadow-slate-900 rounded-lg"
+				className="shadow-md p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
 				onSubmit={submitHandler}
 			>
+				<h2 className="text-4xl font-extrabold text-center">Visitor Form</h2>
 				<InputField
 					dataArray={form.getTitleFields()}
 					title="Title"
@@ -325,14 +326,14 @@ export default function Form() {
 				/>
 
 				<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-2">
-					<p className="text-white text-lg font-bold text-center">Prayer Request</p>
-					<p className="text-center text-white">
+					<p className="text-xl font-bold text-center">Prayer Request</p>
+					<p className="text-xl text-center">
 						We will be glad to join you in praying for your specific needs.
 						<br />
 						How can we pray for you?
 					</p>
 					<textarea
-						className="border border-slate-700 rounded-sm w-11/12 h-60 mt-2 m-auto p-2 text-white"
+						className="border border-slate-700 rounded-sm w-11/12 h-60 mt-2 m-auto p-2"
 						data-value="prayer-request"
 						onChange={textAreaChangeHandler}
 					></textarea>
@@ -347,6 +348,6 @@ export default function Form() {
 				</div>
 			</form>
 		</div>
-		</div>
+		// </div>
 	);
 }

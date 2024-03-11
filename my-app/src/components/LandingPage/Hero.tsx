@@ -3,6 +3,12 @@ import logo from "../../assets/images/chapel-no-background-logo.png";
 
 
 export default function Hero() {
+
+    const clickHandler = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        const form = document.getElementById('visitor-form');
+        form?.scrollIntoView({behavior: 'smooth'});
+    }
+    
     return (
     <div id="landing-page-screen" className="bg-gradient-to-br from-slate-900 to-gray-800 text-white h-screen flex flex-col items-center justify-start">
         <div className="h10 flex flex-col mt-32">
@@ -10,7 +16,10 @@ export default function Hero() {
             <h1 className="text-5xl text-center font-extrabold text-white mt-10">Welcome to our Church!</h1>
             <p className="text-center text-xl m-auto mt-5 font-thin tracking-wider leading-8">We're so glad you've come to worship with us this morning! <br/> Help us get to know you by filling out this form.</p>
             <div className="flex justify-center mt-10">
-                <button className="bg-fuchsia-800 hover:bg-fuchsia-900 transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider"><a href="/">Fill out form</a></button>
+                <button 
+                    className="bg-fuchsia-800 hover:bg-fuchsia-900 transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider"
+                    onClick={clickHandler}
+                >Fill out form</button>
             </div>
         </div>
     </div>

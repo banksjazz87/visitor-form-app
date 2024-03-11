@@ -17,15 +17,15 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                 return (
                 <div 
                     key={`${x.visitorKey}_${y}`} 
-                    className={vertical ? 'flex flex-col gap-2': 'flex flex-row mr-10 ml-10 gap-2' }
+                    className={vertical ? 'flex flex-col gap-2': 'flex flex-row first:ml-0 first:mr-0 ml-10 mr-10 gap-2' }
                 >
-                    <label className="text-white"htmlFor={x.id}>{x.label}</label>
+                    <label className="text-xl text-slate-700" htmlFor={x.id}>{x.label}</label>
                     <input 
                         id={x.id} type={x.type} 
                         placeholder={x.placeHolder} name={x.name} 
                         onChange={(event) => changeHandler(event, x.visitorKey)} 
                         value={x.value} 
-                        className="border border-slate-700 rounded-sm text-white"></input>
+                        className="border border-slate-700 rounded-sm focus:border-fuchsia-800"></input>
                 </div>
                 );
             } else {
@@ -34,14 +34,14 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                         key={`${x.visitorKey}_${y}`} 
                         className={vertical ? 'flex flex-row grow relative' : 'flex flex-col grow gap-2 relative'}
                     >
-                        <label className="text-white"htmlFor={x.id}>{x.label}</label>
+                        <label className="text-xl sr-only"htmlFor={x.id}>{x.label}</label>
                         <input 
                             id={x.id} 
                             type={x.type} 
-                            placeholder={x.placeHolder} 
-                            name={x.name} 
+                            placeholder={x.label} 
+                            name={x.label} 
                             onChange={(event) => changeHandler(event, x.visitorKey)} 
-                            className="border border-fuchsia-800 rounded-sm pl-2 text-white"></input>
+                            className="border border-slate-800 rounded-sm pl-2 text-slate-900 focus:outline-fuchsia-800 text-xl font-light leading-8 placeholder:text-slate-600"></input>
                             <p className="absolute -bottom-7 text-amber-400 text-sm"style={showValidMessage && x.id === 
                             'email' ? {"display": ''} : {"display": "none"}}>{`*Please provide a valid ${x.id}.`}</p>
                     </div>
@@ -54,8 +54,8 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
 
     return (
        <div className="fields_wrapper flex flex-col gap-x-2 mt-12 gap-y-2">
-            <p className="text-lg font-bold text-center text-white">{title}</p>
-            <div className="flex flex-row flex-wrap gap-2 justify-center">
+            <p className="text-xl font-bold text-left mb-2">{title}</p>
+            <div className="flex flex-row flex-wrap gap-2 justify-start">
                 {createFormFields(dataArray)}
             </div>
        </div>
