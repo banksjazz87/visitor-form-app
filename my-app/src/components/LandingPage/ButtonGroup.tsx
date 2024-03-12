@@ -57,7 +57,7 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
 
     return (
         <div className="mt-24">
-            <p className="text-center font-bold text-xl">{title}</p>
+            <p className="text-center font-medium text-xl">{title}</p>
             <p className="text-center italic">{subTitle}</p>
             <div className="mt-4 grid grid-cols-2 place-items-center">
                 {buttonElements}

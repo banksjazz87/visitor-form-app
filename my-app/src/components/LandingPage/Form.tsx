@@ -16,10 +16,9 @@ export default function Form() {
 	const [visitorDetails, setVisitorDetails] = useState<Visitor>(initForm.getInitVisitor());
 	const [states, setStates] = useState<FormFields[]>([initForm.getInitStates()]);
 	const [interestList, setInterestList] = useState<BtnGroup[]>([initForm.getInitInterests()]);
-    const [validateMessage, setShowValidateMessage] = useState<Validate>({
-        contact: false,
-    });
-	
+	const [validateMessage, setShowValidateMessage] = useState<Validate>({
+		contact: false,
+	});
 
 	useEffect(() => {
 		initForm.getStateData().then((data) => {
@@ -34,19 +33,18 @@ export default function Form() {
 		});
 	}, []);
 
-    
 	//Change handler for the input and select fields.
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey = key as keyof Visitor;
 
-        if (currentKey === 'phone') {
-            phoneNumberChangeHandler(e, key);
-        } else if (currentKey === 'email') {
-            emailChecker(e);
+		if (currentKey === "phone") {
+			phoneNumberChangeHandler(e, key);
+		} else if (currentKey === "email") {
+			emailChecker(e);
 			setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
-        } else {
-            setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
-        }
+		} else {
+			setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
+		}
 	};
 
 	//Change handler for the name field.
@@ -61,61 +59,54 @@ export default function Form() {
 		});
 	};
 
-
 	/**
-	 * 
+	 *
 	 * @param e Change Event on an HTML Input Element
 	 * @param key string pertaining to the relevant key of the visitorDetails.
 	 * @returns void
 	 * @description changeHandler for the phone number field.
 	 */
-    const phoneNumberChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
-        const currentKey = key as keyof Visitor;
-        const prevValue = visitorDetails[currentKey] as string;
-        const newValue = (e.target as HTMLInputElement).value;
-        const newEntry = newValue[newValue.length -1];
-        
-        if (newValue.length > prevValue.length) {
-            if (isNaN(parseInt(newEntry))) {
-                alert('Please insert a valid number');
-                e.target.value = e.target.value.slice(0, -1);
+	const phoneNumberChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+		const currentKey = key as keyof Visitor;
+		const prevValue = visitorDetails[currentKey] as string;
+		const newValue = (e.target as HTMLInputElement).value;
+		const newEntry = newValue[newValue.length - 1];
 
-            } else {
-                let phoneNum = MathFunctions.createPhoneNumber(newValue);
-                e.target.value = phoneNum;
-                setVisitorDetails({ ...visitorDetails, [currentKey]: phoneNum });
-            }
-
-        } else {
-            setVisitorDetails({...visitorDetails, [currentKey]: newValue});
-        } 
+		if (newValue.length > prevValue.length) {
+			if (isNaN(parseInt(newEntry))) {
+				alert("Please insert a valid number");
+				e.target.value = e.target.value.slice(0, -1);
+			} else {
+				let phoneNum = MathFunctions.createPhoneNumber(newValue);
+				e.target.value = phoneNum;
+				setVisitorDetails({ ...visitorDetails, [currentKey]: phoneNum });
+			}
+		} else {
+			setVisitorDetails({ ...visitorDetails, [currentKey]: newValue });
+		}
 	};
 
-
-
 	/**
-	 * 
+	 *
 	 * @param e Change event on an HTML Input Element
 	 * @returns void
 	 * @description checks to make sure an email is vaild as the user fills in the field.
 	 */
-    const emailChecker = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const validator = () => {
-            const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            const currentValue: string = (e.target as HTMLInputElement).value;
+	const emailChecker = (e: React.ChangeEvent<HTMLInputElement>): void => {
+		const validator = () => {
+			const emailRegex: RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+			const currentValue: string = (e.target as HTMLInputElement).value;
 
-            if (!emailRegex.test(currentValue)) {
-                setShowValidateMessage({...validateMessage, contact: true});
-                clearInterval(validatorInterval);
-
-            } else {
-                setShowValidateMessage({...validateMessage, contact: false});
-                clearInterval(validatorInterval);
-            }
-        };
-        const validatorInterval = setInterval(validator, 2000);    
-    }
-
+			if (!emailRegex.test(currentValue)) {
+				setShowValidateMessage({ ...validateMessage, contact: true });
+				clearInterval(validatorInterval);
+			} else {
+				setShowValidateMessage({ ...validateMessage, contact: false });
+				clearInterval(validatorInterval);
+			}
+		};
+		const validatorInterval = setInterval(validator, 2000);
+	};
 
 	/**
 	 *
@@ -190,7 +181,6 @@ export default function Form() {
 		}
 	};
 
-
 	/**
 	 * @returns void
 	 * @description this is the function that is called as long as if none of the required fields are empty.
@@ -198,18 +188,13 @@ export default function Form() {
 	const submitForm = (): void => {
 		//Check if the user is already in the database
 		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
-
 			if (typeof data !== "undefined" && data.data.length === 0) {
-
 				//Add the user only if they don't already exist.
 				postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
 					if (data.message === "Success") {
-
 						//Get the records for the newly created user.
 						getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
-
 							if (typeof data !== "undefined" && data.data.length > 0) {
-
 								//Get the values needed and put them in an object.
 								const neededAttendantData = {
 									id: data.data[0].id,
@@ -228,13 +213,11 @@ export default function Form() {
 
 								//Add visitor to all of the needed tables.
 								postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
-
 									const firstName = visitorDetails.visitorName.firstName;
 									const lastName = visitorDetails.visitorName.lastName;
 
 									if (data.message === "Success") {
 										alert(`${firstName} ${lastName} has been added to the group table`);
-
 									} else {
 										alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
 									}
@@ -254,13 +237,12 @@ export default function Form() {
 				alert("This person is already in the database");
 			}
 		});
-	}
+	};
 
-   
 	//Submit handler for the form
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-		const FormCheck = new FormChecker(['streetAddress', 'first-name', 'last-name', 'phone', 'city', 'email', 'states_dropdown']);
+		const FormCheck = new FormChecker(["streetAddress", "first-name", "last-name", "phone", "city", "email", "states_dropdown"]);
 
 		//Check to see if any required fields are empty and also check for a valid email address.
 		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
@@ -272,12 +254,15 @@ export default function Form() {
 
 	return (
 		// <div className="bg-gradient-to-bl from-slate-800 to-gray-900 w-full mt-0">
-		<div id="visitor-form" className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14">
+		<div
+			id="visitor-form"
+			className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14"
+		>
 			<form
 				className="shadow-md p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
 				onSubmit={submitHandler}
 			>
-				<h2 className="text-4xl font-extrabold text-center mb-6">Visitor Form</h2>
+				<h2 className="text-4xl font-medium text-center mb-6">Visitor Form</h2>
 
 				<InputField
 					dataArray={form.getNameFields()}
@@ -285,7 +270,7 @@ export default function Form() {
 					changeHandler={inputChangeHandler}
 					vertical={false}
 				/>
-				
+
 				<InputField
 					dataArray={form.getAddressFields()}
 					title="Address"
@@ -307,22 +292,21 @@ export default function Form() {
 					showValidMessage={validateMessage.contact}
 				/>
 
-<div className="grid sm:grid-cols-2">
-				<InputField
-					dataArray={form.getTitleFields()}
-					title="Title"
-					changeHandler={inputChangeHandler}
-					vertical={false}
-				/>
+				<div className="grid sm:grid-cols-2">
+					<InputField
+						dataArray={form.getTitleFields()}
+						title="Title"
+						changeHandler={inputChangeHandler}
+						vertical={false}
+					/>
 
-				<InputField
-					dataArray={form.getContactMethodFields()}
-					title="Preferred Contact Method"
-					changeHandler={inputChangeHandler}
-					vertical={false}
-				/>
+					<InputField
+						dataArray={form.getContactMethodFields()}
+						title="Preferred Contact Method"
+						changeHandler={inputChangeHandler}
+						vertical={false}
+					/>
 				</div>
-				
 
 				<ButtonGroup
 					title="I am interested in learning more about"
@@ -333,7 +317,7 @@ export default function Form() {
 				/>
 
 				<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-2">
-					<p className="text-xl font-bold text-center">Prayer Request</p>
+					<p className="text-xl font-medium text-center">Prayer Request</p>
 					<p className="text-xl text-center">
 						We will be glad to join you in praying for your specific needs.
 						<br />
