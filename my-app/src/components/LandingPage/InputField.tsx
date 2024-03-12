@@ -42,7 +42,7 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                             placeholder={x.label} 
                             name={x.label} 
                             onChange={(event) => changeHandler(event, x.visitorKey)} 
-                            className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-light leading-8 placeholder:text-slate-800"></input>
+                            className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light"></input>
                             <p className="absolute -bottom-5 text-fuchsia-800 text-sm"style={showValidMessage && x.id === 
                             'email' ? {"display": ''} : {"display": "none"}}>{`*Please provide a valid ${x.id}.`}</p>
                     </div>
