@@ -253,13 +253,12 @@ export default function Form() {
 	};
 
 	return (
-		// <div className="bg-gradient-to-bl from-slate-800 to-gray-900 w-full mt-0">
 		<div
 			id="visitor-form"
 			className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14"
 		>
 			<form
-				className="shadow-md p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
+				className="shadow-2xl p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
 				onSubmit={submitHandler}
 			>
 				<h2 className="text-4xl font-medium text-center mb-6">Visitor Form</h2>
@@ -318,7 +317,7 @@ export default function Form() {
 
 				<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-2">
 					<p className="text-xl font-medium text-center">Prayer Request</p>
-					<p className="text-xl text-center">
+					<p className="text-xl font-thin text-center">
 						We will be glad to join you in praying for your specific needs.
 						<br />
 						How can we pray for you?

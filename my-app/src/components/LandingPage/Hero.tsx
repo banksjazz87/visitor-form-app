@@ -10,8 +10,8 @@ export default function Hero() {
     }
     
     return (
-    <div id="landing-page-screen" className="bg-gradient-to-br from-slate-900 to-gray-800 text-white h-screen flex flex-col items-center justify-start">
-        <div className="h10 flex flex-col mt-32">
+    <div id="landing-page-screen" className="bg-gradient-to-br from-slate-900 to-gray-800 text-white h-screen flex flex-col items-center justify-start min-h-full">
+        <div className="h-10 flex flex-col mt-8 w-11/12 md:mt-32 md:w-full">
         <img src={logo} alt="Chapel on the Hill logo" className="mx-auto w-100" width="300" height="163"></img>
             <h1 className="text-5xl text-center font-extrabold text-white mt-10">Welcome to our Church!</h1>
             <p className="text-center text-xl m-auto mt-5 font-thin tracking-wider leading-8">We're so glad you've come to worship with us this morning! <br/> Help us get to know you by filling out this form.</p>
