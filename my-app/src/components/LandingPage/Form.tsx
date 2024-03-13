@@ -9,7 +9,12 @@ import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
 import FormChecker from "../../lib/form/FormChecker.ts";
 
-export default function Form() {
+interface FormProps {
+	show: boolean;
+	showHandler: Function;
+}
+
+export default function Form({ show, showHandler }: FormProps) {
 	const initForm = new SetupForm();
 	const form = new FormConstructor();
 
@@ -217,7 +222,11 @@ export default function Form() {
 									const lastName = visitorDetails.visitorName.lastName;
 
 									if (data.message === "Success") {
-										alert(`${firstName} ${lastName} has been added to the group table`);
+										// alert(`${firstName} ${lastName} has been added to the group table`);
+										
+										//This is called to hide all content with the exception of the thank you message.
+										showHandler();
+										
 									} else {
 										alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
 									}
@@ -252,91 +261,93 @@ export default function Form() {
 		}
 	};
 
-	return (
-		<div
-			id="visitor-form"
-			className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14"
-		>
-			<form
-				className="shadow-2xl p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
-				onSubmit={submitHandler}
+	if (show) {
+		return (
+			<div
+				id="visitor-form"
+				className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14"
 			>
-				<h2 className="text-4xl font-medium text-center mb-6">Visitor Form</h2>
+				<form
+					className="shadow-2xl p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
+					onSubmit={submitHandler}
+				>
+					<h2 className="text-4xl font-medium text-center mb-6">Visitor Form</h2>
 
-				<InputField
-					dataArray={form.getNameFields()}
-					title="Name"
-					changeHandler={inputChangeHandler}
-					vertical={false}
-				/>
-
-				<InputField
-					dataArray={form.getAddressFields()}
-					title="Address"
-					changeHandler={inputChangeHandler}
-					vertical={false}
-				/>
-
-				<SelectField
-					dataArray={states}
-					changeHandler={inputChangeHandler}
-					label="State"
-					selectID="states_dropdown"
-				/>
-				<InputField
-					dataArray={form.getContactFields()}
-					title="Contact"
-					changeHandler={inputChangeHandler}
-					vertical={false}
-					showValidMessage={validateMessage.contact}
-				/>
-
-				<div className="grid sm:grid-cols-2">
 					<InputField
-						dataArray={form.getTitleFields()}
-						title="Title"
-						changeHandler={inputChangeHandler}
+						dataArray={form.getNameFields()}
+						title="Name"
+						changeHandler={nameChangeHandler}
 						vertical={false}
 					/>
 
 					<InputField
-						dataArray={form.getContactMethodFields()}
-						title="Preferred Contact Method"
+						dataArray={form.getAddressFields()}
+						title="Address"
 						changeHandler={inputChangeHandler}
 						vertical={false}
 					/>
-				</div>
 
-				<ButtonGroup
-					title="I am interested in learning more about"
-					subTitle="(please click on all that apply)"
-					dataArray={interestList}
-					values={visitorDetails.interests}
-					clickHandler={buttonGroupClickHandler}
-				/>
+					<SelectField
+						dataArray={states}
+						changeHandler={inputChangeHandler}
+						label="State"
+						selectID="states_dropdown"
+					/>
+					<InputField
+						dataArray={form.getContactFields()}
+						title="Contact"
+						changeHandler={inputChangeHandler}
+						vertical={false}
+						showValidMessage={validateMessage.contact}
+					/>
 
-				<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-2">
-					<p className="text-xl font-medium text-center">Prayer Request</p>
-					<p className="text-xl font-thin text-center">
-						We will be glad to join you in praying for your specific needs.
-						<br />
-						How can we pray for you?
-					</p>
-					<textarea
-						className="border border-slate-700 rounded-sm w-11/12 h-60 mt-2 m-auto p-2"
-						data-value="prayer-request"
-						onChange={textAreaChangeHandler}
-					></textarea>
-				</div>
+					<div className="grid sm:grid-cols-2">
+						<InputField
+							dataArray={form.getTitleFields()}
+							title="Title"
+							changeHandler={inputChangeHandler}
+							vertical={false}
+						/>
 
-				<div className="flex justify-center">
-					<input
-						type="submit"
-						value="Submit"
-						className="bg-fuchsia-800 hover:bg-fuchsia-900 transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
-					></input>
-				</div>
-			</form>
-		</div>
-	);
+						<InputField
+							dataArray={form.getContactMethodFields()}
+							title="Preferred Contact Method"
+							changeHandler={inputChangeHandler}
+							vertical={false}
+						/>
+					</div>
+
+					<ButtonGroup
+						title="I am interested in learning more about"
+						subTitle="(please click on all that apply)"
+						dataArray={interestList}
+						values={visitorDetails.interests}
+						clickHandler={buttonGroupClickHandler}
+					/>
+
+					<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-2">
+						<p className="text-xl font-medium text-center">Prayer Request</p>
+						<p className="text-xl font-thin text-center">
+							We will be glad to join you in praying for your specific needs.
+							<br />
+							How can we pray for you?
+						</p>
+						<textarea
+							className="border border-slate-700 rounded-sm w-11/12 h-60 mt-2 m-auto p-2"
+							data-value="prayer-request"
+							onChange={textAreaChangeHandler}
+						></textarea>
+					</div>
+
+					<div className="flex justify-center">
+						<input
+							type="submit"
+							value="Submit"
+							className="bg-fuchsia-800 hover:bg-fuchsia-900 transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
+						></input>
+					</div>
+				</form>
+			</div>
+		);
+	}
 }

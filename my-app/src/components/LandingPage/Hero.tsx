@@ -1,14 +1,17 @@
 import React from "react";
 import logo from "../../assets/images/chapel-no-background-logo.png";
 
-
-export default function Hero() {
+interface HeroProps {
+    show: boolean;
+}
+export default function Hero({show}: HeroProps) {
 
     const clickHandler = (e: React.MouseEvent<HTMLButtonElement>): void => {
         const form = document.getElementById('visitor-form');
         form?.scrollIntoView({behavior: 'smooth'});
     }
     
+    if (show) {
     return (
     <div id="landing-page-screen" className="bg-gradient-to-br from-slate-900 to-gray-800 text-white h-screen flex flex-col items-center justify-start min-h-full">
         <div className="h-10 flex flex-col mt-8 w-11/12 md:mt-32 md:w-full">
@@ -23,5 +26,6 @@ export default function Hero() {
             </div>
         </div>
     </div>
-    )
+    );
+    }
 }
