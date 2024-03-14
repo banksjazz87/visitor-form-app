@@ -7,10 +7,17 @@ import { DBMethods } from "./dbQueries/databaseMethods";
 import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfaces";
 import { MysqlError } from 'mysql';
 
+interface MailerObject {
+    response: string;
+}
+
 dotenv.config();
 
 const app: Application = express();
 const port = process.env.PORT || 4900;
+
+//Mailer HERE
+const nodemailer = require("nodemailer");
 
 //All middleware functions
 app.use(bodyParser.urlencoded({extended: false}));
@@ -30,6 +37,29 @@ app.use(express.static(path.join(__dirname, "../../my-app/build")));
 app.get('/', (req: Request, res: Response): void => {
     res.sendFile(path.join(__dirname, "../../my-app/build/index.html"));
 });
+
+
+
+//MAILER HERE
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: '',
+      pass: ''
+    }
+  });
+  
+  const mailOptions = {
+    from: '',
+    to: '',
+    subject: 'Sending Email using Node.js',
+    text: 'Visitor Form Submittted!'
+  };
+  
+ 
+
+
+
 
 app.get('/all-states', (req: Request, res: Response): void => {
     const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
@@ -144,7 +174,6 @@ app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
     const interestTable = process.env.INTERESTS_TABLE as string;
     const interestColumns = "visitor_id, interest";
     const interests = visitorData.interests;
-    
 
     Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb()])
     .then((data: [string[], string[], string[], void]): void => {
@@ -152,6 +181,16 @@ app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
             "message": "Success", 
             "data": data
         });
+
+        transporter.sendMail(mailOptions, function(error: string, info: MailerObject){
+
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+        
     })
     .catch((err: SQLResponse): void => {
         res.send({

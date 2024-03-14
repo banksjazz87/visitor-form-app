@@ -12,6 +12,8 @@ const databaseMethods_1 = require("./dbQueries/databaseMethods");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4900;
+//Mailer HERE
+const nodemailer = require("nodemailer");
 //All middleware functions
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
@@ -25,6 +27,20 @@ app.use(express_1.default.static(path_1.default.join(__dirname, "../../my-app/bu
 app.get('/', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "../../my-app/build/index.html"));
 });
+//MAILER HERE
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'banksjazz87@gmail.com',
+        pass: 'ChrWhiNolMil11011102'
+    }
+});
+var mailOptions = {
+    from: 'banksjazz87@gmail.com',
+    to: 'banksjazz87@gmail.com',
+    subject: 'Sending Email using Node.js',
+    text: 'Visitor Form Submittted!'
+};
 app.get('/all-states', (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     Db.getTable('States', 'ASC', 'state_name')
@@ -127,6 +143,14 @@ app.post('/add-visitor-to-all', (req, res) => {
         res.send({
             "message": "Success",
             "data": data
+        });
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            }
+            else {
+                console.log('Email sent: ' + info.response);
+            }
         });
     })
         .catch((err) => {
