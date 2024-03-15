@@ -7,9 +7,7 @@ import { DBMethods } from "./dbQueries/databaseMethods";
 import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfaces";
 import { MysqlError } from 'mysql';
 
-interface MailerObject {
-    response: string;
-}
+
 
 dotenv.config();
 
@@ -44,17 +42,26 @@ app.get('/', (req: Request, res: Response): void => {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: '',
-      pass: ''
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD
     }
   });
   
-  const mailOptions = {
-    from: '',
-    to: '',
-    subject: 'Sending Email using Node.js',
-    text: 'Visitor Form Submittted!'
-  };
+
+  async function sendMail(): Promise<void> {
+    const info = await transporter.sendMail({
+        from: `Visitor Form <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER, 
+        subject: "Testing the visitor app", 
+        text: "This worked!",
+        html: "<h1>This actually worked</h1>"
+    });
+
+    console.log(`Message Sent: ${info.messageId}`);
+  }
+ 
+
+
   
  
 
@@ -175,27 +182,17 @@ app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
     const interestColumns = "visitor_id, interest";
     const interests = visitorData.interests;
 
-    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb()])
-    .then((data: [string[], string[], string[], void]): void => {
+    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb(), sendMail()])
+    .then((data: [string[], string[], string[], void, void]): void => {
         res.send({
             "message": "Success", 
             "data": data
-        });
-
-        transporter.sendMail(mailOptions, function(error: string, info: MailerObject){
-
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
-        
+        }); 
     })
-    .catch((err: SQLResponse): void => {
+    .catch((err: SQLResponse | any): void => {
         res.send({
             "message": "Failure",
-            "error": Db.getSqlError(err)
+            "error": Db.getSqlError(err) ? Db.getSqlError(err) : err
         });
 
         console.log('OH NOOOOO', err);

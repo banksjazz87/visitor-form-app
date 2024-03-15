@@ -333,7 +333,7 @@ export default function Form({ show, showHandler }: FormProps) {
 							How can we pray for you?
 						</p>
 						<textarea
-							className="border border-slate-700 rounded-sm w-11/12 h-60 mt-2 m-auto p-2"
+							className=" text-xl font-normal text-black leading-8 tracking-wider border border-slate-700 rounded-sm w-11/12 h-60 mt-2 m-auto p-2 focus:outline-fuchsia-800"
 							data-value="prayer-request"
 							onChange={textAreaChangeHandler}
 						></textarea>
