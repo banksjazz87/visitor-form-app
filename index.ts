@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { DBMethods } from "./dbQueries/databaseMethods";
 import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfaces";
 import { MysqlError } from 'mysql';
+import { Mailer } from "./modules/Mailer";
 
 
 
@@ -32,40 +33,10 @@ app.listen(port, ()=> {
 
 app.use(express.static(path.join(__dirname, "../../my-app/build")));
 
+
 app.get('/', (req: Request, res: Response): void => {
     res.sendFile(path.join(__dirname, "../../my-app/build/index.html"));
 });
-
-
-
-//MAILER HERE
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD
-    }
-  });
-  
-
-  async function sendMail(): Promise<void> {
-    const info = await transporter.sendMail({
-        from: `Visitor Form <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_USER, 
-        subject: "Testing the visitor app", 
-        text: "This worked!",
-        html: "<h1>This actually worked</h1>"
-    });
-
-    console.log(`Message Sent: ${info.messageId}`);
-  }
- 
-
-
-  
- 
-
-
 
 
 app.get('/all-states', (req: Request, res: Response): void => {
@@ -182,7 +153,13 @@ app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
     const interestColumns = "visitor_id, interest";
     const interests = visitorData.interests;
 
-    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb(), sendMail()])
+    //Set up the email notification
+    // const emailList = ['banksjazz87@gmail.com', 'whitneymatthews05@gmail.com'];
+    const emailList = ['banksjazz87@gmail.com'];
+    const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList);
+   
+
+    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb(), Email.sendMail()])
     .then((data: [string[], string[], string[], void, void]): void => {
         res.send({
             "message": "Success", 
@@ -192,7 +169,7 @@ app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
     .catch((err: SQLResponse | any): void => {
         res.send({
             "message": "Failure",
-            "error": Db.getSqlError(err) ? Db.getSqlError(err) : err
+            "error": err !== 'undefined' ? Db.getSqlError(err) : err.response
         });
 
         console.log('OH NOOOOO', err);
