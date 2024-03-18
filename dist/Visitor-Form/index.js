@@ -14,11 +14,6 @@ const Mailer_1 = require("./modules/Mailer");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4900;
-//Mailer HERE
-// const nodemailer = require("nodemailer");
-const emailList = ['banksjazz87@gmail.com'];
-const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList);
-Email.sendMail();
 //All middleware functions
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
@@ -132,7 +127,8 @@ app.post('/add-visitor-to-all', (req, res) => {
     //Set up the email notification
     // const emailList = ['banksjazz87@gmail.com', 'whitneymatthews05@gmail.com'];
     const emailList = ['banksjazz87@gmail.com'];
-    const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList);
+    const interestsString = interests.join(', ');
+    const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
     Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb(), Email.sendMail()])
         .then((data) => {
         res.send({

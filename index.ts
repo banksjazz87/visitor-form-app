@@ -154,7 +154,8 @@ app.post('/add-visitor-to-all', (req: Request, res: Response): void => {
     //Set up the email notification
     // const emailList = ['banksjazz87@gmail.com', 'whitneymatthews05@gmail.com'];
     const emailList = ['banksjazz87@gmail.com'];
-    const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList);
+    const interestsString = interests.join(', ');
+    const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
    
 
     Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb(), Email.sendMail()])
