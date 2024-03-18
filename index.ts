@@ -2,6 +2,7 @@ import express, { Express, Request, Response, Application} from 'express';
 import path from "path";
 import cors from "cors";
 import bodyParser from "body-parser";
+// import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
 import { DBMethods } from "./dbQueries/databaseMethods";
 import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfaces";
@@ -14,9 +15,6 @@ dotenv.config();
 
 const app: Application = express();
 const port = process.env.PORT || 4900;
-
-//Mailer HERE
-const nodemailer = require("nodemailer");
 
 //All middleware functions
 app.use(bodyParser.urlencoded({extended: false}));

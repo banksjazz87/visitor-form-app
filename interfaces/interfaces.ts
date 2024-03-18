@@ -33,3 +33,4 @@ export interface SQLResponse {
     contact_method: string;
     prayer_requests: string;
   }
+
