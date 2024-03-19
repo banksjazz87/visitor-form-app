@@ -1,8 +1,6 @@
 const nodemailer = require("nodemailer");
 const hbs = require('nodemailer-express-handlebars');
-import { VisitorDataPoints } from "../interfaces/interfaces";
 import { Visitor } from "../my-app/src/interfaces";
-import Handlebars from "handlebars";
 
 
 export class Mailer {
@@ -32,6 +30,7 @@ export class Mailer {
     }
 
 
+    //Used to get the current date as a month/date/year.
     getDate(): string {
         const date = new Date();
         const stringOfDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
@@ -39,8 +38,14 @@ export class Mailer {
     }
 
 
+
+    /**
+     * @returns Promise<void>
+     * @description this is used to send an email.
+     */
     async sendMail(): Promise<void> {
 
+        //compiler, being used compile the handlebars template.
         this.transporter.use('compile', hbs({
             viewEngine: {
                 extname: '.hbs',
@@ -53,11 +58,11 @@ export class Mailer {
         }));
 
 
+        //Actually sending the email.
         const info = await this.transporter.sendMail({
             from: `Visitor Form <${this.userEmail}>`,
             to: this.sendAddress, 
-            subject: "Testing the visitor app", 
-            text: "This worked!",
+            subject: "New Chapel on the Hill Visitor Form", 
             template: 'email_template',
             context: {
                 visitor: this.allVisitor, 
@@ -66,7 +71,8 @@ export class Mailer {
             }
         });
 
-
         console.log(`Message Sent: ${info.messageId}`);
   }
+
 }
+

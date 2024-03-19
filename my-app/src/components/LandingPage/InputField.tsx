@@ -26,7 +26,7 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                         placeholder={x.placeHolder} name={x.name} 
                         onChange={(event) => changeHandler(event, x.visitorKey)} 
                         value={x.value} 
-                        className="border border-slate-700 rounded-sm focus:border-fuchsia-800"></input>
+                        className="border border-slate-700 rounded-sm focus:border-fuchsia-800 appearance-none checked:bg-fuchsia-800"></input>
                 </div>
                 );
             } else {
@@ -43,7 +43,7 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                             name={x.label} 
                             onChange={(event) => changeHandler(event, x.visitorKey)} 
                             className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light"></input>
-                            <p className="absolute -bottom-5 text-fuchsia-800 text-sm"style={showValidMessage && x.id === 
+                            <p className="absolute -bottom-5 text-rose-900 text-sm"style={showValidMessage && x.id === 
                             'email' ? {"display": ''} : {"display": "none"}}>{`*Please provide a valid ${x.id}.`}</p>
                     </div>
                 );

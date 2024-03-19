@@ -27,13 +27,19 @@ class Mailer {
             }
         });
     }
+    //Used to get the current date as a month/date/year.
     getDate() {
         const date = new Date();
         const stringOfDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
         return stringOfDate;
     }
+    /**
+     * @returns Promise<void>
+     * @description this is used to send an email.
+     */
     sendMail() {
         return __awaiter(this, void 0, void 0, function* () {
+            //compiler, being used compile the handlebars template.
             this.transporter.use('compile', hbs({
                 viewEngine: {
                     extname: '.hbs',
@@ -44,11 +50,11 @@ class Mailer {
                 viewPath: 'templates/',
                 extName: '.hbs'
             }));
+            //Actually sending the email.
             const info = yield this.transporter.sendMail({
                 from: `Visitor Form <${this.userEmail}>`,
                 to: this.sendAddress,
-                subject: "Testing the visitor app",
-                text: "This worked!",
+                subject: "New Chapel on the Hill Visitor Form",
                 template: 'email_template',
                 context: {
                     visitor: this.allVisitor,

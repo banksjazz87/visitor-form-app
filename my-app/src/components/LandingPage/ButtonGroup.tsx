@@ -18,7 +18,7 @@ export default function ButtonGroup({dataArray, values, clickHandler, title, sub
 
         if (values.indexOf(x.value) > -1) {
             return (
-                <div key={`btnGroupItem_${y}`} className="pb-4 flex flex-row justify-center gap-0 md:justify-start md:gap-2">
+                <div key={`btnGroupItem_${y}`} className="pb-4 flex flex-row justify-center gap-2 md:justify-start md:gap-2">
                 <FontAwesomeIcon
                     icon={faCheck}
                     style={{color: '#c026d3', marginTop: '4px'}}

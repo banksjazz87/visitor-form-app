@@ -343,7 +343,7 @@ export default function Form({ show, showHandler }: FormProps) {
 						<input
 							type="submit"
 							value="Submit"
-							className="bg-fuchsia-800 hover:bg-fuchsia-900 transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
+							className="bg-fuchsia-800 hover:bg-fuchsia-900 cursor-pointer transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
 						></input>
 					</div>
 				</form>
