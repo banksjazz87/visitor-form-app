@@ -33,3 +33,9 @@ function createPhoneNumber(str) {
 console.log(createPhoneNumber('814'));
 console.log(createPhoneNumber('(814)-371'));
 console.log(createPhoneNumber('(814)-371-94823'));
+function getDate() {
+    const date = new Date();
+    const stringOfDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+    return stringOfDate;
+}
+console.log(getDate());

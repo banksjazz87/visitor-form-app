@@ -27,6 +27,11 @@ class Mailer {
             }
         });
     }
+    getDate() {
+        const date = new Date();
+        const stringOfDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+        return stringOfDate;
+    }
     sendMail() {
         return __awaiter(this, void 0, void 0, function* () {
             this.transporter.use('compile', hbs({
@@ -40,7 +45,7 @@ class Mailer {
                 extName: '.hbs'
             }));
             const info = yield this.transporter.sendMail({
-                from: `Visitor Form <${process.env.EMAIL_USER}>`,
+                from: `Visitor Form <${this.userEmail}>`,
                 to: this.sendAddress,
                 subject: "Testing the visitor app",
                 text: "This worked!",
@@ -48,6 +53,7 @@ class Mailer {
                 context: {
                     visitor: this.allVisitor,
                     interests: this.interests,
+                    date: this.getDate(),
                 }
             });
             console.log(`Message Sent: ${info.messageId}`);

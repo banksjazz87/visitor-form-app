@@ -32,34 +32,41 @@ export class Mailer {
     }
 
 
+    getDate(): string {
+        const date = new Date();
+        const stringOfDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+        return stringOfDate;
+    }
+
 
     async sendMail(): Promise<void> {
 
-    this.transporter.use('compile', hbs({
-        viewEngine: {
-            extname: '.hbs',
-            layoutsDir: 'templates/',
-            defaultLayout: false,
-            partialsDir: 'templates/',
-        },
-        viewPath: 'templates/',
-        extName: '.hbs'
-    }));
+        this.transporter.use('compile', hbs({
+            viewEngine: {
+                extname: '.hbs',
+                layoutsDir: 'templates/',
+                defaultLayout: false,
+                partialsDir: 'templates/',
+            },
+            viewPath: 'templates/',
+            extName: '.hbs'
+        }));
 
 
-    const info = await this.transporter.sendMail({
-        from: `Visitor Form <${process.env.EMAIL_USER}>`,
-        to: this.sendAddress, 
-        subject: "Testing the visitor app", 
-        text: "This worked!",
-        template: 'email_template',
-        context: {
-            visitor: this.allVisitor, 
-            interests: this.interests,
-        }
-    });
+        const info = await this.transporter.sendMail({
+            from: `Visitor Form <${this.userEmail}>`,
+            to: this.sendAddress, 
+            subject: "Testing the visitor app", 
+            text: "This worked!",
+            template: 'email_template',
+            context: {
+                visitor: this.allVisitor, 
+                interests: this.interests,
+                date: this.getDate(),
+            }
+        });
 
 
-    console.log(`Message Sent: ${info.messageId}`);
+        console.log(`Message Sent: ${info.messageId}`);
   }
 }
