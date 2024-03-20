@@ -26,7 +26,7 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                         placeholder={x.placeHolder} name={x.name} 
                         onChange={(event) => changeHandler(event, x.visitorKey)} 
                         value={x.value} 
-                        className="border border-slate-700 rounded-sm focus:border-fuchsia-800 appearance-none checked:bg-fuchsia-800"></input>
+                        className="border border-slate-700 rounded-sm focus:border-fuchsia-800"></input>
                 </div>
                 );
             } else {

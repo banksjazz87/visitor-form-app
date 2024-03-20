@@ -265,7 +265,7 @@ export default function Form({ show, showHandler }: FormProps) {
 		return (
 			<div
 				id="visitor-form"
-				className="flex flex-col gap-8 lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14"
+				className="flex flex-col gap-8 max-w-screen-lg lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14"
 			>
 				<form
 					className="shadow-2xl p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
