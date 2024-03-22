@@ -3,7 +3,7 @@
 # What Does It Do?
 
 ### `Problem`
-Using information cards to keep track of visitors, and asking them to fill them out before leaving.
+Using information cards to keep track of visitors and asking them to fill them out before leaving, is rather burdensome and requires quite a few steps.
 
 <br/>
 
