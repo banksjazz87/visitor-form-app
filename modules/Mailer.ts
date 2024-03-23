@@ -44,7 +44,6 @@ export class Mailer {
      * @description this is used to send an email.
      */
     async sendMail(): Promise<void> {
-
         //compiler, being used compile the handlebars template.
         this.transporter.use('compile', hbs({
             viewEngine: {
@@ -56,7 +55,6 @@ export class Mailer {
             viewPath: 'templates/',
             extName: '.hbs'
         }));
-
 
         //Actually sending the email.
         const info = await this.transporter.sendMail({

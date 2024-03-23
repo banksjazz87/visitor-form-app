@@ -12,9 +12,11 @@ import FormChecker from "../../lib/form/FormChecker.ts";
 interface FormProps {
 	show: boolean;
 	showHandler: Function;
+	startLoading: Function;
+	stopLoading: Function;
 }
 
-export default function Form({ show, showHandler }: FormProps) {
+export default function Form({ show, showHandler, startLoading, stopLoading }: FormProps) {
 	const initForm = new SetupForm();
 	const form = new FormConstructor();
 
@@ -191,6 +193,8 @@ export default function Form({ show, showHandler }: FormProps) {
 	 * @description this is the function that is called as long as if none of the required fields are empty.
 	 */
 	const submitForm = (): void => {
+		startLoading();
+
 		//Check if the user is already in the database
 		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
 			if (typeof data !== "undefined" && data.data.length === 0) {
@@ -222,27 +226,30 @@ export default function Form({ show, showHandler }: FormProps) {
 									const lastName = visitorDetails.visitorName.lastName;
 
 									if (data.message === "Success") {
-										// alert(`${firstName} ${lastName} has been added to the group table`);
-										
 										//This is called to hide all content with the exception of the thank you message.
+										stopLoading();
 										showHandler();
 										
 									} else {
+										stopLoading();
 										alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
 									}
 								});
 							} else {
 								//Error in the getRecords function for the newly created user.
-								console.error("There was an error in retrieving the newly created visitor.");
+								stopLoading();
+								alert("There was an error in retrieving the newly created visitor.");
 							}
 						});
 					} else {
 						//Error in adding the visitor
+						stopLoading();
 						alert("This failed!");
 					}
 				});
 			} else {
 				//Alert that this person already exists in the database.
+				stopLoading();
 				alert("This person is already in the database");
 			}
 		});

@@ -7,6 +7,7 @@ import LoadingBar from "../components/Global/LoadingBar.tsx";
 
 export default function LandingPage() {
     const [displayForm, setDisplayForm] = useState<boolean>(true);
+    const [loadingForm, setLoadingForm] = useState<boolean>(false);
 
     const hideForm = ():void => {
         setDisplayForm(false);
@@ -20,12 +21,16 @@ export default function LandingPage() {
             <Form 
                 show={displayForm}
                 showHandler={hideForm}
+                startLoading={() => setLoadingForm(true)}
+                stopLoading={() => setLoadingForm(false)}
             />
             <ThankYouMessage 
                 show={displayForm ? false : true}
             />
 
-            <LoadingBar />
+            <LoadingBar 
+                loading={loadingForm}
+            />
 
 
         </div>
