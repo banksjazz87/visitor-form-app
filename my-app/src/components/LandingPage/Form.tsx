@@ -261,21 +261,12 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		e.preventDefault();
 		const FormCheck = new FormChecker(["streetAddress", "first-name", "last-name", "phone", "city", "email", "states_dropdown"]);
 
-
-		grecaptcha.ready(function() {
-			grecaptcha.execute('6LcXmaUpAAAAAM4L4xUctdBGTtnO3PCL9xnNGe46', {action: 'submit'}).then(function(token: any) {
-				// Add your logic to submit to your backend server here.
-
-				console.log(token);
-			});
-		  });
-
 		//Check to see if any required fields are empty and also check for a valid email address.
-		// if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
-		// 	FormCheck.showRequired();
-		// } else {
-		// 	submitForm();
-		// }
+		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
+			FormCheck.showRequired();
+		} else {
+			submitForm();
+		}
 	};
 
 	if (show) {
