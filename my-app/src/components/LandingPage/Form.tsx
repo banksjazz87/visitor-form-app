@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate } from "../../interfaces.ts";
+import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, Name } from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
 import postCall from "../../lib/methods/API/postCall.ts";
 import FormConstructor from "../../lib/FormConstructor.ts";
@@ -26,6 +26,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	const [validateMessage, setShowValidateMessage] = useState<Validate>({
 		contact: false,
 	});
+	
 
 	useEffect(() => {
 		initForm.getStateData().then((data) => {
@@ -295,7 +296,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						title="Spouse"
 						changeHandler={nameChangeHandler}
 						vertical={false}
-						required={true}
+						required={false}
 					/>
 
 					<InputField
@@ -311,7 +312,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						changeHandler={inputChangeHandler}
 						label="State"
 						selectID="states_dropdown"
-						required={true}
 					/>
 					<InputField
 						dataArray={form.getContactFields()}

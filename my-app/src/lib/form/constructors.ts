@@ -25,7 +25,17 @@ export default class SetupForm  {
         email: '',
         contactMethod: '', 
         interests: [''], 
-        prayerRequest: ''
+        prayerRequest: '',
+        spouse: {
+            firstName: '', 
+            lastName: ''
+        },
+        children: [
+            {
+            firstName: "", 
+                lastName: ''
+        }
+        ],
     };
 
     public initInterest: BtnGroup = {

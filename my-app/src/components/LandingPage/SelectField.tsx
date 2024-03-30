@@ -6,10 +6,9 @@ interface SelectFieldProps{
     changeHandler: Function;
     label: string;
     selectID: string;
-    required: boolean;
 }
 
-export default function SelectField({dataArray, changeHandler, label, selectID, required}: SelectFieldProps) {
+export default function SelectField({dataArray, changeHandler, label, selectID}: SelectFieldProps) {
 
     const returnOptions = dataArray.map((x: FormFields, y: number): JSX.Element => {
         return (
@@ -25,7 +24,6 @@ export default function SelectField({dataArray, changeHandler, label, selectID, 
         <div className="fields_wrapper flex flex-col gap-x-2 mt-2 sm:mt-6 gap-y-2">
             <div className="flex flex-col gap-2 flex-1 justify-start">
                 <label className="text-white sr-only" htmlFor={selectID}>{label}</label>
-                <p className="text-fuchsia-800"style={required ? {display: "block"}: {display: 'none'}}>*</p>
                 <select 
                     id={selectID} 
                     name={selectID} 
