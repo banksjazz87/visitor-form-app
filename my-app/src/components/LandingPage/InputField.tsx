@@ -7,9 +7,10 @@ interface FormFieldProps {
     changeHandler: Function;
     vertical: boolean;
     showValidMessage?: boolean;
+    required: boolean;
 }
 
-export default function InputField({dataArray, title, vertical, changeHandler, showValidMessage}: FormFieldProps) {
+export default function InputField({dataArray, title, vertical, changeHandler, showValidMessage, required}: FormFieldProps) {
 
     const createFormFields = (arr: FormFields[]): JSX.Element[] => {
         const elements = arr.map((x: FormFields, y: number) => {

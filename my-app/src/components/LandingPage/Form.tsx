@@ -287,6 +287,15 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						title="Name"
 						changeHandler={nameChangeHandler}
 						vertical={false}
+						required={true}
+					/>
+
+					<InputField
+						dataArray={form.getNameFields()}
+						title="Spouse"
+						changeHandler={nameChangeHandler}
+						vertical={false}
+						required={true}
 					/>
 
 					<InputField
@@ -294,6 +303,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						title="Address"
 						changeHandler={inputChangeHandler}
 						vertical={false}
+						required={true}
 					/>
 
 					<SelectField
@@ -301,6 +311,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						changeHandler={inputChangeHandler}
 						label="State"
 						selectID="states_dropdown"
+						required={true}
 					/>
 					<InputField
 						dataArray={form.getContactFields()}
@@ -308,6 +319,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						changeHandler={inputChangeHandler}
 						vertical={false}
 						showValidMessage={validateMessage.contact}
+						required={true}
 					/>
 
 					<div className="grid sm:grid-cols-2">
@@ -316,6 +328,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							title="Title"
 							changeHandler={inputChangeHandler}
 							vertical={false}
+							required={true}
 						/>
 
 						<InputField
@@ -323,6 +336,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							title="Preferred Contact Method"
 							changeHandler={inputChangeHandler}
 							vertical={false}
+							required={true}
 						/>
 					</div>
 
