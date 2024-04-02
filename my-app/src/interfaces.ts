@@ -14,8 +14,8 @@ export interface Visitor {
     contactMethod: string;
     interests: string[];
     prayerRequest: string;
-    spouse: Name;
-    children: Name[];
+    spouseName: Name;
+    childrenNames: Name[];
 }
 
 export interface FormFields {

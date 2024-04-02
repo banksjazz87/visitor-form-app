@@ -60,7 +60,7 @@ export default class FormConstructor {
 			label: "First Name",
 			id: "first-name",
 			value: "",
-			visitorKey: "spouseFirstName",
+			visitorKey: "firstName",
 		},
 		{
 			type: "text",
@@ -69,7 +69,7 @@ export default class FormConstructor {
 			label: "Last Name",
 			id: "last-name",
 			value: "",
-			visitorKey: "spouseLastName",
+			visitorKey: "lastName",
 		},
 	];
 

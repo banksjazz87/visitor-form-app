@@ -58,6 +58,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	//Change handler for the name field.
 	const nameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey = key as keyof Visitor;
+		
 		setVisitorDetails({
 			...visitorDetails,
 			visitorName: {
@@ -66,6 +67,20 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 			},
 		});
 	};
+
+	const spouseNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+		let currentKey  = key as keyof Visitor; 
+		setVisitorDetails({
+			...visitorDetails,
+			spouseName: {
+				...visitorDetails.spouseName,
+				[currentKey]: (e.target as HTMLInputElement).value.trim(),
+			},
+		});
+
+		console.log(visitorDetails);
+	}
+
 
 	/**
 	 *
@@ -292,9 +307,9 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 					/>
 
 					<InputField
-						dataArray={form.getNameFields()}
+						dataArray={form.getSpouseNameFields()}
 						title="Spouse"
-						changeHandler={nameChangeHandler}
+						changeHandler={spouseNameChangeHandler}
 						vertical={false}
 						required={false}
 					/>
