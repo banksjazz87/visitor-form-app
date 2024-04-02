@@ -8,6 +8,10 @@ import ButtonGroup from "./ButtonGroup.tsx";
 import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
 import FormChecker from "../../lib/form/FormChecker.ts";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
+
 
 interface FormProps {
 	show: boolean;
@@ -26,6 +30,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	const [validateMessage, setShowValidateMessage] = useState<Validate>({
 		contact: false,
 	});
+	const [childCount, setChildCount] = useState<number>(0);
 	
 
 	useEffect(() => {
@@ -68,6 +73,8 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		});
 	};
 
+
+	//Change handler for the spouse name field.
 	const spouseNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey  = key as keyof Visitor; 
 		setVisitorDetails({
@@ -77,9 +84,8 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 				[currentKey]: (e.target as HTMLInputElement).value.trim(),
 			},
 		});
-
-		console.log(visitorDetails);
 	}
+
 
 
 	/**
@@ -205,6 +211,36 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	};
 
 
+	const childCountIncrement = (e: React.MouseEvent<HTMLButtonElement>): void => {
+		setChildCount(childCount + 1);
+
+		if (childCount !== 0) {
+			const currentChildList = visitorDetails.childrenNames.slice();
+			const newObj = [{
+			firstName: '', 
+			lastName: ''
+			}];
+			const newArray = currentChildList.concat(newObj);
+
+			setVisitorDetails({...visitorDetails, 
+				childrenNames: newArray,
+			});
+		}
+		
+	}
+
+	const childCountDecrement = (e: React.MouseEvent<HTMLButtonElement>): void => {
+		if (childCount !== 0) {
+			setChildCount(childCount -1);
+
+			const newList = visitorDetails.childrenNames.slice(0, -1);
+			setVisitorDetails({...visitorDetails, 
+				childrenNames: newList,
+			});
+		}
+	}
+
+
 	/**
 	 * @returns void
 	 * @description this is the function that is called as long as if none of the required fields are empty.
@@ -309,6 +345,43 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 					<InputField
 						dataArray={form.getSpouseNameFields()}
 						title="Spouse"
+						changeHandler={spouseNameChangeHandler}
+						vertical={false}
+						required={false}
+					/>
+
+					<div>
+						<h2>Number of children</h2>
+						<div className="flex flex-row gap-1">
+							<button 
+								type="button"
+								onClick={childCountIncrement}
+							>
+								<FontAwesomeIcon
+									icon={faPlus}
+								/>
+							</button>
+							<p>{childCount}</p>
+							<button 
+								type="button"
+								onClick={childCountDecrement}
+							>
+								<FontAwesomeIcon
+									icon={faMinus}
+								/>
+							</button>
+						</div>
+					</div>
+
+					<ChildrenFields
+						count={childCount}
+						names={visitorDetails.childrenNames}
+					/>
+					
+
+					<InputField
+						dataArray={form.getSpouseNameFields()}
+						title="Children"
 						changeHandler={spouseNameChangeHandler}
 						vertical={false}
 						required={false}
