@@ -13,7 +13,7 @@ export default function ChildrenFields({count, names}: ChildrenFieldsProps) {
     const fields: JSX.Element[] = names.map((x: Name, y: number): JSX.Element => {
         return (
             <div 
-                className="flex flex-row gap-2"
+                className="grid grid-cols-1 md:flex md:flex-row md:flex-wrap gap-2 md:justify-start"
                 key={`child_${y + 1}`}
             >
                 <div className="flex flex-col grow relative">
@@ -21,7 +21,8 @@ export default function ChildrenFields({count, names}: ChildrenFieldsProps) {
                         className="text-xl sr-only" 
                         htmlFor={`child_first_name_${y}`}
                     >
-                        {`Child ${y + 1} first name`}</label>
+                        {`Child ${y + 1} first name`}
+                    </label>
                     <input 
                         id={`child_first_name_${y}`}
                         className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light" 
@@ -53,7 +54,7 @@ export default function ChildrenFields({count, names}: ChildrenFieldsProps) {
     
     if (count > 0 && names.length > 0) {
         return (
-            <div className="flex flex-col gap-2 grow">
+            <div className="flex flex-col gap-6 grow">
                 {fields}
             </div>
         )

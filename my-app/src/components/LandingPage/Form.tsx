@@ -355,24 +355,24 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						required={false}
 					/>
 
-					<div>
-						<h2>Number of children</h2>
-						<div className="flex flex-row gap-1">
+					<div className="mt-8 flex flex-row gap-6 items-center pb-2">
+						<p className="text-xl font-medium text-left">Number of children</p>
+						<div className="flex flex-row gap-2">
+						<button 
+								type="button"
+								onClick={childCountDecrement}
+							>
+								<FontAwesomeIcon
+									icon={faMinus}
+								/>
+							</button>
+							<p className="text-xl font-medium">{childCount}</p>
 							<button 
 								type="button"
 								onClick={childCountIncrement}
 							>
 								<FontAwesomeIcon
 									icon={faPlus}
-								/>
-							</button>
-							<p>{childCount}</p>
-							<button 
-								type="button"
-								onClick={childCountDecrement}
-							>
-								<FontAwesomeIcon
-									icon={faMinus}
 								/>
 							</button>
 						</div>
