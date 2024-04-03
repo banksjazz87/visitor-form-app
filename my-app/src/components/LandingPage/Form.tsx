@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, Name } from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
 import postCall from "../../lib/methods/API/postCall.ts";
-import FormConstructor from "../../lib/FormConstructor.ts";
+import FormConstructor from "../../lib/form/FormConstructor.ts";
 import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
 import SelectField from "./SelectField.tsx";
@@ -45,6 +45,10 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 			}
 		});
 	}, []);
+
+	useEffect(():void => {
+
+	})
 
 	//Change handler for the input and select fields.
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
@@ -221,11 +225,10 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 			lastName: ''
 			}];
 			const newArray = currentChildList.concat(newObj);
-
 			setVisitorDetails({...visitorDetails, 
 				childrenNames: newArray,
 			});
-		}
+		} 
 		
 	}
 
@@ -233,11 +236,13 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		if (childCount !== 0) {
 			setChildCount(childCount -1);
 
-			const newList = visitorDetails.childrenNames.slice(0, -1);
-			setVisitorDetails({...visitorDetails, 
+			if (visitorDetails.childrenNames.length > 1) {
+				const newList = visitorDetails.childrenNames.slice(0, -1);
+				setVisitorDetails({...visitorDetails, 
 				childrenNames: newList,
 			});
-		}
+			}
+		} 
 	}
 
 
@@ -378,15 +383,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						names={visitorDetails.childrenNames}
 					/>
 					
-
-					<InputField
-						dataArray={form.getSpouseNameFields()}
-						title="Children"
-						changeHandler={spouseNameChangeHandler}
-						vertical={false}
-						required={false}
-					/>
-
 					<InputField
 						dataArray={form.getAddressFields()}
 						title="Address"
