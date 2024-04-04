@@ -6,15 +6,19 @@ import AgeOptions from "../LandingPage/AgeOptions.tsx";
 interface ChildrenFieldsProps {
     count: number;
     names: ChildData[];
+    nameHandler: Function;
+    ageHandler: Function;
 }
 
 
-export default function ChildrenFields({count, names}: ChildrenFieldsProps) {
+export default function ChildrenFields({count, names, nameHandler, ageHandler}: ChildrenFieldsProps) {
     
     const fields: JSX.Element[] = names.map((x: ChildData, y: number): JSX.Element => {
         return (
 
-            <div className="flex flex-col">
+            <div 
+                key={`child_${y}_fields`}
+                className="flex flex-col">
                 <div 
                     className="grid grid-cols-1 md:flex md:flex-row md:flex-wrap gap-2 md:justify-start"
                     key={`child_${y + 1}`}
@@ -31,6 +35,7 @@ export default function ChildrenFields({count, names}: ChildrenFieldsProps) {
                             className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light" 
                             type="text" 
                             placeholder="First Name"
+                            onChange={(event) => nameHandler(event, y, "firstName")}
                             value={x.firstName}
                         />
                     </div>
@@ -46,6 +51,7 @@ export default function ChildrenFields({count, names}: ChildrenFieldsProps) {
                             className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light" 
                             type="text" 
                             placeholder="Last Name"
+                            onChange={(event) => nameHandler(event, y, "lastName")}
                             value={x.lastName}
                         />
                         
@@ -54,6 +60,7 @@ export default function ChildrenFields({count, names}: ChildrenFieldsProps) {
 
                 <AgeOptions 
                     index={y}
+                    changeHandler={ageHandler} 
                 />
             </div>
         );

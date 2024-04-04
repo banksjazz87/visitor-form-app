@@ -78,6 +78,26 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	};
 
 
+	const childAgeChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
+		let copyOfChildArray = visitorDetails.children.slice();
+		copyOfChildArray[index]['age'] = e.target.value as string;
+
+		setVisitorDetails({
+			...visitorDetails, children: copyOfChildArray,
+		});
+	}
+
+
+	const childNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number, nameType: "firstName" | "lastName"): void => {
+		let copyOfChildArray = visitorDetails.children.slice();
+		copyOfChildArray[index][nameType] = e.target.value as string;
+
+		setVisitorDetails({
+			...visitorDetails, children: copyOfChildArray,
+		});
+	}
+
+
 	//Change handler for the spouse name field.
 	const spouseNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey  = key as keyof Visitor; 
@@ -247,6 +267,9 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	}
 
 
+	
+
+
 	/**
 	 * @returns void
 	 * @description this is the function that is called as long as if none of the required fields are empty.
@@ -382,6 +405,8 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 					<ChildrenFields
 						count={childCount}
 						names={visitorDetails.children}
+						nameHandler={childNameChangeHandler}
+						ageHandler={childAgeChangeHandler}
 					/>
 					
 					<InputField
