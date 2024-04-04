@@ -29,10 +29,11 @@ export default class SetupForm {
 			firstName: "",
 			lastName: "",
 		},
-		childrenNames: [
+		children: [
 			{
 				firstName: "",
 				lastName: "",
+				age: ""
 			},
 		],
 	};

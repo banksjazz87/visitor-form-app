@@ -219,14 +219,15 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		setChildCount(childCount + 1);
 
 		if (childCount !== 0) {
-			const currentChildList = visitorDetails.childrenNames.slice();
+			const currentChildList = visitorDetails.children.slice();
 			const newObj = [{
 			firstName: '', 
-			lastName: ''
+			lastName: '', 
+			age: ''
 			}];
 			const newArray = currentChildList.concat(newObj);
 			setVisitorDetails({...visitorDetails, 
-				childrenNames: newArray,
+				children: newArray,
 			});
 		} 
 		
@@ -236,10 +237,10 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		if (childCount !== 0) {
 			setChildCount(childCount -1);
 
-			if (visitorDetails.childrenNames.length > 1) {
-				const newList = visitorDetails.childrenNames.slice(0, -1);
+			if (visitorDetails.children.length > 1) {
+				const newList = visitorDetails.children.slice(0, -1);
 				setVisitorDetails({...visitorDetails, 
-				childrenNames: newList,
+				children: newList,
 			});
 			}
 		} 
@@ -380,7 +381,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 
 					<ChildrenFields
 						count={childCount}
-						names={visitorDetails.childrenNames}
+						names={visitorDetails.children}
 					/>
 					
 					<InputField
