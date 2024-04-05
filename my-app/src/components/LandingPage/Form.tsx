@@ -20,6 +20,7 @@ interface FormProps {
 	stopLoading: Function;
 }
 
+
 export default function Form({ show, showHandler, startLoading, stopLoading }: FormProps) {
 	const initForm = new SetupForm();
 	const form = new FormConstructor();
@@ -32,7 +33,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	});
 	const [childCount, setChildCount] = useState<number>(0);
 	
-
+	
 	useEffect(() => {
 		initForm.getStateData().then((data) => {
 			if (typeof data === "object") {
@@ -46,10 +47,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		});
 	}, []);
 
-	useEffect(():void => {
-
-	})
-
+	
 	//Change handler for the input and select fields.
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey = key as keyof Visitor;
@@ -283,7 +281,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
 			if (typeof data !== "undefined" && data.data.length === 0) {
 				//Add the user only if they don't already exist.
-				postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
+				postCall("/add-multiple-adults", visitorDetails).then((data: APIResponse<Visitor>): void => {
 					if (data.message === "Success") {
 						//Get the records for the newly created user.
 						getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {

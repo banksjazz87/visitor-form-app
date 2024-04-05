@@ -1,6 +1,7 @@
 import mysql from "mysql";
 import { SQLResponse } from "../interfaces/interfaces.ts";
 import { DBAttendee } from "../../attendanceApplication/interfaces/interfaces.ts";
+import {Name} from "../my-app/src/interfaces.ts";
 
 export class DBMethods {
   hostName: any;
@@ -415,7 +416,7 @@ export class DBMethods {
     return new Promise<string[]>((resolve, reject): void => {
       const database = this.dbConnection;
 
-      const allValues = values.map((x: string, y: number) => {
+      const allValues = values.map((x: string, y: number): string => {
         let current = `(${id}, "${x}"), `;
         return current;
       });
@@ -423,6 +424,26 @@ export class DBMethods {
       let allValuesString = allValues.join('');
       let finalValues = allValuesString.slice(0, -2);
   
+      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
+
+      database.query(neededSql, (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+    });
+  }
+
+  addMultipleAdultAttendants(tableName: string, columns: string, values: Name[]): Promise <string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const allValues = values.map((x: Name, y: number) => {
+        let current = `("${x.firstName}", "${x.lastName}", "visitor", "adult"), `; 
+        return current;
+      });
+
+      let allValuesString = allValues.join('');
+      let finalValues = allValuesString.slice(0, -2);
+
       const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
 
       database.query(neededSql, (err: string[], results: string[]): void => {

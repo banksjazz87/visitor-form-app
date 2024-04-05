@@ -103,6 +103,26 @@ app.post('/add-attendant', (req, res) => {
         console.log('ERROR Inserting', err);
     });
 });
+app.post('/add-multiple-adults', (req, res) => {
+    const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+    const attendantColumns = "firstName, lastName, memberType, age";
+    const attendantNames = [req.body.visitorName, req.body.spouseName];
+    Db.addMultipleAdultAttendants('Attendants', attendantColumns, attendantNames)
+        .then((data) => {
+        res.send({
+            "message": "Success",
+            "data": data
+        });
+        console.log("Success in adding multiple adults");
+    })
+        .catch((err) => {
+        res.send({
+            "message": "Failure",
+            "error": Db.getSqlError(err),
+        });
+        console.log('Failure in adding multiple adults', err);
+    });
+});
 app.post('/add-visitor-to-all', (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     const attendantData = req.body.attendantData;
