@@ -104,21 +104,30 @@ app.post('/add-attendant', (req: Request, res: Response): void => {
 
     const attendantColumns = "firstName, lastName, memberType, age";
     const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor', 'adult'];
+    const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, 'visitor', 'adult'];
 
-    Db.insert('Attendants',attendantColumns, attendantValues )
-        .then((data: string[]): void => {
+    const children = req.body.children;
+    const firstChildName = children.firstName;
+
+
+    Promise.all([Db.insertNoEnd('Attendants', attendantColumns, attendantValues), Db.insert('Attendants', attendantColumns, spouseValues)])
+        .then((data: [string[], string[]]): void => {
             res.send({
                 "message": "Success", 
                 "data": data
-            })
+            });
+            console.log('This worked', data);
         })
-        .catch((err: SQLResponse): void => {
+        .catch((err: SQLResponse | any): void => {
             res.send({
                 "message": "Failure", 
-                "error": Db.getSqlError(err)
-            })
+                "error": err !== 'undefined' ? Db.getSqlError(err) : err.response
+            });
+            console.log('ERROR Inserting', err);
         });
 });
+
+
 
 
 app.post('/add-visitor-to-all', (req: Request, res: Response): void => {

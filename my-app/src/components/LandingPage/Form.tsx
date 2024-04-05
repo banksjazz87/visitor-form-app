@@ -78,6 +78,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	};
 
 
+	//Change handler for the child age.
 	const childAgeChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
 		let copyOfChildArray = visitorDetails.children.slice();
 		copyOfChildArray[index]['age'] = e.target.value as string;
@@ -88,6 +89,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	}
 
 
+	//Change handler for the child's name.
 	const childNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number, nameType: "firstName" | "lastName"): void => {
 		let copyOfChildArray = visitorDetails.children.slice();
 		copyOfChildArray[index][nameType] = e.target.value as string;

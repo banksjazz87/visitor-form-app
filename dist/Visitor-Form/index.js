@@ -84,18 +84,23 @@ app.post('/add-attendant', (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     const attendantColumns = "firstName, lastName, memberType, age";
     const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor', 'adult'];
-    Db.insert('Attendants', attendantColumns, attendantValues)
+    const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, 'visitor', 'adult'];
+    const children = req.body.children;
+    const firstChildName = children.firstName;
+    Promise.all([Db.insertNoEnd('Attendants', attendantColumns, attendantValues), Db.insert('Attendants', attendantColumns, spouseValues)])
         .then((data) => {
         res.send({
             "message": "Success",
             "data": data
         });
+        console.log('This worked', data);
     })
         .catch((err) => {
         res.send({
             "message": "Failure",
-            "error": Db.getSqlError(err)
+            "error": err !== 'undefined' ? Db.getSqlError(err) : err.response
         });
+        console.log('ERROR Inserting', err);
     });
 });
 app.post('/add-visitor-to-all', (req, res) => {
