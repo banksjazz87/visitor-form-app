@@ -372,5 +372,20 @@ class DBMethods {
             });
         });
     }
+    addMultipleNonAdultAttendants(tableName, columns, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const allValues = values.map((x, y) => {
+                let current = `("${x.firstName}", "${x.lastName}", "visitor", "${x.age}"), `;
+                return current;
+            });
+            let allValuesString = allValues.join('');
+            let finalValues = allValuesString.slice(0, -2);
+            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
+            database.query(neededSql, (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+        });
+    }
 }
 exports.DBMethods = DBMethods;

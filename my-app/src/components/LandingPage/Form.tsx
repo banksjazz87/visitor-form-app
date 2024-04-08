@@ -281,7 +281,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
 			if (typeof data !== "undefined" && data.data.length === 0) {
 				//Add the user only if they don't already exist.
-				postCall("/add-multiple-adults", visitorDetails).then((data: APIResponse<Visitor>): void => {
+				postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
 					if (data.message === "Success") {
 						//Get the records for the newly created user.
 						getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {

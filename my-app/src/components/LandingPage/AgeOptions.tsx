@@ -4,8 +4,9 @@ import React from "react";
 interface AgeOptionsProps {
     index: number;
     changeHandler: Function;
+    buttonGroupName: string;
 }
-export default function AgeOptions({index, changeHandler}: AgeOptionsProps) {
+export default function AgeOptions({index, changeHandler, buttonGroupName}: AgeOptionsProps) {
 
     const ages: string[] = ['Child', 'Teen', 'Adult'];
 
@@ -25,7 +26,7 @@ export default function AgeOptions({index, changeHandler}: AgeOptionsProps) {
             <input 
                 id={`x_${index}`} 
                 type="radio"
-                name={x} 
+                name={buttonGroupName} 
                 value={x.toLowerCase()} 
                 onChange={(event) => changeHandler(event, y)}
                 className="border border-slate-700 rounded-sm focus:border-fuchsia-800"></input>

@@ -61,6 +61,7 @@ export default function ChildrenFields({count, names, nameHandler, ageHandler}: 
                 <AgeOptions 
                     index={y}
                     changeHandler={ageHandler} 
+                    buttonGroupName={`child_${y}`}
                 />
             </div>
         );
