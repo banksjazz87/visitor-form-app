@@ -351,6 +351,8 @@ export class DBMethods {
     });
   }
 
+
+  //Update the total count table.
   updateTotalTable(currentTable: string, group: string, children: number, youth: number, adults: number, members: number, visitors: number): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       const database = this.dbConnection;
@@ -364,6 +366,7 @@ export class DBMethods {
     });
   }
 
+  //Returns the monthly statistics for a particular group, month and year.
   getMonthStatistics(groupName: string, monthName: string, yearDate: string): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       const database = this.dbConnection;
@@ -444,11 +447,25 @@ export class DBMethods {
       let allValuesString = allValues.join('');
       let finalValues = allValuesString.slice(0, -2);
 
-      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
+      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
 
       database.query(neededSql, (err: string[], results: string[]): void => {
         err ? reject(err) : resolve(results);
       });
+      this.endDb();
+    });
+  }
+
+  insertUniqueAttendant(tableName: string, columns: string, values: string[]): Promise <string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES (?) ON DUPLICATE KEY UPDATE firstName = firstName`;
+
+      database.query(neededSql, [values], (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+      this.endDb();
     });
   }
 
@@ -464,14 +481,13 @@ export class DBMethods {
       let allValuesString = allValues.join('');
       let finalValues = allValuesString.slice(0, -2);
 
-      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
+      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
+
+      console.log('SQL here', neededSql);
 
       database.query(neededSql, (err: string[], results: string[]): void => {
         err ? reject(err) : resolve(results);
       });
     });
   }
-
-  
-
 }

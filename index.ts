@@ -101,7 +101,7 @@ app.post('/add-attendant', (req: Request, res: Response): void => {
         //Full family
         if (childFirstName.length > 0 && spouseFirstName.length > 0 ) {
 
-            Promise.all([Db.insertNoEnd('Attendants', attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants('Attendants', attendantColumns, req.body.children), Db.insert('Attendants', attendantColumns, spouseValues)])
+            Promise.all([Db.insertNoEnd('Attendants', attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants('Attendants', attendantColumns, req.body.children), Db.insertUniqueAttendant('Attendants', attendantColumns, spouseValues)])
             .then((data: [string[], string[], string[]]): void => {
                 res.send({
                     "message": "Success", 
@@ -120,7 +120,7 @@ app.post('/add-attendant', (req: Request, res: Response): void => {
         //Single parent family
         } else if (childFirstName.length > 0 && spouseFirstName.length === 0) {
 
-            Promise.all([Db.insertNoEnd('Attendants', attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants('Attendants', attendantColumns, req.body.children), Db.insert('Attendants', attendantColumns, spouseValues)])
+            Promise.all([Db.insertNoEnd('Attendants', attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants('Attendants', attendantColumns, req.body.children), Db.insertUniqueAttendant('Attendants', attendantColumns, spouseValues)])
             .then((data: [string[], string[], string[]]): void => {
                 res.send({
                     "message": "Success", 

@@ -291,6 +291,7 @@ class DBMethods {
             this.endDb();
         });
     }
+    //Update the total count table.
     updateTotalTable(currentTable, group, children, youth, adults, members, visitors) {
         return new Promise((resolve, reject) => {
             const database = this.dbConnection;
@@ -302,6 +303,7 @@ class DBMethods {
             this.endDb();
         });
     }
+    //Returns the monthly statistics for a particular group, month and year.
     getMonthStatistics(groupName, monthName, yearDate) {
         return new Promise((resolve, reject) => {
             const database = this.dbConnection;
@@ -366,10 +368,21 @@ class DBMethods {
             });
             let allValuesString = allValues.join('');
             let finalValues = allValuesString.slice(0, -2);
-            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
+            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
             database.query(neededSql, (err, results) => {
                 err ? reject(err) : resolve(results);
             });
+            this.endDb();
+        });
+    }
+    insertUniqueAttendant(tableName, columns, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES (?) ON DUPLICATE KEY UPDATE firstName = firstName`;
+            database.query(neededSql, [values], (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+            this.endDb();
         });
     }
     addMultipleNonAdultAttendants(tableName, columns, values) {
@@ -381,7 +394,8 @@ class DBMethods {
             });
             let allValuesString = allValues.join('');
             let finalValues = allValuesString.slice(0, -2);
-            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
+            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
+            console.log('SQL here', neededSql);
             database.query(neededSql, (err, results) => {
                 err ? reject(err) : resolve(results);
             });
