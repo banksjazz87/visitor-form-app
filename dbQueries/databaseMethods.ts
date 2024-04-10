@@ -1,7 +1,7 @@
 import mysql from "mysql";
 import { SQLResponse } from "../interfaces/interfaces.ts";
 import { DBAttendee } from "../../attendanceApplication/interfaces/interfaces.ts";
-import {Name, ChildData} from "../my-app/src/interfaces.ts";
+import {Name, ChildData, AttendantData} from "../my-app/src/interfaces.ts";
 
 export class DBMethods {
   hostName: any;
@@ -255,12 +255,6 @@ export class DBMethods {
     });
   }
 
-
-
-
-
-
-
   addBulkSelectApplicants(table: string, columns: string, obj: Object[]): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       const database = this.dbConnection;
@@ -415,6 +409,8 @@ export class DBMethods {
     });
   }
 
+
+  //This used in adding new values to the list of interests for the Visitor Data
   addMultipleValuesNoEnd(tableName: string, columns: string, id: number, values: string[]): Promise <string[]> {
     return new Promise<string[]>((resolve, reject): void => {
       const database = this.dbConnection;
@@ -512,6 +508,27 @@ export class DBMethods {
     });
   }
 
+
+  addMultipleVisitorsNoEnd(tableName: string, values: AttendantData[]): Promise<string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const valuesList: string[] = values.map((x: AttendantData, y: Number): string => {
+        let currentString = `(${x.id}, "${x.firstName}", "${x.lastName}", "${x.age}", "${x.memberType}", "${x.active}), "`;
+
+        return currentString;
+      });
+
+      const finalValues = valuesList.toString().slice(0, -2);
+
+      const sql = `INSERT INTO ${tableName} (id, firstName, lastName, age, memberType, active) VALUES ${finalValues}`;
+
+      database.query(sql, (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+
+    });
+  }
 
   
 }

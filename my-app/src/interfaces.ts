@@ -67,9 +67,15 @@ export interface AttendantData {
 	active: number;
 }
 
+export interface NeededFamilyData {
+	primary: AttendantData;
+	spouse: AttendantData;
+	children: AttendantData[];
+}
+
 export interface AllVisitorData {
 	visitorData: Visitor;
-	attendantData: AttendantData;
+	attendantData: NeededFamilyData;
 }
 
 export interface Validate {
