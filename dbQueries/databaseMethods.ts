@@ -490,4 +490,28 @@ export class DBMethods {
       });
     });
   }
+
+  selectByNames(tableName: string, values: Name[]): Promise <string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const whereQuery = values.map((x: Name, y: Number): string => {
+        let currentStr = `(firstName = "${x.firstName}" AND lastName = "${x.lastName}") OR `;
+        return currentStr;
+      });
+
+      const stringOfWhere = whereQuery.join('').slice(0, -4);
+      const neededSql = `SELECT * FROM  ${tableName} WHERE ${stringOfWhere}`;
+
+      console.log('SQL here', neededSql);
+
+      database.query(neededSql, (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+      this.endDb();
+    });
+  }
+
+
+  
 }

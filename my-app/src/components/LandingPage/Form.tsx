@@ -284,39 +284,45 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 				postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
 					if (data.message === "Success") {
 						//Get the records for the newly created user.
-						getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+						// getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`)
+
+						postCall('/get-family', visitorDetails)
+						
+						.then((data: APIResponse<AttendantData> | undefined): void => {
 							if (typeof data !== "undefined" && data.data.length > 0) {
+
+								console.log(data.data);
 								//Get the values needed and put them in an object.
-								const neededAttendantData = {
-									id: data.data[0].id,
-									firstName: data.data[0].firstName,
-									lastName: data.data[0].lastName,
-									age: "adult",
-									memberType: "visitor",
-									active: 1,
-								};
+								// const neededAttendantData = {
+								// 	id: data.data[0].id,
+								// 	firstName: data.data[0].firstName,
+								// 	lastName: data.data[0].lastName,
+								// 	age: "adult",
+								// 	memberType: "visitor",
+								// 	active: 1,
+								// };
 
-								//This is the object that will be sent over for the post.
-								const allVisitorData: AllVisitorData = {
-									visitorData: visitorDetails,
-									attendantData: neededAttendantData,
-								};
+								// //This is the object that will be sent over for the post.
+								// const allVisitorData: AllVisitorData = {
+								// 	visitorData: visitorDetails,
+								// 	attendantData: neededAttendantData,
+								// };
 
-								//Add visitor to all of the needed tables.
-								postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
-									const firstName = visitorDetails.visitorName.firstName;
-									const lastName = visitorDetails.visitorName.lastName;
+								// //Add visitor to all of the needed tables.
+								// postCall("/add-visitor-to-all", allVisitorData).then((data: APIResponse<Visitor>): void => {
+								// 	const firstName = visitorDetails.visitorName.firstName;
+								// 	const lastName = visitorDetails.visitorName.lastName;
 
-									if (data.message === "Success") {
-										//This is called to hide all content with the exception of the thank you message.
-										stopLoading();
-										showHandler();
+								// 	if (data.message === "Success") {
+								// 		//This is called to hide all content with the exception of the thank you message.
+								// 		stopLoading();
+								// 		showHandler();
 										
-									} else {
-										stopLoading();
-										alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
-									}
-								});
+								// 	} else {
+								// 		stopLoading();
+								// 		alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
+								// 	}
+								// });
 							} else {
 								//Error in the getRecords function for the newly created user.
 								stopLoading();

@@ -24,112 +24,131 @@ app.listen(port, () => {
     console.log(`CRpp is listening on port ${port}`);
 });
 app.use(express_1.default.static(path_1.default.join(__dirname, "../../my-app/build")));
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "../../my-app/build/index.html"));
 });
 //Success message that will be sent back and logged
 const sendSuccess = (data, res) => {
     res.send({
-        "message": "Success",
-        "data": data
+        message: "Success",
+        data: data,
     });
     console.log(data);
 };
 //Failure message that will be sent back and logged
 const sendFailure = (err, res, method) => {
     res.send({
-        "message": "Failure",
-        "error": method(err),
+        message: "Failure",
+        error: method(err),
     });
-    console.log('Failure', err);
+    console.log("Failure", err);
 };
-app.get('/all-states', (req, res) => {
+app.get("/all-states", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
-    Db.getTable('States', 'ASC', 'state_name')
+    Db.getTable("States", "ASC", "state_name")
         .then((data) => sendSuccess(data, res))
         .catch((err) => sendFailure(err, res, Db.getSqlError));
 });
-app.get('/all-interests', (req, res) => {
+app.get("/all-interests", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
-    Db.getTable('Interests', 'ASC', 'id')
+    Db.getTable("Interests", "ASC", "id")
         .then((data) => sendSuccess(data, res))
         .catch((err) => sendFailure(err, res, Db.getSqlError));
 });
-app.get('/get-person/:first/:last', (req, res) => {
+app.get("/get-person/:first/:last", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     const firstName = req.params.first;
     const lastName = req.params.last;
-    Db.getPerson('Attendants', firstName, lastName)
+    Db.getPerson("Attendants", firstName, lastName)
         .then((data) => sendSuccess(data, res))
         .catch((err) => sendFailure(err, res, Db.getSqlError));
 });
-app.post('/add-attendant', (req, res) => {
+app.post("/get-family", (req, res) => {
+    const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
+    const visitorAndSpouseName = [
+        { firstName: req.body.visitorName.firstName, lastName: req.body.visitorName.lastName },
+        { firstName: req.body.spouseName.firstName, lastName: req.body.spouseName.lastName }
+    ];
+    const childNames = req.body.children.map((x, y) => {
+        let currentName = {
+            firstName: x.firstName,
+            lastName: x.lastName,
+        };
+        return currentName;
+    });
+    let finalArrayOfName = [];
+    let finalArray = finalArrayOfName.concat(visitorAndSpouseName).concat(childNames);
+    Db.selectByNames("Attendants", finalArray)
+        .then((data) => sendSuccess(data, res))
+        .catch((err) => sendFailure(err, res, Db.getSqlError));
+});
+app.post("/add-attendant", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     const attendantColumns = "firstName, lastName, memberType, age";
-    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, 'visitor', 'adult'];
-    const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, 'visitor', 'adult'];
+    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, "visitor", "adult"];
+    const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, "visitor", "adult"];
     const children = req.body.children;
     const firstChildName = children.firstName;
     const childFirstName = req.body.children[0].firstName;
     const spouseFirstName = req.body.spouseName.firstName;
     //Full family
     if (childFirstName.length > 0 && spouseFirstName.length > 0) {
-        Promise.all([Db.insertNoEnd('Attendants', attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants('Attendants', attendantColumns, req.body.children), Db.insertUniqueAttendant('Attendants', attendantColumns, spouseValues)])
+        Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, req.body.children), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
             .then((data) => {
             res.send({
-                "message": "Success",
-                "data": data
+                message: "Success",
+                data: data,
             });
-            console.log('This worked', data);
+            console.log("This worked", data);
         })
             .catch((err) => {
             res.send({
-                "message": "Failure",
-                "error": err !== 'undefined' ? Db.getSqlError(err) : err.response
+                message: "Failure",
+                error: err !== "undefined" ? Db.getSqlError(err) : err.response,
             });
-            console.log('ERROR Inserting', err);
+            console.log("ERROR Inserting", err);
         });
         //Single parent family
     }
     else if (childFirstName.length > 0 && spouseFirstName.length === 0) {
-        Promise.all([Db.insertNoEnd('Attendants', attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants('Attendants', attendantColumns, req.body.children), Db.insertUniqueAttendant('Attendants', attendantColumns, spouseValues)])
+        Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, req.body.children), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
             .then((data) => {
             res.send({
-                "message": "Success",
-                "data": data
+                message: "Success",
+                data: data,
             });
-            console.log('This worked', data);
+            console.log("This worked", data);
         })
             .catch((err) => {
             res.send({
-                "message": "Failure",
-                "error": err !== 'undefined' ? Db.getSqlError(err) : err.response
+                message: "Failure",
+                error: err !== "undefined" ? Db.getSqlError(err) : err.response,
             });
-            console.log('ERROR Inserting', err);
+            console.log("ERROR Inserting", err);
         });
         //Family with no children
     }
     else if (childFirstName.length === 0 && spouseFirstName.length > 0) {
-        Db.addMultipleAdultAttendants('Attendants', attendantColumns, [req.body.visitorName, req.body.spouseName])
+        Db.addMultipleAdultAttendants("Attendants", attendantColumns, [req.body.visitorName, req.body.spouseName])
             .then((data) => sendSuccess(data, res))
             .catch((err) => sendFailure(err, res, Db.getSqlError));
         //Single individual
     }
     else {
-        Db.insert('Attendants', attendantColumns, attendantValues)
+        Db.insert("Attendants", attendantColumns, attendantValues)
             .then((data) => sendSuccess(data, res))
             .catch((err) => sendFailure(err, res, Db.getSqlError));
     }
 });
-app.post('/add-multiple-adults', (req, res) => {
+app.post("/add-multiple-adults", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     const attendantColumns = "firstName, lastName, memberType, age";
     const attendantNames = [req.body.visitorName, req.body.spouseName];
-    Db.addMultipleAdultAttendants('Attendants', attendantColumns, attendantNames)
+    Db.addMultipleAdultAttendants("Attendants", attendantColumns, attendantNames)
         .then((data) => sendSuccess(data, res))
         .catch((err) => sendFailure(err, res, Db.getSqlError));
 });
-app.post('/add-visitor-to-all', (req, res) => {
+app.post("/add-visitor-to-all", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     const attendantData = req.body.attendantData;
     const attendanceGroupTable = process.env.GENERAL_ATTENDANCE;
@@ -148,30 +167,36 @@ app.post('/add-visitor-to-all', (req, res) => {
         phone: visitorData.phone,
         email: visitorData.email,
         contact_method: visitorData.contactMethod,
-        prayer_requests: visitorData.prayerRequest
+        prayer_requests: visitorData.prayerRequest,
     };
-    const visitorTableColumns = Object.keys(visitorColumnValues).join(', ');
+    const visitorTableColumns = Object.keys(visitorColumnValues).join(", ");
     const visitorValues = Object.values(visitorColumnValues);
     const interestTable = process.env.INTERESTS_TABLE;
     const interestColumns = "visitor_id, interest";
     const interests = visitorData.interests;
     //Set up the email notification
     // const emailList = ['banksjazz87@gmail.com', 'whitneymatthews05@gmail.com'];
-    const emailList = ['banksjazz87@gmail.com'];
-    const interestsString = interests.join(', ');
+    const emailList = ["banksjazz87@gmail.com"];
+    const interestsString = interests.join(", ");
     const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
-    Promise.all([Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues), Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues), Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests), Db.endDb(), Email.sendMail()])
+    Promise.all([
+        Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues),
+        Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+        Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests),
+        Db.endDb(),
+        Email.sendMail(),
+    ])
         .then((data) => {
         res.send({
-            "message": "Success",
-            "data": data
+            message: "Success",
+            data: data,
         });
     })
         .catch((err) => {
         res.send({
-            "message": "Failure",
-            "error": err !== 'undefined' ? Db.getSqlError(err) : err.response
+            message: "Failure",
+            error: err !== "undefined" ? Db.getSqlError(err) : err.response,
         });
-        console.log('OH NOOOOO', err);
+        console.log("OH NOOOOO", err);
     });
 });

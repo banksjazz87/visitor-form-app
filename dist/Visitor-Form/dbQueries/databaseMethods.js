@@ -401,5 +401,21 @@ class DBMethods {
             });
         });
     }
+    selectByNames(tableName, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const whereQuery = values.map((x, y) => {
+                let currentStr = `(firstName = "${x.firstName}" AND lastName = "${x.lastName}") OR `;
+                return currentStr;
+            });
+            const stringOfWhere = whereQuery.join('').slice(0, -4);
+            const neededSql = `SELECT * FROM  ${tableName} WHERE ${stringOfWhere}`;
+            console.log('SQL here', neededSql);
+            database.query(neededSql, (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+            this.endDb();
+        });
+    }
 }
 exports.DBMethods = DBMethods;
