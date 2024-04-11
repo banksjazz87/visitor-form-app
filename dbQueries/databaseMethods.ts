@@ -509,19 +509,18 @@ export class DBMethods {
   }
 
 
-  addMultipleVisitorsNoEnd(tableName: string, values: AttendantData[]): Promise<string[]> {
+  insertMultipleVisitorsNoEnd(tableName: string, values: AttendantData[]): Promise<string[]> {
     return new Promise<string[]>((resolve, reject): void => {
       const database = this.dbConnection;
 
       const valuesList: string[] = values.map((x: AttendantData, y: Number): string => {
-        let currentString = `(${x.id}, "${x.firstName}", "${x.lastName}", "${x.age}", "${x.memberType}", "${x.active}), "`;
-
+        let currentString = `(${x.id}, "${x.firstName}", "${x.lastName}", "${x.age}", "${x.memberType}")`;
         return currentString;
       });
 
-      const finalValues = valuesList.toString().slice(0, -2);
+      const finalValues = valuesList.toString();
 
-      const sql = `INSERT INTO ${tableName} (id, firstName, lastName, age, memberType, active) VALUES ${finalValues}`;
+      const sql = `INSERT INTO ${tableName} (id, firstName, lastName, age, memberType) VALUES ${finalValues}`;
 
       database.query(sql, (err: string[], results: string[]): void => {
         err ? reject(err) : resolve(results);

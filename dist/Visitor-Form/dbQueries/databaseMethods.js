@@ -344,6 +344,7 @@ class DBMethods {
             this.endDb();
         });
     }
+    //This used in adding new values to the list of interests for the Visitor Data
     addMultipleValuesNoEnd(tableName, columns, id, values) {
         return new Promise((resolve, reject) => {
             const database = this.dbConnection;
@@ -415,6 +416,20 @@ class DBMethods {
                 err ? reject(err) : resolve(results);
             });
             this.endDb();
+        });
+    }
+    insertMultipleVisitorsNoEnd(tableName, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const valuesList = values.map((x, y) => {
+                let currentString = `(${x.id}, "${x.firstName}", "${x.lastName}", "${x.age}", "${x.memberType}")`;
+                return currentString;
+            });
+            const finalValues = valuesList.toString();
+            const sql = `INSERT INTO ${tableName} (id, firstName, lastName, age, memberType) VALUES ${finalValues}`;
+            database.query(sql, (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
         });
     }
 }

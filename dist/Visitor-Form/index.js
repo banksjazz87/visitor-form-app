@@ -153,7 +153,12 @@ app.post("/add-visitor-to-all", (req, res) => {
     const attendantData = req.body.attendantData;
     const attendanceGroupTable = process.env.GENERAL_ATTENDANCE;
     const groupTableColumns = "id, firstName, lastName, age, memberType";
-    const groupTableValues = [attendantData.id, attendantData.firstName, attendantData.lastName, attendantData.age, attendantData.memberType];
+    //Get Primary Data and spouse data values
+    const primaryValues = [attendantData.primary];
+    const spouseValues = [attendantData.spouse];
+    //Get Children Data
+    const children = attendantData.children;
+    const familyData = primaryValues.concat(spouseValues).concat(children);
     const visitorTable = process.env.VISITOR_TABLE;
     const visitorData = req.body.visitorData;
     const visitorColumnValues = {
@@ -180,9 +185,11 @@ app.post("/add-visitor-to-all", (req, res) => {
     const interestsString = interests.join(", ");
     const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
     Promise.all([
-        Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues),
+        // Db.insertNoEnd(attendanceGroupTable, groupTableColumns, primaryValues),
+        // Db.insertNoEnd(attendanceGroupTable, groupTableColumns, spouseValues),
+        Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
         Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
-        Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests),
+        Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
         Db.endDb(),
         Email.sendMail(),
     ])

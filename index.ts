@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { DBMethods } from "./dbQueries/databaseMethods";
 import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfaces";
-import { ChildData, Name } from "./my-app/src/interfaces";
+import { ChildData, Name, AttendantData } from "./my-app/src/interfaces";
 import { MysqlError } from "mysql";
 import { Mailer } from "./modules/Mailer";
 
@@ -182,7 +182,16 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const attendantData = req.body.attendantData;
 	const attendanceGroupTable = process.env.GENERAL_ATTENDANCE as string;
 	const groupTableColumns = "id, firstName, lastName, age, memberType";
-	const groupTableValues = [attendantData.id, attendantData.firstName, attendantData.lastName, attendantData.age, attendantData.memberType];
+	
+    
+    //Get Primary Data and spouse data values
+    const primaryValues: AttendantData[] = [attendantData.primary];
+    const spouseValues: AttendantData[] = [attendantData.spouse];
+   
+    //Get Children Data
+    const children: AttendantData[] = attendantData.children;
+	const familyData: AttendantData[] = primaryValues.concat(spouseValues).concat(children);
+	
 
 	const visitorTable = process.env.VISITOR_TABLE as string;
 	const visitorData = req.body.visitorData;
@@ -213,9 +222,11 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
 
 	Promise.all([
-		Db.insertNoEnd(attendanceGroupTable, groupTableColumns, groupTableValues),
+		// Db.insertNoEnd(attendanceGroupTable, groupTableColumns, primaryValues),
+        // Db.insertNoEnd(attendanceGroupTable, groupTableColumns, spouseValues),
+		Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
 		Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
-		Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.id, interests),
+		Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
 		Db.endDb(),
 		Email.sendMail(),
 	])
