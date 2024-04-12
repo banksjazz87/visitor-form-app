@@ -196,7 +196,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const visitorTable = process.env.VISITOR_TABLE as string;
 	const visitorData = req.body.visitorData;
 	const visitorColumnValues: VisitorDataPoints = {
-		id: attendantData.id,
+		id: attendantData.primary.id,
 		firstName: visitorData.visitorName.firstName,
 		lastName: visitorData.visitorName.lastName,
 		title: visitorData.title,
@@ -215,6 +215,20 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const interestColumns = "visitor_id, interest";
 	const interests = visitorData.interests;
 
+	const spouseTableColumns = 'visitorSpouseId, id, firstName, lastName';
+	const spouseTableValues = [primaryValues[0].id, spouseValues[0].id, spouseValues[0].firstName, spouseValues[0].lastName];
+
+	const childrenTableColumns = 'parentId, id, firstName, lastName';
+	const childrenTableValues: Object[] = children.map((x: AttendantData, y: number): Object => {
+		let currentObj = {
+			parentId: primaryValues[0], 
+			id: x.id, 
+			firstName: x.firstName,
+			lastName: x.lastName
+		};
+		return currentObj;
+	});
+
 	//Set up the email notification
 	// const emailList = ['banksjazz87@gmail.com', 'whitneymatthews05@gmail.com'];
 	const emailList = ["banksjazz87@gmail.com"];
@@ -222,15 +236,14 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
 
 	Promise.all([
-		// Db.insertNoEnd(attendanceGroupTable, groupTableColumns, primaryValues),
-        // Db.insertNoEnd(attendanceGroupTable, groupTableColumns, spouseValues),
 		Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
 		Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+		Db.insertNoEnd('Visitor_Spouse', spouseTableColumns, spouseTableValues),
 		Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
-		Db.endDb(),
+		Db.addBulkSelectApplicants('Visitor_Children', childrenTableColumns, childrenTableValues),
 		Email.sendMail(),
 	])
-		.then((data: [string[], string[], string[], void, void]): void => {
+		.then((data: [string[], string[], string[], string[], string[], void]): void => {
 			res.send({
 				message: "Success",
 				data: data,

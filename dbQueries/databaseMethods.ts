@@ -90,7 +90,7 @@ export class DBMethods {
     });
   }
 
-  insertNoEnd(table: string, columns: string, values: string[]): Promise<string[]> {
+  insertNoEnd(table: string, columns: string, values: any[]): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       const database = this.dbConnection;
       let sql = `INSERT INTO ${table} (${columns}) VALUES (?);`;
@@ -528,6 +528,8 @@ export class DBMethods {
 
     });
   }
+
+
 
   
 }

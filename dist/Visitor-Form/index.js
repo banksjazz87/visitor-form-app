@@ -179,18 +179,29 @@ app.post("/add-visitor-to-all", (req, res) => {
     const interestTable = process.env.INTERESTS_TABLE;
     const interestColumns = "visitor_id, interest";
     const interests = visitorData.interests;
+    const spouseTableColumns = 'visitorSpouseId, id, firstName, lastName';
+    const spouseTableValues = [primaryValues[0].id, spouseValues[0].id, spouseValues[0].firstName, spouseValues[0].lastName];
+    const childrenTableColumns = 'parentId, id, firstName, lastName';
+    const childrenTableValues = children.map((x, y) => {
+        let currentObj = {
+            parentId: primaryValues[0],
+            id: x.id,
+            firstName: x.firstName,
+            lastName: x.lastName
+        };
+        return currentObj;
+    });
     //Set up the email notification
     // const emailList = ['banksjazz87@gmail.com', 'whitneymatthews05@gmail.com'];
     const emailList = ["banksjazz87@gmail.com"];
     const interestsString = interests.join(", ");
     const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
     Promise.all([
-        // Db.insertNoEnd(attendanceGroupTable, groupTableColumns, primaryValues),
-        // Db.insertNoEnd(attendanceGroupTable, groupTableColumns, spouseValues),
         Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
         Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+        Db.insertNoEnd('Visitor_Spouse', spouseTableColumns, spouseTableValues),
         Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
-        Db.endDb(),
+        Db.addBulkSelectApplicants('Visitor_Children', childrenTableColumns, childrenTableValues),
         Email.sendMail(),
     ])
         .then((data) => {
