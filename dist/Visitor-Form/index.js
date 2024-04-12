@@ -162,7 +162,7 @@ app.post("/add-visitor-to-all", (req, res) => {
     const visitorTable = process.env.VISITOR_TABLE;
     const visitorData = req.body.visitorData;
     const visitorColumnValues = {
-        id: attendantData.id,
+        id: attendantData.primary.id,
         firstName: visitorData.visitorName.firstName,
         lastName: visitorData.visitorName.lastName,
         title: visitorData.title,
@@ -177,14 +177,14 @@ app.post("/add-visitor-to-all", (req, res) => {
     const visitorTableColumns = Object.keys(visitorColumnValues).join(", ");
     const visitorValues = Object.values(visitorColumnValues);
     const interestTable = process.env.INTERESTS_TABLE;
-    const interestColumns = "visitor_id, interest";
+    const interestColumns = "visitor_attendant_id, interest";
     const interests = visitorData.interests;
     const spouseTableColumns = 'visitorSpouseId, id, firstName, lastName';
     const spouseTableValues = [primaryValues[0].id, spouseValues[0].id, spouseValues[0].firstName, spouseValues[0].lastName];
     const childrenTableColumns = 'parentId, id, firstName, lastName';
     const childrenTableValues = children.map((x, y) => {
         let currentObj = {
-            parentId: primaryValues[0],
+            parentId: primaryValues[0].id,
             id: x.id,
             firstName: x.firstName,
             lastName: x.lastName

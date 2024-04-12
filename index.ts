@@ -212,7 +212,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const visitorValues = Object.values(visitorColumnValues);
 
 	const interestTable = process.env.INTERESTS_TABLE as string;
-	const interestColumns = "visitor_id, interest";
+	const interestColumns = "visitor_attendant_id, interest";
 	const interests = visitorData.interests;
 
 	const spouseTableColumns = 'visitorSpouseId, id, firstName, lastName';
@@ -221,7 +221,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const childrenTableColumns = 'parentId, id, firstName, lastName';
 	const childrenTableValues: Object[] = children.map((x: AttendantData, y: number): Object => {
 		let currentObj = {
-			parentId: primaryValues[0], 
+			parentId: primaryValues[0].id, 
 			id: x.id, 
 			firstName: x.firstName,
 			lastName: x.lastName
