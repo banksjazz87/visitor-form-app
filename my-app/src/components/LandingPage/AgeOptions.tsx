@@ -19,16 +19,16 @@ export default function AgeOptions({index, changeHandler, buttonGroupName}: AgeO
             >
             <label 
                 className="text-xl" 
-                htmlFor={`x_${index}`}
+                htmlFor={`${x}_${index}`}
             >
                 {x}
             </label>
             <input 
-                id={`x_${index}`} 
+                id={`${x}_${index}`} 
                 type="radio"
                 name={buttonGroupName} 
                 value={x.toLowerCase()} 
-                onChange={(event) => changeHandler(event, y)}
+                onChange={(event) => changeHandler(event, index)}
                 className="border border-slate-700 rounded-sm focus:border-fuchsia-800"></input>
         </div>
         )

@@ -76,11 +76,13 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	const childAgeChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
 		let copyOfChildArray = visitorDetails.children.slice();
 		copyOfChildArray[index]["age"] = e.target.value as string;
+		console.log(copyOfChildArray[index]);
 
 		setVisitorDetails({
 			...visitorDetails,
 			children: copyOfChildArray,
 		});
+		// console.log(visitorDetails);
 	};
 
 	//Change handler for the child's name.
@@ -256,6 +258,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		}
 	};
 
+	//Add the children fields to the object that is being constructed.
 	const getFinalNeededData = (obj: NeededFamilyData): NeededFamilyData => {
 		const children = obj.children;
 		const firstChild = obj.children[0];
@@ -270,6 +273,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		}
 	};
 
+	//Construct needed family data to be passed as the final attendantData field in the allVisitorData object.
 	const constructNeededFamilyData = (data: APIResponse<AttendantData>): NeededFamilyData => {
 		let neededData: NeededFamilyData = {
 			primary: {
@@ -300,6 +304,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 			],
 		};
 
+		//Loop over returned values from the get family call and apply the database values to the needed data object, by checking for matches based on first name.
 		for (let i = 0; i < data.data.length; i++) {
 			if (data.data[i].firstName === visitorDetails.spouseName.firstName) {
 				neededData.spouse = data.data[i];
@@ -309,7 +314,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 				neededData.children.push(data.data[i]);
 			}
 		}
-
 		return getFinalNeededData(neededData);
 	};
 
@@ -383,6 +387,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		} else {
 			submitForm();
 		}
+
 	};
 
 	if (show) {
