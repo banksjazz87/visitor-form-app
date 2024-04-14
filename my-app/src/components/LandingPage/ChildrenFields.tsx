@@ -18,7 +18,7 @@ export default function ChildrenFields({count, names, nameHandler, ageHandler}: 
 
             <div 
                 key={`child_${y}_fields`}
-                className="flex flex-col">
+                className="flex flex-col mt-2 px-2">
                 <div 
                     className="grid grid-cols-1 md:flex md:flex-row md:flex-wrap gap-2 md:justify-start"
                     key={`child_${y + 1}`}

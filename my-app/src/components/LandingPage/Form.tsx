@@ -494,7 +494,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						clickHandler={buttonGroupClickHandler}
 					/>
 
-					<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-2">
+					<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-1">
 						<p className="text-xl font-medium text-center">Prayer Request</p>
 						<p className="text-xl font-thin text-center">
 							We will be glad to join you in praying for your specific needs.

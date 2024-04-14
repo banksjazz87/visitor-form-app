@@ -21,7 +21,7 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                     className={vertical ? 'flex flex-col gap-2 w-full': 'flex flex-row items-center first:ml-0 first:mr-0 md:ml-5 md:mr-5 gap-2 ml-0 mr-0' }
                    
                 >
-                    <label className="text-xl" htmlFor={x.id}>{x.label}</label>
+                    <label className="text-xl font-thin" htmlFor={x.id}>{x.label}</label>
                     <input 
                         id={x.id} type={x.type} 
                         placeholder={x.placeHolder} name={x.name} 
@@ -55,8 +55,8 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
     }
 
     return (
-       <div className="fields_wrapper flex flex-col gap-x-2 mt-8 gap-y-2">
-            <p className="text-xl font-medium text-left mb-2">
+       <div className="fields_wrapper flex flex-col gap-x-2 mt-8 gap-y-1">
+            <p className="text-xl font-medium text-left mb-1">
                 {title}
                 <span className={required ? "inline text-fuchsia-800 text-xl font-medium ml-1" : "hidden"}>*</span>
             </p>

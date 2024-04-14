@@ -25,7 +25,7 @@
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Children ({{visitor.children.length}})</strong></td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'> 
                         {{#each visitor.children}}
-                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">- {{this.firstName}} {{this.lastName}} - <strong>{{this.age}}</strong></p>
+                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">- {{this.firstName}} {{this.lastName}} (<em>{{this.age}})</em></p>
                         {{/each}}
                     </td>
                 </tr>
@@ -52,7 +52,13 @@
 
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Interests</strong></td>
-                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{interests}}</td>
+                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>
+                        {{#each visitor.interests}}
+                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">
+                                - {{this}}
+                            </p>
+                        {{/each}}
+                    </td>
                 </tr>
 
                 <tr style='height: 40px;'>

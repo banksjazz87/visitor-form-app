@@ -14,11 +14,11 @@ export default function AgeOptions({index, changeHandler, buttonGroupName}: AgeO
         return (
             <div 
             key={`age_${y}`} 
-            className="flex flex-row items-center first:ml-0 first:mr-0 md:ml-5 md:mr-5 gap-2 ml-0 mr-0"
+            className="flex flex-row items-center first:ml-0 first:mr-0 md:ml-3 gap-2 ml-0 mr-0"
            
             >
             <label 
-                className="text-xl" 
+                className="text-xl font-thin" 
                 htmlFor={`${x}_${index}`}
             >
                 {x}
@@ -35,11 +35,11 @@ export default function AgeOptions({index, changeHandler, buttonGroupName}: AgeO
     });
 
     return (
-        <div className="fields_wrapper flex flex-row align-middle items-center gap-x-2 mt-4 gap-y-2">
-        <p className="text-xl font-medium text-left mr-4">
+        <div className="fields_wrapper flex flex-row align-middle items-center gap-x-2 mt-4 gap-y-1 px-2">
+        <p className="text-xl font-medium text-left mr-2">
             Age:
         </p>
-        <div className="grid grid-cols-1 md:flex md:flex-row md:flex-wrap gap-2 md:justify-start">
+        <div className="grid grid-cols-1 md:flex md:flex-row md:flex-wrap gap-0 md:justify-start">
             {ageFields}
         </div>
    </div>
