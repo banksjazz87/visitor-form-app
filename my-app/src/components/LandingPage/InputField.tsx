@@ -18,7 +18,7 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                 return (
                 <div 
                     key={`${x.visitorKey}_${y}`} 
-                    className={vertical ? 'flex flex-col gap-2 w-full': 'flex flex-row items-center first:ml-0 first:mr-0 md:ml-5 md:mr-5 gap-2 ml-0 mr-0' }
+                    className={vertical ? 'flex flex-col gap-2 w-full': 'flex flex-row items-center first:ml-0 first:mr-0 md:ml-3 gap-2 ml-0 mr-0' }
                    
                 >
                     <label className="text-xl font-thin" htmlFor={x.id}>{x.label}</label>

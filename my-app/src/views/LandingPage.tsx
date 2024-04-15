@@ -10,7 +10,7 @@ export default function LandingPage() {
     const [loadingForm, setLoadingForm] = useState<boolean>(false);
 
     const hideForm = ():void => {
-        setDisplayForm(false);
+        setDisplayForm(true);
     }
 
     return (
