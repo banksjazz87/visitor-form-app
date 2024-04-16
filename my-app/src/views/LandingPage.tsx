@@ -31,8 +31,6 @@ export default function LandingPage() {
             <LoadingBar 
                 loading={loadingForm}
             />
-
-
         </div>
     )
 }

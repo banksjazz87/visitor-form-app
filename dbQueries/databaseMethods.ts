@@ -1,6 +1,7 @@
 import mysql from "mysql";
 import { SQLResponse } from "../interfaces/interfaces.ts";
 import { DBAttendee } from "../../attendanceApplication/interfaces/interfaces.ts";
+import {Name, ChildData, AttendantData} from "../my-app/src/interfaces.ts";
 
 export class DBMethods {
   hostName: any;
@@ -89,7 +90,7 @@ export class DBMethods {
     });
   }
 
-  insertNoEnd(table: string, columns: string, values: string[]): Promise<string[]> {
+  insertNoEnd(table: string, columns: string, values: any[]): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       const database = this.dbConnection;
       let sql = `INSERT INTO ${table} (${columns}) VALUES (?);`;
@@ -254,12 +255,6 @@ export class DBMethods {
     });
   }
 
-
-
-
-
-
-
   addBulkSelectApplicants(table: string, columns: string, obj: Object[]): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       const database = this.dbConnection;
@@ -350,6 +345,8 @@ export class DBMethods {
     });
   }
 
+
+  //Update the total count table.
   updateTotalTable(currentTable: string, group: string, children: number, youth: number, adults: number, members: number, visitors: number): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       const database = this.dbConnection;
@@ -363,6 +360,7 @@ export class DBMethods {
     });
   }
 
+  //Returns the monthly statistics for a particular group, month and year.
   getMonthStatistics(groupName: string, monthName: string, yearDate: string): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       const database = this.dbConnection;
@@ -411,11 +409,13 @@ export class DBMethods {
     });
   }
 
+
+  //This used in adding new values to the list of interests for the Visitor Data
   addMultipleValuesNoEnd(tableName: string, columns: string, id: number, values: string[]): Promise <string[]> {
     return new Promise<string[]>((resolve, reject): void => {
       const database = this.dbConnection;
 
-      const allValues = values.map((x: string, y: number) => {
+      const allValues = values.map((x: string, y: number): string => {
         let current = `(${id}, "${x}"), `;
         return current;
       });
@@ -431,4 +431,105 @@ export class DBMethods {
     });
   }
 
+  addMultipleAdultAttendants(tableName: string, columns: string, values: Name[]): Promise <string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const allValues = values.map((x: Name, y: number) => {
+        let current = `("${x.firstName}", "${x.lastName}", "visitor", "adult"), `; 
+        return current;
+      });
+
+      let allValuesString = allValues.join('');
+      let finalValues = allValuesString.slice(0, -2);
+
+      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
+
+      database.query(neededSql, (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+      this.endDb();
+    });
+  }
+
+  insertUniqueAttendant(tableName: string, columns: string, values: string[]): Promise <string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES (?) ON DUPLICATE KEY UPDATE firstName = firstName`;
+
+      database.query(neededSql, [values], (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+      this.endDb();
+    });
+  }
+
+  addMultipleNonAdultAttendants(tableName: string, columns: string, values: ChildData[]): Promise <string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const allValues = values.map((x: ChildData, y: number) => {
+        let current = `("${x.firstName}", "${x.lastName}", "visitor", "${x.age}"), `; 
+        return current;
+      });
+
+      let allValuesString = allValues.join('');
+      let finalValues = allValuesString.slice(0, -2);
+
+      const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
+
+      console.log('SQL here', neededSql);
+
+      database.query(neededSql, (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+    });
+  }
+
+  selectByNames(tableName: string, values: Name[]): Promise <string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const whereQuery = values.map((x: Name, y: Number): string => {
+        let currentStr = `(firstName = "${x.firstName}" AND lastName = "${x.lastName}") OR `;
+        return currentStr;
+      });
+
+      const stringOfWhere = whereQuery.join('').slice(0, -4);
+      const neededSql = `SELECT * FROM  ${tableName} WHERE ${stringOfWhere}`;
+
+      console.log('SQL here', neededSql);
+
+      database.query(neededSql, (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+      this.endDb();
+    });
+  }
+
+
+  insertMultipleVisitorsNoEnd(tableName: string, values: AttendantData[]): Promise<string[]> {
+    return new Promise<string[]>((resolve, reject): void => {
+      const database = this.dbConnection;
+
+      const valuesList: string[] = values.map((x: AttendantData, y: Number): string => {
+        let currentString = `(${x.id}, "${x.firstName}", "${x.lastName}", "${x.age}", "${x.memberType}")`;
+        return currentString;
+      });
+
+      const finalValues = valuesList.toString();
+
+      const sql = `INSERT INTO ${tableName} (id, firstName, lastName, age, memberType) VALUES ${finalValues}`;
+
+      database.query(sql, (err: string[], results: string[]): void => {
+        err ? reject(err) : resolve(results);
+      });
+
+    });
+  }
+
+
+
+  
 }

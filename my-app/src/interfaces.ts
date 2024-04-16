@@ -3,6 +3,10 @@ export interface Name {
     lastName: string;
 }
 
+export interface ChildData extends Name {
+    age: string;
+}
+
 export interface Visitor {
     title: string;
     visitorName: Name;
@@ -14,6 +18,8 @@ export interface Visitor {
     contactMethod: string;
     interests: string[];
     prayerRequest: string;
+    spouseName: Name;
+    children: ChildData[];
 }
 
 export interface FormFields {
@@ -61,9 +67,15 @@ export interface AttendantData {
 	active: number;
 }
 
+export interface NeededFamilyData {
+	primary: AttendantData;
+	spouse: AttendantData;
+	children: AttendantData[];
+}
+
 export interface AllVisitorData {
 	visitorData: Visitor;
-	attendantData: AttendantData;
+	attendantData: NeededFamilyData;
 }
 
 export interface Validate {

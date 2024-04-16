@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate } from "../../interfaces.ts";
+import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, Name, NeededFamilyData } from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
 import postCall from "../../lib/methods/API/postCall.ts";
-import FormConstructor from "../../lib/FormConstructor.ts";
+import FormConstructor from "../../lib/form/FormConstructor.ts";
 import InputField from "./InputField.tsx";
 import ButtonGroup from "./ButtonGroup.tsx";
 import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
 import FormChecker from "../../lib/form/FormChecker.ts";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
 
 interface FormProps {
 	show: boolean;
@@ -15,6 +18,7 @@ interface FormProps {
 	startLoading: Function;
 	stopLoading: Function;
 }
+
 
 export default function Form({ show, showHandler, startLoading, stopLoading }: FormProps) {
 	const initForm = new SetupForm();
@@ -26,6 +30,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	const [validateMessage, setShowValidateMessage] = useState<Validate>({
 		contact: false,
 	});
+	const [childCount, setChildCount] = useState<number>(0);
 
 	useEffect(() => {
 		initForm.getStateData().then((data) => {
@@ -57,10 +62,45 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	//Change handler for the name field.
 	const nameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey = key as keyof Visitor;
+
 		setVisitorDetails({
 			...visitorDetails,
 			visitorName: {
 				...visitorDetails.visitorName,
+				[currentKey]: (e.target as HTMLInputElement).value.trim(),
+			},
+		});
+	};
+
+	//Change handler for the child age.
+	const childAgeChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
+		let copyOfChildArray = visitorDetails.children.slice();
+		copyOfChildArray[index]["age"] = e.target.value as string;
+
+		setVisitorDetails({
+			...visitorDetails,
+			children: copyOfChildArray,
+		});
+	};
+
+	//Change handler for the child's name.
+	const childNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number, nameType: "firstName" | "lastName"): void => {
+		let copyOfChildArray = visitorDetails.children.slice();
+		copyOfChildArray[index][nameType] = (e.target as HTMLInputElement).value.trim();
+
+		setVisitorDetails({
+			...visitorDetails,
+			children: copyOfChildArray,
+		});
+	};
+
+	//Change handler for the spouse name field.
+	const spouseNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+		let currentKey = key as keyof Visitor;
+		setVisitorDetails({
+			...visitorDetails,
+			spouseName: {
+				...visitorDetails.spouseName,
 				[currentKey]: (e.target as HTMLInputElement).value.trim(),
 			},
 		});
@@ -188,6 +228,92 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		}
 	};
 
+	const childCountIncrement = (e: React.MouseEvent<HTMLButtonElement>): void => {
+		setChildCount(childCount + 1);
+
+		if (childCount !== 0) {
+			const currentChildList = visitorDetails.children.slice();
+			const newObj = [
+				{
+					firstName: "",
+					lastName: "",
+					age: "",
+				},
+			];
+			const newArray = currentChildList.concat(newObj);
+			setVisitorDetails({ ...visitorDetails, children: newArray });
+		}
+	};
+
+	const childCountDecrement = (e: React.MouseEvent<HTMLButtonElement>): void => {
+		if (childCount !== 0) {
+			setChildCount(childCount - 1);
+
+			if (visitorDetails.children.length > 1) {
+				const newList = visitorDetails.children.slice(0, -1);
+				setVisitorDetails({ ...visitorDetails, children: newList });
+			}
+		}
+	};
+
+	//Add the children fields to the object that is being constructed.
+	const getFinalNeededData = (obj: NeededFamilyData): NeededFamilyData => {
+		const children = obj.children;
+		const firstChild = obj.children[0];
+
+		if (children.length > 1 && firstChild.id === -1) {
+			children.splice(0, 1);
+			obj.children = children;
+
+			return obj;
+		} else {
+			return obj;
+		}
+	};
+
+	//Construct needed family data to be passed as the final attendantData field in the allVisitorData object.
+	const constructNeededFamilyData = (data: APIResponse<AttendantData>): NeededFamilyData => {
+		let neededData: NeededFamilyData = {
+			primary: {
+				id: -1,
+				firstName: "",
+				lastName: "",
+				age: "",
+				memberType: "",
+				active: 1,
+			},
+			spouse: {
+				id: -1,
+				firstName: "",
+				lastName: "",
+				age: "",
+				memberType: "",
+				active: 1,
+			},
+			children: [
+				{
+					id: -1,
+					firstName: "",
+					lastName: "",
+					age: "",
+					memberType: "",
+					active: 1,
+				},
+			],
+		};
+
+		//Loop over returned values from the get family call and apply the database values to the needed data object, by checking for matches based on first name.
+		for (let i = 0; i < data.data.length; i++) {
+			if (data.data[i].firstName === visitorDetails.spouseName.firstName) {
+				neededData.spouse = data.data[i];
+			} else if (data.data[i].firstName === visitorDetails.visitorName.firstName) {
+				neededData.primary = data.data[i];
+			} else {
+				neededData.children.push(data.data[i]);
+			}
+		}
+		return getFinalNeededData(neededData);
+	};
 
 	/**
 	 * @returns void
@@ -202,23 +328,15 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 				//Add the user only if they don't already exist.
 				postCall("/add-attendant", visitorDetails).then((data: APIResponse<Visitor>): void => {
 					if (data.message === "Success") {
-						//Get the records for the newly created user.
-						getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
+						//Get the records for the newly created users.
+						postCall("/get-family", visitorDetails).then((data: APIResponse<AttendantData> | undefined): void => {
 							if (typeof data !== "undefined" && data.data.length > 0) {
-								//Get the values needed and put them in an object.
-								const neededAttendantData = {
-									id: data.data[0].id,
-									firstName: data.data[0].firstName,
-									lastName: data.data[0].lastName,
-									age: "adult",
-									memberType: "visitor",
-									active: 1,
-								};
+								const finalData = constructNeededFamilyData(data);
 
 								//This is the object that will be sent over for the post.
 								const allVisitorData: AllVisitorData = {
 									visitorData: visitorDetails,
-									attendantData: neededAttendantData,
+									attendantData: finalData,
 								};
 
 								//Add visitor to all of the needed tables.
@@ -230,7 +348,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 										//This is called to hide all content with the exception of the thank you message.
 										stopLoading();
 										showHandler();
-										
+
 									} else {
 										stopLoading();
 										alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
@@ -267,6 +385,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		} else {
 			submitForm();
 		}
+
 	};
 
 	if (show) {
@@ -287,6 +406,41 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						title="Name"
 						changeHandler={nameChangeHandler}
 						vertical={false}
+						required={true}
+					/>
+
+					<InputField
+						dataArray={form.getSpouseNameFields()}
+						title="Spouse"
+						changeHandler={spouseNameChangeHandler}
+						vertical={false}
+						required={false}
+					/>
+
+					<div className="mt-8 flex flex-row gap-6 items-center pb-0">
+						<p className="text-xl font-medium text-left">Number of children</p>
+						<div className="flex flex-row gap-2">
+							<button
+								type="button"
+								onClick={childCountDecrement}
+							>
+								<FontAwesomeIcon icon={faMinus} />
+							</button>
+							<p className="text-xl font-medium">{childCount}</p>
+							<button
+								type="button"
+								onClick={childCountIncrement}
+							>
+								<FontAwesomeIcon icon={faPlus} />
+							</button>
+						</div>
+					</div>
+
+					<ChildrenFields
+						count={childCount}
+						names={visitorDetails.children}
+						nameHandler={childNameChangeHandler}
+						ageHandler={childAgeChangeHandler}
 					/>
 
 					<InputField
@@ -294,6 +448,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						title="Address"
 						changeHandler={inputChangeHandler}
 						vertical={false}
+						required={true}
 					/>
 
 					<SelectField
@@ -308,6 +463,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						changeHandler={inputChangeHandler}
 						vertical={false}
 						showValidMessage={validateMessage.contact}
+						required={true}
 					/>
 
 					<div className="grid sm:grid-cols-2">
@@ -316,6 +472,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							title="Title"
 							changeHandler={inputChangeHandler}
 							vertical={false}
+							required={true}
 						/>
 
 						<InputField
@@ -323,6 +480,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							title="Preferred Contact Method"
 							changeHandler={inputChangeHandler}
 							vertical={false}
+							required={true}
 						/>
 					</div>
 
@@ -334,7 +492,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						clickHandler={buttonGroupClickHandler}
 					/>
 
-					<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-2">
+					<div className="fields_wrapper flex flex-col justify-center justify-items-center gap-x-2 mt-12 mb-6 gap-y-1">
 						<p className="text-xl font-medium text-center">Prayer Request</p>
 						<p className="text-xl font-thin text-center">
 							We will be glad to join you in praying for your specific needs.

@@ -10,34 +10,62 @@
                 </tr>
             </thead>
             <tbody>
+
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Name</strong></td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.title}} {{visitor.visitorName.firstName}} {{visitor.visitorName.lastName}}</td>
                 </tr>
+
+                <tr style='height: 40px;'>
+                    <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Spouse</strong></td>
+                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.spouseName.firstName}} {{visitor.spouseName.lastName}}</td>
+                </tr>
+
+                <tr style='height: 40px;'>
+                    <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Children ({{visitor.children.length}})</strong></td>
+                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'> 
+                        {{#each visitor.children}}
+                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">- {{this.firstName}} {{this.lastName}} (<em>{{this.age}})</em></p>
+                        {{/each}}
+                    </td>
+                </tr>
+
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Address</strong></td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.address}} <br> {{visitor.city}}, {{visitor.state}}</td>
                 </tr>
+
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Phone</strong></td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'><a href="tel:{{visitor.phone}}" target="_blank" style="text-decoration: none; color: #86198f;">{{visitor.phone}}</a></td>
                 </tr>
+
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Email</strong></td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'><a href="mailto:{{visitor.email}}" target="blank" style="text-decoration: none; color: #86198f;">{{visitor.email}}</a></td>
                 </tr>
+
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Preferred Contact</strong></td>
-                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.contactMethod}}</td>
+                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px; text-transform: capitalize;'>{{visitor.contactMethod}}</td>
                 </tr>
+
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Interests</strong></td>
-                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{interests}}</td>
+                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>
+                        {{#each visitor.interests}}
+                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">
+                                - {{this}}
+                            </p>
+                        {{/each}}
+                    </td>
                 </tr>
+
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; font-size: 16px; padding: 20px 12px;'><strong>Prayer Requests</strong></td>
                     <td style='border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.prayerRequest}}</td>
                 </tr>
+
             </tbody>
             <tfoot>
                 <tr>

@@ -291,6 +291,7 @@ class DBMethods {
             this.endDb();
         });
     }
+    //Update the total count table.
     updateTotalTable(currentTable, group, children, youth, adults, members, visitors) {
         return new Promise((resolve, reject) => {
             const database = this.dbConnection;
@@ -302,6 +303,7 @@ class DBMethods {
             this.endDb();
         });
     }
+    //Returns the monthly statistics for a particular group, month and year.
     getMonthStatistics(groupName, monthName, yearDate) {
         return new Promise((resolve, reject) => {
             const database = this.dbConnection;
@@ -342,6 +344,7 @@ class DBMethods {
             this.endDb();
         });
     }
+    //This used in adding new values to the list of interests for the Visitor Data
     addMultipleValuesNoEnd(tableName, columns, id, values) {
         return new Promise((resolve, reject) => {
             const database = this.dbConnection;
@@ -353,6 +356,78 @@ class DBMethods {
             let finalValues = allValuesString.slice(0, -2);
             const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues}`;
             database.query(neededSql, (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+        });
+    }
+    addMultipleAdultAttendants(tableName, columns, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const allValues = values.map((x, y) => {
+                let current = `("${x.firstName}", "${x.lastName}", "visitor", "adult"), `;
+                return current;
+            });
+            let allValuesString = allValues.join('');
+            let finalValues = allValuesString.slice(0, -2);
+            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
+            database.query(neededSql, (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+            this.endDb();
+        });
+    }
+    insertUniqueAttendant(tableName, columns, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES (?) ON DUPLICATE KEY UPDATE firstName = firstName`;
+            database.query(neededSql, [values], (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+            this.endDb();
+        });
+    }
+    addMultipleNonAdultAttendants(tableName, columns, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const allValues = values.map((x, y) => {
+                let current = `("${x.firstName}", "${x.lastName}", "visitor", "${x.age}"), `;
+                return current;
+            });
+            let allValuesString = allValues.join('');
+            let finalValues = allValuesString.slice(0, -2);
+            const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
+            console.log('SQL here', neededSql);
+            database.query(neededSql, (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+        });
+    }
+    selectByNames(tableName, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const whereQuery = values.map((x, y) => {
+                let currentStr = `(firstName = "${x.firstName}" AND lastName = "${x.lastName}") OR `;
+                return currentStr;
+            });
+            const stringOfWhere = whereQuery.join('').slice(0, -4);
+            const neededSql = `SELECT * FROM  ${tableName} WHERE ${stringOfWhere}`;
+            console.log('SQL here', neededSql);
+            database.query(neededSql, (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+            this.endDb();
+        });
+    }
+    insertMultipleVisitorsNoEnd(tableName, values) {
+        return new Promise((resolve, reject) => {
+            const database = this.dbConnection;
+            const valuesList = values.map((x, y) => {
+                let currentString = `(${x.id}, "${x.firstName}", "${x.lastName}", "${x.age}", "${x.memberType}")`;
+                return currentString;
+            });
+            const finalValues = valuesList.toString();
+            const sql = `INSERT INTO ${tableName} (id, firstName, lastName, age, memberType) VALUES ${finalValues}`;
+            database.query(sql, (err, results) => {
                 err ? reject(err) : resolve(results);
             });
         });

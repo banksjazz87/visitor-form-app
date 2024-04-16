@@ -1,4 +1,4 @@
-import { FormFields } from "../interfaces.ts";
+import { FormFields } from "../../interfaces.ts";
 
 export default class FormConstructor {
 	titleFields: FormFields[] = [
@@ -32,6 +32,27 @@ export default class FormConstructor {
 	];
 
 	nameFields: FormFields[] = [
+		{
+			type: "text",
+			name: "name",
+			placeHolder: "",
+			label: "First Name",
+			id: "first-name",
+			value: "",
+			visitorKey: "firstName",
+		},
+		{
+			type: "text",
+			name: "name",
+			placeHolder: "",
+			label: "Last Name",
+			id: "last-name",
+			value: "",
+			visitorKey: "lastName",
+		},
+	];
+
+	spouseNameFields: FormFields[] = [
 		{
 			type: "text",
 			name: "name",
@@ -132,6 +153,10 @@ export default class FormConstructor {
 
 	getNameFields() {
 		return this.nameFields;
+	}
+
+	getSpouseNameFields() {
+		return this.spouseNameFields;
 	}
 
 	getAddressFields() {
