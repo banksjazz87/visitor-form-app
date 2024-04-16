@@ -419,7 +419,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						required={false}
 					/>
 
-					<div className="mt-8 flex flex-row gap-6 items-center pb-2">
+					<div className="mt-8 flex flex-row gap-6 items-center pb-0">
 						<p className="text-xl font-medium text-left">Number of children</p>
 						<div className="flex flex-row gap-2">
 							<button
