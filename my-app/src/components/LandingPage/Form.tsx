@@ -188,7 +188,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		}
 	};
 
-
 	/**
 	 * @returns void
 	 * @description this is the function that is called as long as if none of the required fields are empty.
@@ -230,7 +229,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 										//This is called to hide all content with the exception of the thank you message.
 										stopLoading();
 										showHandler();
-										
 									} else {
 										stopLoading();
 										alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
@@ -269,14 +267,22 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		}
 	};
 
+	const captchaSubmit = (token: any): void => {
+		const form = document.getElementById("visitor-form") as HTMLFormElement;
+		if (form) {
+			form.onSubmit();
+			console.log(typeof token);
+		}
+	};
+
 	if (show) {
 		return (
 			<div
-				id="visitor-form"
+				id="visitor-form-wrapper"
 				className="flex flex-col gap-8 max-w-screen-lg lg:w-9/12 sm:w-11/12 m-auto pt-14 pb-14"
 			>
 				<form
-					id="captcha-form"
+					id="visitor-form"
 					className="shadow-2xl p-6 pb-10 pt-10 sm:mx-10 shadow-slate-900 rounded-lg"
 					onSubmit={submitHandler}
 				>
@@ -355,6 +361,15 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							className="bg-fuchsia-800 hover:bg-fuchsia-900 cursor-pointer transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
 						></input>
 					</div>
+					<button
+						className="g-recaptcha"
+						data-sitekey="6LcXmaUpAAAAAM4L4xUctdBGTtnO3PCL9xnNGe46"
+						data-callback="onSubmit"
+						data-action="submit"
+						style={{opacity: 0}}
+					>
+						Submit
+					</button>
 				</form>
 			</div>
 		);
