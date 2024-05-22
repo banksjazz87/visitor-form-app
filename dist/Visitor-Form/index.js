@@ -196,25 +196,49 @@ app.post("/add-visitor-to-all", (req, res) => {
     const emailList = ["banksjazz87@gmail.com"];
     const interestsString = interests.join(", ");
     const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
-    Promise.all([
-        Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
-        Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
-        Db.insertNoEnd('Visitor_Spouse', spouseTableColumns, spouseTableValues),
-        Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
-        Db.addBulkSelectApplicants('Visitor_Children', childrenTableColumns, childrenTableValues),
-        Email.sendMail(),
-    ])
-        .then((data) => {
-        res.send({
-            message: "Success",
-            data: data,
-        });
-    })
-        .catch((err) => {
-        res.send({
-            message: "Failure",
-            error: err !== "undefined" ? Db.getSqlError(err) : err.response,
-        });
-        console.log("OH NOOOOO", err);
-    });
+    console.log(familyData);
+    // if (children[0].id === -1) {
+    // 	Promise.all([
+    // 		Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+    // 		Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+    // 		Db.insertNoEnd("Visitor_Spouse", spouseTableColumns, spouseTableValues),
+    // 		Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+    // 		Email.sendMail(),
+    // 	])
+    // 		.then((data: [string[], string[], string[], string[], void]): void => {
+    // 			res.send({
+    // 				message: "Success",
+    // 				data: data,
+    // 			});
+    // 		})
+    // 		.catch((err: SQLResponse | any): void => {
+    // 			res.send({
+    // 				message: "Failure",
+    // 				error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+    // 			});
+    // 			console.log("OH NOOOOO", err);
+    // 		});
+    // } else {
+    // 	Promise.all([
+    // 		Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+    // 		Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+    // 		Db.insertNoEnd("Visitor_Spouse", spouseTableColumns, spouseTableValues),
+    // 		Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+    // 		Db.addBulkSelectApplicants("Visitor_Children", childrenTableColumns, childrenTableValues),
+    // 		Email.sendMail(),
+    // 	])
+    // 		.then((data: [string[], string[], string[], string[], string[], void]): void => {
+    // 			res.send({
+    // 				message: "Success",
+    // 				data: data,
+    // 			});
+    // 		})
+    // 		.catch((err: SQLResponse | any): void => {
+    // 			res.send({
+    // 				message: "Failure",
+    // 				error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+    // 			});
+    // 			console.log("OH NOOOOO", err);
+    // 		});
+    // }
 });
