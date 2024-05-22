@@ -257,7 +257,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 					error: err !== "undefined" ? Db.getSqlError(err) : err.response,
 				});
 
-				console.log("OH NOOOOO", err);
+				console.log("OH NOOOOO 1", err);
 			});
 		
 	//single parent
@@ -282,7 +282,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 					message: "Failure",
 					error: err !== "undefined" ? Db.getSqlError(err) : err.response,
 				});
-				console.log("OH NOOOOO", err);
+				console.log("OH NOOOOO 2", err);
 			});
 		
 	//Married no children
@@ -307,7 +307,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 					message: "Failure",
 					error: err !== "undefined" ? Db.getSqlError(err) : err.response,
 				});
-				console.log("OH NOOOOO", err);
+				console.log("OH NOOOOO 3", err);
 			});
 		
 	//Full Family
@@ -333,7 +333,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 					message: "Failure",
 					error: err !== "undefined" ? Db.getSqlError(err) : err.response,
 				});
-				console.log("OH NOOOOO", err);
+				console.log("OH NOOOOO 4", err);
 			});
 	}
 	
