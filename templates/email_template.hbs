@@ -18,31 +18,32 @@
 
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Spouse</strong></td>
-
-                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.spouseName.firstName}} {{visitor.spouseName.lastName}}</td>
+                   
+                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>
+                        {{#check visitor.spouseName.firstName ''}}
+                            {{this}}
+                        {{/check}}
+                        {{#check visitor.spouseName.lastName ''}}
+                            {{this}}
+                        {{/check}}
+                    </td>
                    
                 </tr>
 
                 <tr style='height: 40px;'>
-                        {{#if visitor.children}}
-                            <td
-                                style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'>
-                                <strong>Children ({{visitor.children.length}})</strong>
-                            </td>
-                        {{else}}
-                            <td
-                                style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'>
-                                <strong>Children (0)</strong>
-                            </td>
-                        {{/if}}
+                    <td
+                        style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'>
+                        <strong>Children ({{visitor.children.length}})</strong>
+                    </td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'> 
-                        {{#if visitor.children }} 
+                        
                         {{#each visitor.children}}
-                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">- {{this.firstName}} {{this.lastName}} (<em>{{this.age}})</em></p>
+                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">
+                                {{#checkLength this.firstName -{{this.firstName}} {{this.lastName}} (<em>{{this}}</em>)}}
+                                    {{this}}
+                                {{/checkLength}}
+                            </p>
                         {{/each}}
-                        {{else}}
-                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">0</p>
-                        {{/if}}
                         
                     </td>
                 </tr>
@@ -70,11 +71,17 @@
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Interests</strong></td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>
-                        {{#each visitor.interests}}
+                        {{#if visitor.interests.length > 0}}
+                            {{#each visitor.interests}}
+                                <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">
+                                    - {{this}}
+                                </p>
+                            {{/each}}
+                        {{else}}
                             <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">
                                 - {{this}}
                             </p>
-                        {{/each}}
+                        {{/if}}
                     </td>
                 </tr>
 

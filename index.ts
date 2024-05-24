@@ -9,6 +9,7 @@ import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfa
 import { ChildData, Name, AttendantData } from "./my-app/src/interfaces";
 import { MysqlError } from "mysql";
 import { Mailer } from "./modules/Mailer";
+import Handlebars from "handlebars";
 
 dotenv.config();
 
@@ -25,13 +26,22 @@ app.listen(port, () => {
 
 	Db.connect();
 
-	console.log(`CRpp is listening on port ${port}`);
+	console.log(`App is listening on port ${port}`);
 });
 
 app.use(express.static(path.join(__dirname, "../../my-app/build")));
 
 app.get("/", (req: Request, res: Response): void => {
 	res.sendFile(path.join(__dirname, "../../my-app/build/index.html"));
+});
+
+Handlebars.registerHelper('check', (value: string, compare: string): string => {
+	const final = (value === compare) ? '' : value;
+	return final;
+});
+
+Handlebars.registerHelper('checkLength', (value: string, finalValue: string | number): string | number => {
+	return value.length > 0 ? finalValue : 0;
 });
 
 //Success message that will be sent back and logged

@@ -11,6 +11,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const databaseMethods_1 = require("./dbQueries/databaseMethods");
 const Mailer_1 = require("./modules/Mailer");
+const handlebars_1 = __importDefault(require("handlebars"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4900;
@@ -21,11 +22,18 @@ app.use(express_1.default.json());
 app.listen(port, () => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     Db.connect();
-    console.log(`CRpp is listening on port ${port}`);
+    console.log(`App is listening on port ${port}`);
 });
 app.use(express_1.default.static(path_1.default.join(__dirname, "../../my-app/build")));
 app.get("/", (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "../../my-app/build/index.html"));
+});
+handlebars_1.default.registerHelper('check', (value, compare) => {
+    const final = (value === compare) ? '' : value;
+    return final;
+});
+handlebars_1.default.registerHelper('checkLength', (value, finalValue) => {
+    return value.length > 0 ? finalValue : 0;
 });
 //Success message that will be sent back and logged
 const sendSuccess = (data, res) => {
