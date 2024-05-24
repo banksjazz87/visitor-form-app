@@ -9,7 +9,6 @@ import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfa
 import { ChildData, Name, AttendantData } from "./my-app/src/interfaces";
 import { MysqlError } from "mysql";
 import { Mailer } from "./modules/Mailer";
-import Handlebars from "handlebars";
 
 dotenv.config();
 
@@ -33,15 +32,6 @@ app.use(express.static(path.join(__dirname, "../../my-app/build")));
 
 app.get("/", (req: Request, res: Response): void => {
 	res.sendFile(path.join(__dirname, "../../my-app/build/index.html"));
-});
-
-Handlebars.registerHelper('check', (value: string, compare: string): string => {
-	const final = (value === compare) ? '' : value;
-	return final;
-});
-
-Handlebars.registerHelper('checkLength', (value: string, finalValue: string | number): string | number => {
-	return value.length > 0 ? finalValue : 0;
 });
 
 //Success message that will be sent back and logged
@@ -246,7 +236,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
 
 	//Solo visitor
-	if (children[0].id === -1 && spouseValues[0].id === -1) {
+	if (children[0].firstName.length === 0 && spouseValues[0].firstName.length === 0) {
 		const familyData: AttendantData[] = primaryValues;
 
 		Promise.all([
@@ -271,7 +261,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 			});
 		
 	//single parent
-	} else if (children[0].id > -1 && spouseValues[0].id === -1) {
+	} else if (children[0].firstName.length > 0 && spouseValues[0].firstName.length === 0) {
 		const familyData: AttendantData[] = primaryValues.concat(children);
 
 		Promise.all([
@@ -296,7 +286,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 			});
 		
 	//Married no children
-	} else if (children[0].id === -1 && spouseValues[0].id > -1) {
+	} else if (children[0].firstName.length === 0 && spouseValues[0].firstName.length > 0) {
 		const familyData: AttendantData[] = primaryValues.concat(spouseValues);
 
 		Promise.all([
