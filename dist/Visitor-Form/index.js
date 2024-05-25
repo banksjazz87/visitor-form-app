@@ -11,7 +11,6 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const databaseMethods_1 = require("./dbQueries/databaseMethods");
 const Mailer_1 = require("./modules/Mailer");
-const handlebars_1 = __importDefault(require("handlebars"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4900;
@@ -27,13 +26,6 @@ app.listen(port, () => {
 app.use(express_1.default.static(path_1.default.join(__dirname, "../../my-app/build")));
 app.get("/", (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "../../my-app/build/index.html"));
-});
-handlebars_1.default.registerHelper('check', (value, compare) => {
-    const final = (value === compare) ? '' : value;
-    return final;
-});
-handlebars_1.default.registerHelper('checkLength', (value, finalValue) => {
-    return value.length > 0 ? finalValue : 0;
 });
 //Success message that will be sent back and logged
 const sendSuccess = (data, res) => {
@@ -204,7 +196,7 @@ app.post("/add-visitor-to-all", (req, res) => {
     const interestsString = interests.join(", ");
     const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
     //Solo visitor
-    if (children[0].id === -1 && spouseValues[0].id === -1) {
+    if (children[0].firstName.length === 0 && spouseValues[0].firstName.length === 0) {
         const familyData = primaryValues;
         Promise.all([
             Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
@@ -227,7 +219,7 @@ app.post("/add-visitor-to-all", (req, res) => {
         });
         //single parent
     }
-    else if (children[0].id > -1 && spouseValues[0].id === -1) {
+    else if (children[0].firstName.length > 0 && spouseValues[0].firstName.length === 0) {
         const familyData = primaryValues.concat(children);
         Promise.all([
             Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
@@ -251,7 +243,7 @@ app.post("/add-visitor-to-all", (req, res) => {
         });
         //Married no children
     }
-    else if (children[0].id === -1 && spouseValues[0].id > -1) {
+    else if (children[0].firstName.length === 0 && spouseValues[0].firstName.length > 0) {
         const familyData = primaryValues.concat(spouseValues);
         Promise.all([
             Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),

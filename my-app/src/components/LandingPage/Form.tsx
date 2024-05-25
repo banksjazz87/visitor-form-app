@@ -11,7 +11,7 @@ import FormChecker from "../../lib/form/FormChecker.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
-import ReCAPTCHA from "react-google-recaptcha";
+import CaptchaSubmit from "./CaptchaSubmit.tsx";
 
 interface FormProps {
 	show: boolean;
@@ -375,6 +375,8 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		});
 	};
 
+	
+
 	//Submit handler for the form
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
@@ -388,15 +390,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		}
 
 	};
-
-	const captchaSubmit = (token: ReCAPTCHA): void => {
-		const form = document.getElementById('visitor-form') as HTMLFormElement;
-		if (form) {
-			console.log(form);
-			form.submit();
-		}
-	}
-
 
 	if (show) {
 		return (
@@ -523,15 +516,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							className="bg-fuchsia-800 hover:bg-fuchsia-900 cursor-pointer transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
 						></input>
 					</div>
-					<button
-						className="g-recaptcha"
-						data-sitekey="6LcXmaUpAAAAAM4L4xUctdBGTtnO3PCL9xnNGe46"
-						data-callback="captchaSubmit"
-						data-action="submit"
-						style={{opacity: 1}}
-					>
-						Submit
-					</button>
+					<CaptchaSubmit id="visitor-form" />
 				</form>
 			</div>
 		);

@@ -86,7 +86,7 @@ app.post("/get-family", (req: Request, res: Response): void => {
         { firstName: req.body.spouseName.firstName, lastName: req.body.spouseName.lastName}
     ];
 
-	const childNames: Name[] = req.body.children.map((x: ChildData, y: number): Name => {
+	const childNames: Name[] = req.body.children.map((x: ChildData, y: number): Name => {	
 		let currentName = {
 			firstName: x.firstName,
 			lastName: x.lastName,
