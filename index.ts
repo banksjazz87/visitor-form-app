@@ -25,7 +25,7 @@ app.listen(port, () => {
 
 	Db.connect();
 
-	console.log(`CRpp is listening on port ${port}`);
+	console.log(`App is listening on port ${port}`);
 });
 
 app.use(express.static(path.join(__dirname, "../../my-app/build")));
@@ -86,7 +86,7 @@ app.post("/get-family", (req: Request, res: Response): void => {
         { firstName: req.body.spouseName.firstName, lastName: req.body.spouseName.lastName}
     ];
 
-	const childNames: Name[] = req.body.children.map((x: ChildData, y: number): Name => {
+	const childNames: Name[] = req.body.children.map((x: ChildData, y: number): Name => {	
 		let currentName = {
 			firstName: x.firstName,
 			lastName: x.lastName,
@@ -165,6 +165,7 @@ app.post("/add-attendant", (req: Request, res: Response): void => {
 	}
 });
 
+
 app.post("/add-multiple-adults", (req: Request, res: Response): void => {
 	const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
 
@@ -175,6 +176,7 @@ app.post("/add-multiple-adults", (req: Request, res: Response): void => {
 		.then((data: string[]): void => sendSuccess(data, res))
 		.catch((err: SQLResponse): void => sendFailure(err, res, Db.getSqlError));
 });
+
 
 app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
@@ -190,9 +192,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
    
     //Get Children Data
     const children: AttendantData[] = attendantData.children;
-	const familyData: AttendantData[] = primaryValues.concat(spouseValues).concat(children);
 	
-
 	const visitorTable = process.env.VISITOR_TABLE as string;
 	const visitorData = req.body.visitorData;
 	const visitorColumnValues: VisitorDataPoints = {
@@ -235,26 +235,106 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	const interestsString = interests.join(", ");
 	const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
 
-	Promise.all([
-		Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
-		Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
-		Db.insertNoEnd('Visitor_Spouse', spouseTableColumns, spouseTableValues),
-		Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
-		Db.addBulkSelectApplicants('Visitor_Children', childrenTableColumns, childrenTableValues),
-		Email.sendMail(),
-	])
-		.then((data: [string[], string[], string[], string[], string[], void]): void => {
-			res.send({
-				message: "Success",
-				data: data,
-			});
-		})
-		.catch((err: SQLResponse | any): void => {
-			res.send({
-				message: "Failure",
-				error: err !== "undefined" ? Db.getSqlError(err) : err.response,
-			});
+	//Solo visitor
+	if (children[0].firstName.length === 0 && spouseValues[0].firstName.length === 0) {
+		const familyData: AttendantData[] = primaryValues;
 
-			console.log("OH NOOOOO", err);
-		});
+		Promise.all([
+			Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+			Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+			Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+			Email.sendMail(),
+		])
+			.then((data: [string[], string[], string[], void]): void => {
+				res.send({
+					message: "Success",
+					data: data,
+				});
+			})
+			.catch((err: SQLResponse | any): void => {
+				res.send({
+					message: "Failure",
+					error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+				});
+
+				console.log("OH NOOOOO 1", err);
+			});
+		
+	//single parent
+	} else if (children[0].firstName.length > 0 && spouseValues[0].firstName.length === 0) {
+		const familyData: AttendantData[] = primaryValues.concat(children);
+
+		Promise.all([
+			Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+			Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+			Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+			Db.addBulkSelectApplicants("Visitor_Children", childrenTableColumns, childrenTableValues),
+			Email.sendMail(),
+		])
+			.then((data: [string[], string[], string[], string[], void]): void => {
+				res.send({
+					message: "Success",
+					data: data,
+				});
+			})
+			.catch((err: SQLResponse | any): void => {
+				res.send({
+					message: "Failure",
+					error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+				});
+				console.log("OH NOOOOO 2", err);
+			});
+		
+	//Married no children
+	} else if (children[0].firstName.length === 0 && spouseValues[0].firstName.length > 0) {
+		const familyData: AttendantData[] = primaryValues.concat(spouseValues);
+
+		Promise.all([
+			Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+			Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+			Db.insertNoEnd("Visitor_Spouse", spouseTableColumns, spouseTableValues),
+			Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+			Email.sendMail(),
+		])
+			.then((data: [string[], string[], string[], string[], void]): void => {
+				res.send({
+					message: "Success",
+					data: data,
+				});
+			})
+			.catch((err: SQLResponse | any): void => {
+				res.send({
+					message: "Failure",
+					error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+				});
+				console.log("OH NOOOOO 3", err);
+			});
+		
+	//Full Family
+	} else {
+		const familyData: AttendantData[] = primaryValues.concat(spouseValues).concat(children);
+
+		Promise.all([
+			Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+			Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+			Db.insertNoEnd("Visitor_Spouse", spouseTableColumns, spouseTableValues),
+			Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+			Db.addBulkSelectApplicants("Visitor_Children", childrenTableColumns, childrenTableValues),
+			Email.sendMail(),
+		])
+			.then((data: [string[], string[], string[], string[], string[], void]): void => {
+				res.send({
+					message: "Success",
+					data: data,
+				});
+			})
+			.catch((err: SQLResponse | any): void => {
+				res.send({
+					message: "Failure",
+					error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+				});
+				console.log("OH NOOOOO 4", err);
+			});
+	}
+	
 });

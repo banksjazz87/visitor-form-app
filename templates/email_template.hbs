@@ -18,15 +18,32 @@
 
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Spouse</strong></td>
-                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.spouseName.firstName}} {{visitor.spouseName.lastName}}</td>
+                   
+                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>
+                        {{visitor.spouseName.firstName}} {{visitor.spouseName.lastName }}
+                    </td>
+                   
                 </tr>
 
                 <tr style='height: 40px;'>
-                    <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Children ({{visitor.children.length}})</strong></td>
+                    <td
+                        style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'>
+                            {{#if visitor.children.0.firstName}}
+                                <strong>Children ({{visitor.children.length}})</strong>
+                            {{else}}
+                                <strong>Children (0)</strong>
+                            {{/if}}
+                    </td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'> 
+                        
                         {{#each visitor.children}}
-                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">- {{this.firstName}} {{this.lastName}} (<em>{{this.age}})</em></p>
+                            <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">
+                                {{#if this.firstName}}
+                                    -{{this.firstName}} {{this.lastName}} (<em>{{this.age}}</em>)
+                                {{/if}}
+                            </p>
                         {{/each}}
+                        
                     </td>
                 </tr>
 
@@ -54,9 +71,11 @@
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Interests</strong></td>
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>
                         {{#each visitor.interests}}
+                            {{#if this}}
                             <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">
                                 - {{this}}
                             </p>
+                            {{/if}}
                         {{/each}}
                     </td>
                 </tr>

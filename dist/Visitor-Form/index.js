@@ -21,7 +21,7 @@ app.use(express_1.default.json());
 app.listen(port, () => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     Db.connect();
-    console.log(`CRpp is listening on port ${port}`);
+    console.log(`App is listening on port ${port}`);
 });
 app.use(express_1.default.static(path_1.default.join(__dirname, "../../my-app/build")));
 app.get("/", (req, res) => {
@@ -158,7 +158,6 @@ app.post("/add-visitor-to-all", (req, res) => {
     const spouseValues = [attendantData.spouse];
     //Get Children Data
     const children = attendantData.children;
-    const familyData = primaryValues.concat(spouseValues).concat(children);
     const visitorTable = process.env.VISITOR_TABLE;
     const visitorData = req.body.visitorData;
     const visitorColumnValues = {
@@ -196,25 +195,100 @@ app.post("/add-visitor-to-all", (req, res) => {
     const emailList = ["banksjazz87@gmail.com"];
     const interestsString = interests.join(", ");
     const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
-    Promise.all([
-        Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
-        Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
-        Db.insertNoEnd('Visitor_Spouse', spouseTableColumns, spouseTableValues),
-        Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
-        Db.addBulkSelectApplicants('Visitor_Children', childrenTableColumns, childrenTableValues),
-        Email.sendMail(),
-    ])
-        .then((data) => {
-        res.send({
-            message: "Success",
-            data: data,
+    //Solo visitor
+    if (children[0].firstName.length === 0 && spouseValues[0].firstName.length === 0) {
+        const familyData = primaryValues;
+        Promise.all([
+            Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+            Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+            Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+            Email.sendMail(),
+        ])
+            .then((data) => {
+            res.send({
+                message: "Success",
+                data: data,
+            });
+        })
+            .catch((err) => {
+            res.send({
+                message: "Failure",
+                error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+            });
+            console.log("OH NOOOOO 1", err);
         });
-    })
-        .catch((err) => {
-        res.send({
-            message: "Failure",
-            error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+        //single parent
+    }
+    else if (children[0].firstName.length > 0 && spouseValues[0].firstName.length === 0) {
+        const familyData = primaryValues.concat(children);
+        Promise.all([
+            Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+            Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+            Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+            Db.addBulkSelectApplicants("Visitor_Children", childrenTableColumns, childrenTableValues),
+            Email.sendMail(),
+        ])
+            .then((data) => {
+            res.send({
+                message: "Success",
+                data: data,
+            });
+        })
+            .catch((err) => {
+            res.send({
+                message: "Failure",
+                error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+            });
+            console.log("OH NOOOOO 2", err);
         });
-        console.log("OH NOOOOO", err);
-    });
+        //Married no children
+    }
+    else if (children[0].firstName.length === 0 && spouseValues[0].firstName.length > 0) {
+        const familyData = primaryValues.concat(spouseValues);
+        Promise.all([
+            Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+            Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+            Db.insertNoEnd("Visitor_Spouse", spouseTableColumns, spouseTableValues),
+            Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+            Email.sendMail(),
+        ])
+            .then((data) => {
+            res.send({
+                message: "Success",
+                data: data,
+            });
+        })
+            .catch((err) => {
+            res.send({
+                message: "Failure",
+                error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+            });
+            console.log("OH NOOOOO 3", err);
+        });
+        //Full Family
+    }
+    else {
+        const familyData = primaryValues.concat(spouseValues).concat(children);
+        Promise.all([
+            Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
+            Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
+            Db.insertNoEnd("Visitor_Spouse", spouseTableColumns, spouseTableValues),
+            Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+            Db.addBulkSelectApplicants("Visitor_Children", childrenTableColumns, childrenTableValues),
+            Email.sendMail(),
+        ])
+            .then((data) => {
+            res.send({
+                message: "Success",
+                data: data,
+            });
+        })
+            .catch((err) => {
+            res.send({
+                message: "Failure",
+                error: err !== "undefined" ? Db.getSqlError(err) : err.response,
+            });
+            console.log("OH NOOOOO 4", err);
+        });
+    }
 });
