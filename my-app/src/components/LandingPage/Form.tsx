@@ -380,14 +380,20 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	//Submit handler for the form
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-		const FormCheck = new FormChecker(["streetAddress", "first-name", "last-name", "phone", "city", "email", "states_dropdown"]);
+		// const FormCheck = new FormChecker(["streetAddress", "first-name", "last-name", "phone", "city", "email", "states_dropdown"]);
 
-		//Check to see if any required fields are empty and also check for a valid email address.
-		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
-			FormCheck.showRequired();
-		} else {
-			submitForm();
-		}
+		// //Check to see if any required fields are empty and also check for a valid email address.
+		// if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
+		// 	FormCheck.showRequired();
+		// } else {
+		// 	submitForm();
+		// }
+
+		grecaptcha.ready(function () {
+			grecaptcha.execute("reCAPTCHA_site_key", { action: "submit" }).then(function (token) {
+				postCall('/test-recaptcha', visitorDetails);
+			});
+		});
 
 	};
 

@@ -338,3 +338,8 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	}
 	
 });
+
+
+app.post('/test-recaptcha', (req: Request, res: Response): void => {
+	console.log();
+})
