@@ -9,6 +9,7 @@ import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfa
 import { ChildData, Name, AttendantData } from "./my-app/src/interfaces";
 import { MysqlError } from "mysql";
 import { Mailer } from "./modules/Mailer";
+import "isomorphic-fetch";
 
 dotenv.config();
 
@@ -340,6 +341,50 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 });
 
 
-app.post('/test-recaptcha', (req: Request, res: Response): void => {
-	console.log();
-})
+app.post('/validate-recaptcha', (req: Request, res: Response): void => {
+	const token = req.body.tokenString;
+	const reqData = {
+		secret: process.env.CAPTCHA_SECRET_KEY as string,
+		response: token as string,
+	};
+	
+	const checkCaptcha = async (): Promise<void> => {
+		try {
+			const res = await fetch(
+				'https://www.google.com/recaptcha/api/siteverify?' +
+				new URLSearchParams(reqData),
+				{
+					method: "POST",
+				}
+			);
+
+			const result = await res.json();
+			return result;
+
+		} catch (error: any) {
+			return error;
+		}
+		
+	}
+
+	checkCaptcha()
+		.then((data): void => {
+			res.send({
+				message: 'Success',
+				data: data
+			});
+			console.log(data);
+		})
+		.catch((error: any): void => {
+			res.send({
+				message: 'Failure',
+				error: error
+			});
+			console.log('Error', error)
+		});
+});
+	
+
+
+	
+

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, Name, NeededFamilyData } from "../../interfaces.ts";
+import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, Name, NeededFamilyData, CaptchaAPI, CaptchaToken } from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
 import postCall from "../../lib/methods/API/postCall.ts";
 import FormConstructor from "../../lib/form/FormConstructor.ts";
@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
 import CaptchaSubmit from "./CaptchaSubmit.tsx";
+
 
 interface FormProps {
 	show: boolean;
@@ -375,25 +376,41 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		});
 	};
 
+
+	//Function used to validate the captcha, if it's valid, the form is submitted.
+	const validateCaptcha = (obj: CaptchaToken): void => {
+		postCall("/validate-recaptcha", obj)
+			.then((data: CaptchaAPI): void => {
+				if (data.message === "Success" && data.data.score > 0.5) {
+					submitForm();
+				} else if (data.message === "Success" && data.data.score < 0.5) {
+					alert("You might be a bot.");
+				} else {
+					console.error(data.error);
+				}
+			})
+			.catch((e: any): void => console.log("ERROR", e));
+	};
 	
 
 	//Submit handler for the form
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-		// const FormCheck = new FormChecker(["streetAddress", "first-name", "last-name", "phone", "city", "email", "states_dropdown"]);
+		const FormCheck = new FormChecker(["streetAddress", "first-name", "last-name", "phone", "city", "email", "states_dropdown"]);
 
-		// //Check to see if any required fields are empty and also check for a valid email address.
-		// if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
-		// 	FormCheck.showRequired();
-		// } else {
-		// 	submitForm();
-		// }
-
-		grecaptcha.ready(function () {
-			grecaptcha.execute("reCAPTCHA_site_key", { action: "submit" }).then(function (token) {
-				postCall('/test-recaptcha', visitorDetails);
+		//Check to see if any required fields are empty and also check for a valid email address.
+		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
+			FormCheck.showRequired();
+		} else {
+			grecaptcha.ready(function (): void {
+				grecaptcha.execute("6LcXmaUpAAAAAM4L4xUctdBGTtnO3PCL9xnNGe46", { action: "submit" }).then(function (token) {
+					const tokenObj = {
+						tokenString: token
+					}
+					validateCaptcha(tokenObj);
+				});
 			});
-		});
+		}
 
 	};
 

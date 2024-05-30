@@ -90,3 +90,21 @@ export interface RequiredFields{
     contactMethod: boolean;
     state: boolean;
 }
+
+export interface GrecapthaRes {
+	success: boolean;
+	challenge_ts: string;
+	hostname: string;
+	score: number;
+	action: string;
+}
+
+export interface CaptchaAPI {
+    message: string;
+    error: string;
+	data: GrecapthaRes;
+}
+
+export interface CaptchaToken {
+    tokenString: string;
+}
