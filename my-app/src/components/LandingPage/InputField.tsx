@@ -16,20 +16,27 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
         const elements = arr.map((x: FormFields, y: number) => {
             if (x.type === "radio") {
                 return (
-                <div 
-                    key={`${x.visitorKey}_${y}`} 
-                    className={vertical ? 'flex flex-col gap-2 w-full': 'flex flex-row items-center first:ml-0 first:mr-0 md:ml-3 gap-2 ml-0 mr-0' }
-                   
-                >
-                    <label className="text-xl font-thin" htmlFor={x.id}>{x.label}</label>
-                    <input 
-                        id={x.id} type={x.type} 
-                        placeholder={x.placeHolder} name={x.name} 
-                        onChange={(event) => changeHandler(event, x.visitorKey)} 
-                        value={x.value} 
-                        className="form-radio border border-slate-700 rounded-sm focus:border-fuchsia-800 focus:bg-fuchsia-800 checked:bg-fuchsia-800"></input>
-                </div>
-                );
+									<div
+										key={`${x.visitorKey}_${y}`}
+										className={vertical ? "flex flex-col gap-2 w-full" : "flex flex-row items-center first:ml-0 first:mr-0 md:ml-3 gap-2 ml-0 mr-0"}
+									>
+										<label
+											className="text-xl font-thin"
+											htmlFor={x.id}
+										>
+											{x.label}
+										</label>
+										<input
+											id={x.id}
+											type={x.type}
+											placeholder={x.placeHolder}
+											name={x.name}
+											onChange={(event) => changeHandler(event, x.visitorKey)}
+											value={x.value}
+											className="form-radio border border-fuchsia-900 rounded-sm focus:border-fuchsia-800 accent-fuchsia-800 focus:accent-fuchsia-900"
+										></input>
+									</div>
+								);
             } else {
                 return (
 									<div
