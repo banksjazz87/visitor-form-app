@@ -11,7 +11,6 @@ import FormChecker from "../../lib/form/FormChecker.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
-import CaptchaSubmit from "./CaptchaSubmit.tsx";
 
 
 interface FormProps {
@@ -538,7 +537,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							className="bg-fuchsia-800 hover:bg-fuchsia-900 cursor-pointer transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
 						></input>
 					</div>
-					<CaptchaSubmit id="visitor-form" />
 				</form>
 			</div>
 		);
