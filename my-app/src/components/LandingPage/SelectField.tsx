@@ -27,7 +27,7 @@ export default function SelectField({dataArray, changeHandler, label, selectID}:
                 <select 
                     id={selectID} 
                     name={selectID} 
-                    className="border border-slate-800 first-text-slate-600 text-black focus:outline-fuchsia-800 text-xl font-light tracking-wider leading-relaxed rounded-sm pl-2 min-h-8" 
+                    className="border border-slate-800 first-text-slate-600 text-black focus:outline-fuchsia-800 text-xl font-light tracking-wider leading-relaxed rounded-sm pl-2 min-h-8 py-2" 
                     onChange={selectHandler}
                 >
                 <option>State</option>

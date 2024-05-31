@@ -324,16 +324,16 @@ app.post('/validate-recaptcha', (req, res) => {
     checkCaptcha()
         .then((data) => {
         res.send({
-            message: 'Success',
-            data: data
+            message: "Success",
+            data: data,
         });
         console.log(data);
     })
         .catch((error) => {
         res.send({
-            message: 'Failure',
-            error: error
+            message: "Failure",
+            error: error,
         });
-        console.log('Error', error);
+        console.log("Error", error);
     });
 });

@@ -32,22 +32,30 @@ export default function InputField({dataArray, title, vertical, changeHandler, s
                 );
             } else {
                 return (
-                    <div 
-                        key={`${x.visitorKey}_${y}`} 
-                        className={vertical ? 'flex flex-row grow relative' : 'flex flex-col grow gap-2 relative'}
-                    >
-                        <label className="text-xl sr-only"htmlFor={x.id}>{x.label}</label>
-                        <input 
-                            id={x.id} 
-                            type={x.type} 
-                            placeholder={x.label} 
-                            name={x.label} 
-                            onChange={(event) => changeHandler(event, x.visitorKey)} 
-                            className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light"></input>
-                            <p className="absolute -bottom-5 text-rose-900 text-sm"style={showValidMessage && x.id === 
-                            'email' ? {"display": ''} : {"display": "none"}}>{`*Please provide a valid ${x.id}.`}</p>
-                    </div>
-                );
+									<div
+										key={`${x.visitorKey}_${y}`}
+										className={vertical ? "flex flex-row grow relative" : "flex flex-col grow gap-2 relative"}
+									>
+										<label
+											className="text-xl sr-only"
+											htmlFor={x.id}
+										>
+											{x.label}
+										</label>
+										<input
+											id={x.id}
+											type={x.type}
+											placeholder={x.label}
+											name={x.label}
+											onChange={(event) => changeHandler(event, x.visitorKey)}
+											className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 py-1 tracking-wider placeholder:text-slate-800 placeholder:font-light"
+										></input>
+										<p
+											className="absolute -bottom-5 text-rose-900 text-sm"
+											style={showValidMessage && x.id === "email" ? { display: "" } : { display: "none" }}
+										>{`*Please provide a valid ${x.id}.`}</p>
+									</div>
+								);
             }
         });
 

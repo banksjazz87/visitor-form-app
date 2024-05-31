@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, Name, NeededFamilyData, CaptchaAPI, CaptchaToken } from "../../interfaces.ts";
+import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, NeededFamilyData, CaptchaAPI, CaptchaToken } from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
 import postCall from "../../lib/methods/API/postCall.ts";
 import FormConstructor from "../../lib/form/FormConstructor.ts";
@@ -411,7 +411,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 				});
 			});
 		}
-
 	};
 
 	if (show) {
@@ -498,7 +497,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							title="Title"
 							changeHandler={inputChangeHandler}
 							vertical={false}
-							required={true}
+							required={false}
 						/>
 
 						<InputField
@@ -506,7 +505,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							title="Preferred Contact Method"
 							changeHandler={inputChangeHandler}
 							vertical={false}
-							required={true}
+							required={false}
 						/>
 					</div>
 

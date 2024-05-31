@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { DBMethods } from "./dbQueries/databaseMethods";
 import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfaces";
-import { ChildData, Name, AttendantData } from "./my-app/src/interfaces";
+import { ChildData, Name, AttendantData, GrecapthaRes } from "./my-app/src/interfaces";
 import { MysqlError } from "mysql";
 import { Mailer } from "./modules/Mailer";
 import "isomorphic-fetch";
@@ -348,7 +348,7 @@ app.post('/validate-recaptcha', (req: Request, res: Response): void => {
 		response: token as string,
 	};
 	
-	const checkCaptcha = async (): Promise<void> => {
+	const checkCaptcha = async (): Promise<any | GrecapthaRes> => {
 		try {
 			const res = await fetch(
 				'https://www.google.com/recaptcha/api/siteverify?' +
@@ -364,23 +364,22 @@ app.post('/validate-recaptcha', (req: Request, res: Response): void => {
 		} catch (error: any) {
 			return error;
 		}
-		
 	}
 
 	checkCaptcha()
-		.then((data): void => {
+		.then((data: GrecapthaRes): void => {
 			res.send({
-				message: 'Success',
-				data: data
+				message: "Success",
+				data: data,
 			});
 			console.log(data);
 		})
 		.catch((error: any): void => {
 			res.send({
-				message: 'Failure',
-				error: error
+				message: "Failure",
+				error: error,
 			});
-			console.log('Error', error)
+			console.log("Error", error);
 		});
 });
 	
