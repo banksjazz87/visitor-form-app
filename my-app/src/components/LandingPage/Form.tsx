@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, Name, NeededFamilyData } from "../../interfaces.ts";
+import { Visitor, FormFields, BtnGroup, APIResponse, AttendantData, AllVisitorData, Validate, NeededFamilyData, CaptchaAPI, CaptchaToken } from "../../interfaces.ts";
 import SetupForm from "../../lib/form/constructors.ts";
 import postCall from "../../lib/methods/API/postCall.ts";
 import FormConstructor from "../../lib/form/FormConstructor.ts";
@@ -11,7 +11,7 @@ import FormChecker from "../../lib/form/FormChecker.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
-import CaptchaSubmit from "./CaptchaSubmit.tsx";
+
 
 interface FormProps {
 	show: boolean;
@@ -375,6 +375,21 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		});
 	};
 
+
+	//Function used to validate the captcha, if it's valid, the form is submitted.
+	const validateCaptcha = (obj: CaptchaToken): void => {
+		postCall("/validate-recaptcha", obj)
+			.then((data: CaptchaAPI): void => {
+				if (data.message === "Success" && data.data.score > 0.5) {
+					submitForm();
+				} else if (data.message === "Success" && data.data.score < 0.5) {
+					alert("You might be a bot.");
+				} else {
+					console.error(data.error);
+				}
+			})
+			.catch((e: any): void => console.log("ERROR", e));
+	};
 	
 
 	//Submit handler for the form
@@ -386,9 +401,15 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {
 			FormCheck.showRequired();
 		} else {
-			submitForm();
+			grecaptcha.ready(function (): void {
+				grecaptcha.execute("6LcXmaUpAAAAAM4L4xUctdBGTtnO3PCL9xnNGe46", { action: "submit" }).then(function (token) {
+					const tokenObj = {
+						tokenString: token
+					}
+					validateCaptcha(tokenObj);
+				});
+			});
 		}
-
 	};
 
 	if (show) {
@@ -475,7 +496,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							title="Title"
 							changeHandler={inputChangeHandler}
 							vertical={false}
-							required={true}
+							required={false}
 						/>
 
 						<InputField
@@ -483,7 +504,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							title="Preferred Contact Method"
 							changeHandler={inputChangeHandler}
 							vertical={false}
-							required={true}
+							required={false}
 						/>
 					</div>
 
@@ -516,7 +537,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							className="bg-fuchsia-800 hover:bg-fuchsia-900 cursor-pointer transition-colors ease-in-out delay-200 py-4 px-20 text-2xl rounded-full  capitalize tracking-wider m-auto text-white"
 						></input>
 					</div>
-					<CaptchaSubmit id="visitor-form" />
 				</form>
 			</div>
 		);

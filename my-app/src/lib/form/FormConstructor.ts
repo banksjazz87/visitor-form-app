@@ -145,8 +145,6 @@ export default class FormConstructor {
 		},
 	];
 
-	
-
 	getTitleFields() {
 		return this.titleFields;
 	}
@@ -170,5 +168,4 @@ export default class FormConstructor {
 	getContactMethodFields() {
 		return this.contactMethodFields;
 	}
-
 }

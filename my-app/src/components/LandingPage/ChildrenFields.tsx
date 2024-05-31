@@ -32,7 +32,7 @@ export default function ChildrenFields({count, names, nameHandler, ageHandler}: 
                         </label>
                         <input 
                             id={`child_first_name_${y}`}
-                            className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light" 
+                            className="border border-slate-800 rounded-sm pl-2 py-1 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light" 
                             type="text" 
                             placeholder="First Name"
                             onChange={(event) => nameHandler(event, y, "firstName")}
@@ -48,7 +48,7 @@ export default function ChildrenFields({count, names, nameHandler, ageHandler}: 
                             {`Child ${y + 1} last name`}</label>
                         <input 
                             id={`child_last_name_${y}`}
-                            className="border border-slate-800 rounded-sm pl-2 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light" 
+                            className="border border-slate-800 rounded-sm pl-2 py-1 focus:outline-fuchsia-800 text-xl font-normal text-black leading-8 tracking-wider placeholder:text-slate-800 placeholder:font-light" 
                             type="text" 
                             placeholder="Last Name"
                             onChange={(event) => nameHandler(event, y, "lastName")}
