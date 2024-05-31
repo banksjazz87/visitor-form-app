@@ -396,7 +396,6 @@ class DBMethods {
             let allValuesString = allValues.join('');
             let finalValues = allValuesString.slice(0, -2);
             const neededSql = `INSERT INTO ${tableName} (${columns}) VALUES ${finalValues} ON DUPLICATE KEY UPDATE firstName = firstName`;
-            console.log('SQL here', neededSql);
             database.query(neededSql, (err, results) => {
                 err ? reject(err) : resolve(results);
             });

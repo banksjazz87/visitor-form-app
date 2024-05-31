@@ -244,9 +244,10 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 			Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
 			Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
 			Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+			Db.endDb(),
 			Email.sendMail(),
 		])
-			.then((data: [string[], string[], string[], void]): void => {
+			.then((data: [string[], string[], string[], void, void]): void => {
 				res.send({
 					message: "Success",
 					data: data,
@@ -295,9 +296,10 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 			Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
 			Db.insertNoEnd("Visitor_Spouse", spouseTableColumns, spouseTableValues),
 			Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+			Db.endDb(),
 			Email.sendMail(),
 		])
-			.then((data: [string[], string[], string[], string[], void]): void => {
+			.then((data: [string[], string[], string[], string[], void, void]): void => {
 				res.send({
 					message: "Success",
 					data: data,
