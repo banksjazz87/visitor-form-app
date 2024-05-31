@@ -212,6 +212,7 @@ app.post("/add-visitor-to-all", (req, res) => {
             Db.insertMultipleVisitorsNoEnd(attendanceGroupTable, familyData),
             Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
             Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+            Db.endDb(),
             Email.sendMail(),
         ])
             .then((data) => {
@@ -260,6 +261,7 @@ app.post("/add-visitor-to-all", (req, res) => {
             Db.insertNoEnd(visitorTable, visitorTableColumns, visitorValues),
             Db.insertNoEnd("Visitor_Spouse", spouseTableColumns, spouseTableValues),
             Db.addMultipleValuesNoEnd(interestTable, interestColumns, attendantData.primary.id, interests),
+            Db.endDb(),
             Email.sendMail(),
         ])
             .then((data) => {

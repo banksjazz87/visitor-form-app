@@ -321,7 +321,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	 * @description this is the function that is called as long as if none of the required fields are empty.
 	 */
 	const submitForm = (): void => {
-		startLoading();
 
 		//Check if the user is already in the database
 		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
@@ -378,13 +377,17 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 
 	//Function used to validate the captcha, if it's valid, the form is submitted.
 	const validateCaptcha = (obj: CaptchaToken): void => {
+		startLoading();
+
 		postCall("/validate-recaptcha", obj)
 			.then((data: CaptchaAPI): void => {
 				if (data.message === "Success" && data.data.score > 0.5) {
 					submitForm();
 				} else if (data.message === "Success" && data.data.score < 0.5) {
+					stopLoading();
 					alert("You might be a bot.");
 				} else {
+					stopLoading();
 					console.error(data.error);
 				}
 			})
