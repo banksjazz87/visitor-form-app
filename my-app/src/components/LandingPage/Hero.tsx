@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/images/chapel-no-background-logo.png";
+import logo from "../../assets/images/chapel-no-background-logo-min.png";
 
 interface HeroProps {
     show: boolean;
