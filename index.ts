@@ -14,7 +14,7 @@ import "isomorphic-fetch";
 dotenv.config();
 
 const app: Application = express();
-const port = process.env.PORT || 4900;
+const port = process.env.PORT || 5000;
 
 //All middleware functions
 app.use(bodyParser.urlencoded({ extended: false }));
