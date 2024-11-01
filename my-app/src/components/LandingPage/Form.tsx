@@ -75,13 +75,21 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 
 	//Change handler for the child age.
 	const childAgeChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
-		let copyOfChildArray = visitorDetails.children.slice();
-		copyOfChildArray[index]["age"] = e.target.value as string;
+		const age = e.target.value as string;
+		const numOfAge = parseInt(age);
 
-		setVisitorDetails({
-			...visitorDetails,
-			children: copyOfChildArray,
-		});
+		if (isNaN(numOfAge) && age !== '') {
+			alert('Please provide a valid number');
+			e.target.value = '';
+		} else {
+			let copyOfChildArray = visitorDetails.children.slice();
+			copyOfChildArray[index]["age"] = numOfAge;
+
+			setVisitorDetails({
+				...visitorDetails,
+				children: copyOfChildArray,
+			});
+		}
 	};
 
 	//Change handler for the child's name.
@@ -238,7 +246,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 				{
 					firstName: "",
 					lastName: "",
-					age: "",
+					age: -1,
 				},
 			];
 			const newArray = currentChildList.concat(newObj);

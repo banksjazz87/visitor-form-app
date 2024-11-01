@@ -4,7 +4,7 @@ export interface Name {
 }
 
 export interface ChildData extends Name {
-    age: string;
+    age: number;
 }
 
 export interface Visitor {

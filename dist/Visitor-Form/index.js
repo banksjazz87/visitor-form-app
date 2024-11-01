@@ -23,7 +23,7 @@ const Mailer_1 = require("./modules/Mailer");
 require("isomorphic-fetch");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = process.env.PORT || 4900;
+const port = process.env.PORT || 5000;
 //All middleware functions
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
