@@ -1,0 +1,38 @@
+import React from "react";
+
+
+interface AgeFieldProps {
+    index?: number;
+    changeHandler: Function;
+	fieldId: string;
+	childField: boolean;
+}
+export default function AgeField({ index, changeHandler, fieldId, childField }: AgeFieldProps): JSX.Element {
+	
+
+	const changeEvent = (event: React.ChangeEvent<HTMLInputElement>): void => {
+		if (childField && index) {
+			changeHandler(event, index);
+		} else {
+			changeHandler(event, index);
+		}
+	};
+
+	return (
+		<div className="fields_wrapper flex flex-row grow align-middle items-center mt-2 px-0 md:col-span-1">
+			<label
+				className="text-xl font-normal text-left mr-2"
+				htmlFor={`${fieldId}`}
+			>
+				Age:
+			</label>
+			<input
+				id={`${fieldId}`}
+				type="text"
+				name={`${fieldId}}`}
+				onChange={changeEvent}
+				className="rounded-sm focus:border-fuchsia-800 outline-none border-b border-slate-700 text-xl font-normal text-black leading-8 tracking-wider w-full"
+			></input>
+		</div>
+	);
+}
