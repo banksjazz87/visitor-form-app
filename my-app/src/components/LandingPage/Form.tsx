@@ -81,6 +81,8 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		if (isNaN(numOfAge) && age !== '') {
 			alert('Please provide a valid number');
 			e.target.value = '';
+		} else if (age.includes('')) {
+			e.target.value = age.trim();
 		} else {
 			let copyOfChildArray = visitorDetails.children.slice();
 			copyOfChildArray[index]["age"] = numOfAge;
