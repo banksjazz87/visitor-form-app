@@ -50,6 +50,15 @@ export default class FormConstructor {
 			value: "",
 			visitorKey: "lastName",
 		},
+		{
+			type: "text",
+			name: "age",
+			placeHolder: "",
+			label: "Age",
+			id: "visitor-age",
+			value: "",
+			visitorKey: "visitorAge",
+		},
 	];
 
 	spouseNameFields: FormFields[] = [
@@ -70,6 +79,15 @@ export default class FormConstructor {
 			id: "last-name",
 			value: "",
 			visitorKey: "lastName",
+		},
+		{
+			type: "text",
+			name: "age",
+			placeHolder: "",
+			label: "Age",
+			id: "spouse-age",
+			value: "",
+			visitorKey: "spouseAge",
 		},
 	];
 

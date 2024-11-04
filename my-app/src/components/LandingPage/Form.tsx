@@ -9,7 +9,7 @@ import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
 import FormChecker from "../../lib/form/FormChecker.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus, faL } from "@fortawesome/free-solid-svg-icons";
 import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
 
 
@@ -444,6 +444,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						changeHandler={nameChangeHandler}
 						vertical={false}
 						required={true}
+						nameAgeFields={true}
 					/>
 
 					<InputField
@@ -452,6 +453,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						changeHandler={spouseNameChangeHandler}
 						vertical={false}
 						required={false}
+						nameAgeFields={true}
 					/>
 
 					<div className="mt-8 flex flex-row gap-6 items-center pb-0">
@@ -486,6 +488,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						changeHandler={inputChangeHandler}
 						vertical={false}
 						required={true}
+						nameAgeFields={false}
 					/>
 
 					<SelectField
@@ -501,6 +504,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						vertical={false}
 						showValidMessage={validateMessage.contact}
 						required={true}
+						nameAgeFields={false}
 					/>
 
 					<div className="grid sm:grid-cols-2">
@@ -510,6 +514,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							changeHandler={inputChangeHandler}
 							vertical={false}
 							required={false}
+							nameAgeFields={false}
 						/>
 
 						<InputField
@@ -518,6 +523,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							changeHandler={inputChangeHandler}
 							vertical={false}
 							required={false}
+							nameAgeFields={false}
 						/>
 					</div>
 
