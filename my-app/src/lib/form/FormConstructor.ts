@@ -31,7 +31,7 @@ export default class FormConstructor {
 		},
 	];
 
-	nameFields: FormFields[] = [
+	visitorFields: FormFields[] = [
 		{
 			type: "text",
 			name: "name",
@@ -61,7 +61,7 @@ export default class FormConstructor {
 		},
 	];
 
-	spouseNameFields: FormFields[] = [
+	spouseFields: FormFields[] = [
 		{
 			type: "text",
 			name: "name",
@@ -167,12 +167,12 @@ export default class FormConstructor {
 		return this.titleFields;
 	}
 
-	getNameFields() {
-		return this.nameFields;
+	getVisitorFields() {
+		return this.visitorFields;
 	}
 
-	getSpouseNameFields() {
-		return this.spouseNameFields;
+	getSpouseFields() {
+		return this.spouseFields;
 	}
 
 	getAddressFields() {

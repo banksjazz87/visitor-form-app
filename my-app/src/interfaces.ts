@@ -10,6 +10,7 @@ export interface ChildData extends Name {
 export interface Visitor {
     title: string;
     visitorName: Name;
+    visitorAge: number;
     address: string;
     city: string;
     state: string;
@@ -19,6 +20,7 @@ export interface Visitor {
     interests: string[];
     prayerRequest: string;
     spouseName: Name;
+    spouseAge: number;
     children: ChildData[];
 }
 
