@@ -10,9 +10,10 @@ interface FormFieldProps {
 	showValidMessage?: boolean;
 	required: boolean;
 	nameAgeFields: boolean;
+	ageHandler?: Function;
 }
 
-export default function InputField({ dataArray, title, vertical, changeHandler, showValidMessage, required, nameAgeFields }: FormFieldProps) {
+export default function InputField({ dataArray, title, vertical, changeHandler, showValidMessage, required, nameAgeFields, ageHandler }: FormFieldProps) {
 	const createFormFields = (arr: FormFields[]): JSX.Element[] => {
 		const elements = arr.map((x: FormFields, y: number) => {
 			if (x.type === "radio") {
@@ -72,11 +73,11 @@ export default function InputField({ dataArray, title, vertical, changeHandler, 
 
 	const createNameAgeFields = (arr: FormFields[]): JSX.Element[] => {
 		return arr.map((x: FormFields, y: number): JSX.Element => {
-			if (x.name === 'age') {
+			if (x.name === 'age' && ageHandler) {
 				return (
 					<AgeField
 						index={y}
-						changeHandler={(event: React.ChangeEvent<HTMLInputElement>): void => changeHandler(event, x.visitorKey)}
+						changeHandler={(event: React.ChangeEvent<HTMLInputElement>): void => ageHandler(event, x.visitorKey)}
 						fieldId={`${x.visitorKey}_${y}`}
 						childField={false}
 					/>

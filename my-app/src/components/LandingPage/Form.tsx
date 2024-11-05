@@ -48,28 +48,12 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey = key as keyof Visitor;
 
-		console.log(visitorDetails);
 
 		if (currentKey === "phone") {
 			phoneNumberChangeHandler(e, key);
 		} else if (currentKey === "email") {
 			emailChecker(e);
 			setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
-		} else if (currentKey === "visitorAge" || currentKey === "spouseAge") {
-			const age = e.target.value;
-			const numOfAge = parseInt(age);
-
-			if (isNaN(numOfAge) && age !== "") {
-				alert("Please provide a valid number");
-				e.target.value = "";
-			} else if (age.includes("")) {
-				e.target.value = age.trim();
-			} else {
-				setVisitorDetails({
-					...visitorDetails,
-					[currentKey]: numOfAge,
-				});
-			}
 		} else {
 			setVisitorDetails({ ...visitorDetails, [currentKey]: (e.target as HTMLInputElement).value.trim() });
 		}
@@ -87,6 +71,22 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 			},
 		});
 	};
+
+
+	//Used to update the ages for the visitors that aren't children.
+	const visitorAgeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+		const currentKey = key as keyof Visitor;
+		const age = e.target.value as string;
+		const numOfAge = parseInt(age.trim());
+
+		if (isNaN(numOfAge) && age !== "") {
+			alert("Please provide a valid number.")
+			e.target.value = "";
+		} else {
+			console.log(visitorDetails);
+			setVisitorDetails({...visitorDetails, [currentKey]: numOfAge})
+		}
+	}
 
 	//Change handler for the child age.
 	const childAgeChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
@@ -456,6 +456,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						vertical={false}
 						required={true}
 						nameAgeFields={true}
+						ageHandler={visitorAgeHandler}
 					/>
 
 					<InputField
@@ -465,6 +466,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						vertical={false}
 						required={false}
 						nameAgeFields={true}
+						ageHandler={visitorAgeHandler}
 					/>
 
 					<div className="mt-8 flex flex-row gap-6 items-center pb-0">

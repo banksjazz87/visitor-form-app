@@ -17,6 +17,7 @@ export default class SetupForm {
 			firstName: "Burt",
 			lastName: "",
 		},
+		visitorAge: -1,
 		address: "",
 		city: "",
 		state: "",
@@ -29,11 +30,12 @@ export default class SetupForm {
 			firstName: "",
 			lastName: "",
 		},
+		spouseAge: -1,
 		children: [
 			{
 				firstName: "",
 				lastName: "",
-				age: ""
+				age: 0
 			},
 		],
 	};
