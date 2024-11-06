@@ -7,6 +7,11 @@ export interface ChildData extends Name {
     age: number;
 }
 
+export interface DBChildData extends Name {
+    birthYear: number;
+    ageGroup: string;
+}
+
 export interface Visitor {
     title: string;
     visitorName: Name;
