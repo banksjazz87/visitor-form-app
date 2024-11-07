@@ -390,7 +390,7 @@ class DBMethods {
         return new Promise((resolve, reject) => {
             const database = this.dbConnection;
             const allValues = values.map((x, y) => {
-                let current = `("${x.firstName}", "${x.lastName}", "visitor", "${x.age}"), `;
+                let current = `("${x.firstName}", "${x.lastName}", "visitor", "${x.ageGroup}", ${x.birthYear}), `;
                 return current;
             });
             let allValuesString = allValues.join('');
