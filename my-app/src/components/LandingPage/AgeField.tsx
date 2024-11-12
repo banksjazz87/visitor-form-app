@@ -19,7 +19,7 @@ export default function AgeField({ index, changeHandler, fieldId, childField }: 
 	};
 
 	return (
-		<div className="fields_wrapper flex flex-col grow max-w-24 items-start px-0 md:col-span-1 md:max-w-full md:flex-row md:align-middle md:items-center">
+		<div className="fields_wrapper flex flex-col grow items-start px-0 md:col-span-1 md:max-w-full md:flex-row md:align-middle md:items-center">
 			<label
 				className="text-xl font-normal text-left mr-2"
 				htmlFor={`${fieldId}`}
