@@ -14,12 +14,12 @@ export default function ChildrenFields({ count, names, nameHandler, ageHandler }
 		return (
 			<div
 				key={`child_${y}_fields`}
-				className="mt-2"
+				className="mt-2 border border-slate-800 rounded-sm py-4 pb-6 px-4"
 			>
 				<p className="text-xl font-normal text-left mr-2">{`Child ${y + 1}`}</p>
 				<div className="flex flex-col mt-2 gap-0">
 					<div
-						className="grid grid-cols-1 md:grid-cols-5 gap-2 border border-slate-800 rounded-sm py-2 px-2"
+						className="grid grid-cols-1 md:grid-cols-5 gap-2"
 						key={`child_${y + 1} `}
 					>
 						<div className="flex flex-col grow relative md:col-span-2">
