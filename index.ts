@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { DBMethods } from "./dbQueries/databaseMethods";
 import { SQLResponse, ProcessEnv, VisitorDataPoints } from "./interfaces/interfaces";
-import { ChildData, Name, AttendantData, GrecapthaRes } from "./my-app/src/interfaces";
+import { ChildData, DBChildData, Name, AttendantData, GrecapthaRes } from "./my-app/src/interfaces";
 import { MysqlError } from "mysql";
 import { Mailer } from "./modules/Mailer";
 import "isomorphic-fetch";
@@ -106,19 +106,47 @@ app.post("/get-family", (req: Request, res: Response): void => {
 app.post("/add-attendant", (req: Request, res: Response): void => {
 	const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
 
-	const attendantColumns = "firstName, lastName, memberType, age";
-	const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, "visitor", "adult"];
-	const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, "visitor", "adult"];
+	const attendantColumns = "firstName, lastName, memberType, age, birthYear";
 
-	const children = req.body.children;
-	const firstChildName = children.firstName;
+	const getAgeGroup = (age: number): string => {
+		if (age > 18) {
+			return "adult";
+		} else if (age < 12) {
+			return "child";
+		} else {
+			return "teen";
+		}
+	}
 
-	const childFirstName = req.body.children[0].firstName;
-	const spouseFirstName = req.body.spouseName.firstName;
+	const getBirthYear = (age: number): number => {
+		const date: Date = new Date();
+		const currentYear: number = date.getFullYear();
+		const birthYear: number = currentYear - age;
+		return birthYear;
+	}
+
+	const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, "visitor", getAgeGroup(req.body.visitorAge), getBirthYear(req.body.visitorAge)];
+	const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, "visitor", getAgeGroup(req.body.spouseAge), getBirthYear(req.body.spouseAge)];
+
+	const children: ChildData[] = req.body.children;
+
+	const childFirstName: string = req.body.children[0].firstName;
+	const spouseFirstName: string = req.body.spouseName.firstName;
+
+	//Get our needed Child data
+	const childrenData: DBChildData[] = children.map((x: ChildData, y: number): DBChildData => {
+		const updatedChildData: DBChildData = {
+			firstName: x.firstName,
+			lastName: x.lastName,
+			ageGroup: getAgeGroup(x.age),
+			birthYear: getBirthYear(x.age),
+		};
+		return updatedChildData;
+	});
 
 	//Full family
 	if (childFirstName.length > 0 && spouseFirstName.length > 0) {
-		Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, req.body.children), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
+		Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, childrenData), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
 			.then((data: [string[], string[], string[]]): void => {
 				res.send({
 					message: "Success",
@@ -136,7 +164,7 @@ app.post("/add-attendant", (req: Request, res: Response): void => {
 
 		//Single parent family
 	} else if (childFirstName.length > 0 && spouseFirstName.length === 0) {
-		Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, req.body.children), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
+		Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, childrenData), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
 			.then((data: [string[], string[], string[]]): void => {
 				res.send({
 					message: "Success",
@@ -209,6 +237,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 		contact_method: visitorData.contactMethod,
 		prayer_requests: visitorData.prayerRequest,
 	};
+
 	const visitorTableColumns = Object.keys(visitorColumnValues).join(", ");
 	const visitorValues = Object.values(visitorColumnValues);
 
@@ -231,7 +260,6 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	});
 
 	//Set up the email notification
-	// const emailList = ['banksjazz87@gmail.com', 'whitneymatthews05@gmail.com'];
 	const emailList = ["banksjazz87@gmail.com"];
 	const interestsString = interests.join(", ");
 	const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);

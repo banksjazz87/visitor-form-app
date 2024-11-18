@@ -1,7 +1,7 @@
 import mysql from "mysql";
 import { SQLResponse } from "../interfaces/interfaces.ts";
 import { DBAttendee } from "../../attendanceApplication/interfaces/interfaces.ts";
-import {Name, ChildData, AttendantData} from "../my-app/src/interfaces.ts";
+import {Name, ChildData, AttendantData, DBChildData} from "../my-app/src/interfaces.ts";
 
 export class DBMethods {
   hostName: any;
@@ -465,14 +465,14 @@ export class DBMethods {
     });
   }
 
-  addMultipleNonAdultAttendants(tableName: string, columns: string, values: ChildData[]): Promise <string[]> {
+  addMultipleNonAdultAttendants(tableName: string, columns: string, values: DBChildData[]): Promise <string[]> {
     return new Promise<string[]>((resolve, reject): void => {
       const database = this.dbConnection;
 
-      const allValues = values.map((x: ChildData, y: number) => {
-        let current = `("${x.firstName}", "${x.lastName}", "visitor", "${x.age}"), `; 
-        return current;
-      });
+      const allValues = values.map((x: DBChildData, y: number) => {
+				let current = `("${x.firstName}", "${x.lastName}", "visitor", "${x.ageGroup}", ${x.birthYear}), `;
+				return current;
+			});
 
       let allValuesString = allValues.join('');
       let finalValues = allValuesString.slice(0, -2);

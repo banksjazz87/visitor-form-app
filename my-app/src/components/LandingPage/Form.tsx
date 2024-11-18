@@ -9,9 +9,8 @@ import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
 import FormChecker from "../../lib/form/FormChecker.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus, faL } from "@fortawesome/free-solid-svg-icons";
 import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
-
 
 interface FormProps {
 	show: boolean;
@@ -19,7 +18,6 @@ interface FormProps {
 	startLoading: Function;
 	stopLoading: Function;
 }
-
 
 export default function Form({ show, showHandler, startLoading, stopLoading }: FormProps) {
 	const initForm = new SetupForm();
@@ -50,6 +48,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
 		let currentKey = key as keyof Visitor;
 
+
 		if (currentKey === "phone") {
 			phoneNumberChangeHandler(e, key);
 		} else if (currentKey === "email") {
@@ -73,15 +72,39 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		});
 	};
 
+
+	//Used to update the ages for the visitors that aren't children.
+	const visitorAgeHandler = (e: React.ChangeEvent<HTMLInputElement>, key: string): void => {
+		const currentKey = key as keyof Visitor;
+		const age = e.target.value as string;
+		const numOfAge = parseInt(age.trim());
+
+		if (isNaN(numOfAge) && age !== "") {
+			alert("Please provide a valid number.")
+			e.target.value = "";
+		} else {
+			console.log(visitorDetails);
+			setVisitorDetails({...visitorDetails, [currentKey]: numOfAge})
+		}
+	}
+
 	//Change handler for the child age.
 	const childAgeChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
-		let copyOfChildArray = visitorDetails.children.slice();
-		copyOfChildArray[index]["age"] = e.target.value as string;
+		const age = e.target.value as string;
+		const numOfAge = parseInt(age);
 
-		setVisitorDetails({
-			...visitorDetails,
-			children: copyOfChildArray,
-		});
+		if (isNaN(numOfAge) && age !== "") {
+			alert("Please provide a valid number");
+			e.target.value = "";
+		} else {
+			let copyOfChildArray = visitorDetails.children.slice();
+			copyOfChildArray[index]["age"] = numOfAge;
+
+			setVisitorDetails({
+				...visitorDetails,
+				children: copyOfChildArray,
+			});
+		}
 	};
 
 	//Change handler for the child's name.
@@ -238,7 +261,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 				{
 					firstName: "",
 					lastName: "",
-					age: "",
+					age: -1,
 				},
 			];
 			const newArray = currentChildList.concat(newObj);
@@ -321,7 +344,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	 * @description this is the function that is called as long as if none of the required fields are empty.
 	 */
 	const submitForm = (): void => {
-
 		//Check if the user is already in the database
 		getRecords(`/get-person/${visitorDetails.visitorName.firstName}/${visitorDetails.visitorName.lastName}`).then((data: APIResponse<AttendantData> | undefined): void => {
 			if (typeof data !== "undefined" && data.data.length === 0) {
@@ -348,7 +370,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 										//This is called to hide all content with the exception of the thank you message.
 										stopLoading();
 										showHandler();
-
 									} else {
 										stopLoading();
 										alert(`The following error has occurred while inserting ${firstName} ${lastName} into the group table: ${data.error}`);
@@ -374,7 +395,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 		});
 	};
 
-
 	//Function used to validate the captcha, if it's valid, the form is submitted.
 	const validateCaptcha = (obj: CaptchaToken): void => {
 		startLoading();
@@ -393,7 +413,6 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 			})
 			.catch((e: any): void => console.log("ERROR", e));
 	};
-	
 
 	//Submit handler for the form
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -407,8 +426,8 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 			grecaptcha.ready(function (): void {
 				grecaptcha.execute("6LcXmaUpAAAAAM4L4xUctdBGTtnO3PCL9xnNGe46", { action: "submit" }).then(function (token) {
 					const tokenObj = {
-						tokenString: token
-					}
+						tokenString: token,
+					};
 					validateCaptcha(tokenObj);
 				});
 			});
@@ -429,19 +448,23 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 					<h2 className="text-4xl font-medium text-center mb-6">Visitor Form</h2>
 
 					<InputField
-						dataArray={form.getNameFields()}
+						dataArray={form.getVisitorFields()}
 						title="Name"
 						changeHandler={nameChangeHandler}
 						vertical={false}
 						required={true}
+						nameAgeFields={true}
+						ageHandler={visitorAgeHandler}
 					/>
 
 					<InputField
-						dataArray={form.getSpouseNameFields()}
+						dataArray={form.getSpouseFields()}
 						title="Spouse"
 						changeHandler={spouseNameChangeHandler}
 						vertical={false}
 						required={false}
+						nameAgeFields={true}
+						ageHandler={visitorAgeHandler}
 					/>
 
 					<div className="mt-8 flex flex-row gap-6 items-center pb-0">
@@ -476,6 +499,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						changeHandler={inputChangeHandler}
 						vertical={false}
 						required={true}
+						nameAgeFields={false}
 					/>
 
 					<SelectField
@@ -491,6 +515,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 						vertical={false}
 						showValidMessage={validateMessage.contact}
 						required={true}
+						nameAgeFields={false}
 					/>
 
 					<div className="grid sm:grid-cols-2">
@@ -500,6 +525,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							changeHandler={inputChangeHandler}
 							vertical={false}
 							required={false}
+							nameAgeFields={false}
 						/>
 
 						<InputField
@@ -508,6 +534,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 							changeHandler={inputChangeHandler}
 							vertical={false}
 							required={false}
+							nameAgeFields={false}
 						/>
 					</div>
 

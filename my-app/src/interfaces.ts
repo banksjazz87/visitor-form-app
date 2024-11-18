@@ -4,12 +4,18 @@ export interface Name {
 }
 
 export interface ChildData extends Name {
-    age: string;
+    age: number;
+}
+
+export interface DBChildData extends Name {
+    birthYear: number;
+    ageGroup: string;
 }
 
 export interface Visitor {
     title: string;
     visitorName: Name;
+    visitorAge: number;
     address: string;
     city: string;
     state: string;
@@ -19,6 +25,7 @@ export interface Visitor {
     interests: string[];
     prayerRequest: string;
     spouseName: Name;
+    spouseAge: number;
     children: ChildData[];
 }
 

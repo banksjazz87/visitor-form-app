@@ -31,7 +31,7 @@ export default class FormConstructor {
 		},
 	];
 
-	nameFields: FormFields[] = [
+	visitorFields: FormFields[] = [
 		{
 			type: "text",
 			name: "name",
@@ -49,10 +49,19 @@ export default class FormConstructor {
 			id: "last-name",
 			value: "",
 			visitorKey: "lastName",
+		},
+		{
+			type: "text",
+			name: "age",
+			placeHolder: "",
+			label: "Age",
+			id: "visitor-age",
+			value: "",
+			visitorKey: "visitorAge",
 		},
 	];
 
-	spouseNameFields: FormFields[] = [
+	spouseFields: FormFields[] = [
 		{
 			type: "text",
 			name: "name",
@@ -70,6 +79,15 @@ export default class FormConstructor {
 			id: "last-name",
 			value: "",
 			visitorKey: "lastName",
+		},
+		{
+			type: "text",
+			name: "age",
+			placeHolder: "",
+			label: "Age",
+			id: "spouse-age",
+			value: "",
+			visitorKey: "spouseAge",
 		},
 	];
 
@@ -149,12 +167,12 @@ export default class FormConstructor {
 		return this.titleFields;
 	}
 
-	getNameFields() {
-		return this.nameFields;
+	getVisitorFields() {
+		return this.visitorFields;
 	}
 
-	getSpouseNameFields() {
-		return this.spouseNameFields;
+	getSpouseFields() {
+		return this.spouseFields;
 	}
 
 	getAddressFields() {

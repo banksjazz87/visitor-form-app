@@ -23,7 +23,7 @@ const Mailer_1 = require("./modules/Mailer");
 require("isomorphic-fetch");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = process.env.PORT || 4900;
+const port = process.env.PORT || 5000;
 //All middleware functions
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
@@ -94,16 +94,42 @@ app.post("/get-family", (req, res) => {
 });
 app.post("/add-attendant", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
-    const attendantColumns = "firstName, lastName, memberType, age";
-    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, "visitor", "adult"];
-    const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, "visitor", "adult"];
+    const attendantColumns = "firstName, lastName, memberType, age, birthYear";
+    const getAgeGroup = (age) => {
+        if (age > 18) {
+            return "adult";
+        }
+        else if (age < 12) {
+            return "child";
+        }
+        else {
+            return "teen";
+        }
+    };
+    const getBirthYear = (age) => {
+        const date = new Date();
+        const currentYear = date.getFullYear();
+        const birthYear = currentYear - age;
+        return birthYear;
+    };
+    const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, "visitor", getAgeGroup(req.body.visitorAge), getBirthYear(req.body.visitorAge)];
+    const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, "visitor", getAgeGroup(req.body.spouseAge), getBirthYear(req.body.spouseAge)];
     const children = req.body.children;
-    const firstChildName = children.firstName;
     const childFirstName = req.body.children[0].firstName;
     const spouseFirstName = req.body.spouseName.firstName;
+    //Get our needed Child data
+    const childrenData = children.map((x, y) => {
+        const updatedChildData = {
+            firstName: x.firstName,
+            lastName: x.lastName,
+            ageGroup: getAgeGroup(x.age),
+            birthYear: getBirthYear(x.age),
+        };
+        return updatedChildData;
+    });
     //Full family
     if (childFirstName.length > 0 && spouseFirstName.length > 0) {
-        Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, req.body.children), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
+        Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, childrenData), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
             .then((data) => {
             res.send({
                 message: "Success",
@@ -121,7 +147,7 @@ app.post("/add-attendant", (req, res) => {
         //Single parent family
     }
     else if (childFirstName.length > 0 && spouseFirstName.length === 0) {
-        Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, req.body.children), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
+        Promise.all([Db.insertNoEnd("Attendants", attendantColumns, attendantValues), Db.addMultipleNonAdultAttendants("Attendants", attendantColumns, childrenData), Db.insertUniqueAttendant("Attendants", attendantColumns, spouseValues)])
             .then((data) => {
             res.send({
                 message: "Success",
@@ -201,7 +227,6 @@ app.post("/add-visitor-to-all", (req, res) => {
         return currentObj;
     });
     //Set up the email notification
-    // const emailList = ['banksjazz87@gmail.com', 'whitneymatthews05@gmail.com'];
     const emailList = ["banksjazz87@gmail.com"];
     const interestsString = interests.join(", ");
     const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
