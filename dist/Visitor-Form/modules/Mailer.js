@@ -39,7 +39,7 @@ class Mailer {
      */
     sendMail() {
         return __awaiter(this, void 0, void 0, function* () {
-            //compiler, being used compile the handlebars template.
+            //compiler, being used to compile the handlebars template.
             this.transporter.use('compile', hbs({
                 viewEngine: {
                     extname: '.hbs',

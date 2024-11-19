@@ -35,7 +35,7 @@ export default class SetupForm {
 			{
 				firstName: "",
 				lastName: "",
-				age: 0
+				age: -1
 			},
 		],
 	};

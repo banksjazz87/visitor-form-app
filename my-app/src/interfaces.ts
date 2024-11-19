@@ -8,7 +8,7 @@ export interface ChildData extends Name {
 }
 
 export interface DBChildData extends Name {
-    birthYear: number;
+    birthYear: number | null;
     ageGroup: string;
 }
 
