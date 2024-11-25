@@ -9,7 +9,7 @@ import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
 import FormChecker from "../../lib/form/FormChecker.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus, faL } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
 
 interface FormProps {
@@ -417,7 +417,7 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 	//Submit handler for the form
 	const submitHandler = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-		const FormCheck = new FormChecker(["streetAddress", "first-name", "last-name", "phone", "city", "email", "states_dropdown"]);
+		const FormCheck = new FormChecker(["#streetAddress", "#first-name", "#last-name", "#phone", "#city", "#email", "#states_dropdown"]);
 
 		//Check to see if any required fields are empty and also check for a valid email address.
 		if (!FormCheck.verifyNoneRequiredEmpty() || validateMessage.contact) {

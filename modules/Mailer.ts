@@ -44,17 +44,25 @@ export class Mailer {
      * @description this is used to send an email.
      */
     async sendMail(): Promise<void> {
-        //compiler, being used compile the handlebars template.
-        this.transporter.use('compile', hbs({
-            viewEngine: {
-                extname: '.hbs',
-                layoutsDir: 'templates/',
-                defaultLayout: false,
-                partialsDir: 'templates/',
-            },
-            viewPath: 'templates/',
-            extName: '.hbs'
-        }));
+        //compiler, being used to compile the handlebars template.
+        this.transporter.use(
+					"compile",
+					hbs({
+						viewEngine: {
+							extname: ".hbs",
+							layoutsDir: "templates/",
+							defaultLayout: false,
+							partialsDir: "templates/",
+							helpers: {
+								ifNotNegativeAge: function (a: number) {
+									return a === -1 ? "" : `(${a})`;
+								},
+							},
+						},
+						viewPath: "templates/",
+						extName: ".hbs",
+					})
+				);
 
         //Actually sending the email.
         const info = await this.transporter.sendMail({

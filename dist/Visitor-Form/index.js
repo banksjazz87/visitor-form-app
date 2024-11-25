@@ -61,7 +61,7 @@ app.get("/all-states", (req, res) => {
 });
 app.get("/all-interests", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
-    Db.getTable("Interests", "ASC", "id")
+    Db.searchByValue("Interests", "active", "1")
         .then((data) => sendSuccess(data, res))
         .catch((err) => sendFailure(err, res, Db.getSqlError));
 });
@@ -96,7 +96,10 @@ app.post("/add-attendant", (req, res) => {
     const Db = new databaseMethods_1.DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
     const attendantColumns = "firstName, lastName, memberType, age, birthYear";
     const getAgeGroup = (age) => {
-        if (age > 18) {
+        if (age === null || age === -1) {
+            return 'undefined';
+        }
+        else if (age > 18) {
             return "adult";
         }
         else if (age < 12) {
@@ -107,10 +110,15 @@ app.post("/add-attendant", (req, res) => {
         }
     };
     const getBirthYear = (age) => {
-        const date = new Date();
-        const currentYear = date.getFullYear();
-        const birthYear = currentYear - age;
-        return birthYear;
+        if (age !== -1) {
+            const date = new Date();
+            const currentYear = date.getFullYear();
+            const birthYear = currentYear - age;
+            return birthYear;
+        }
+        else {
+            return null;
+        }
     };
     const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, "visitor", getAgeGroup(req.body.visitorAge), getBirthYear(req.body.visitorAge)];
     const spouseValues = [req.body.spouseName.firstName, req.body.spouseName.lastName, "visitor", getAgeGroup(req.body.spouseAge), getBirthYear(req.body.spouseAge)];

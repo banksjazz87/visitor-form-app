@@ -31,6 +31,7 @@ app.listen(port, () => {
 
 app.use(express.static(path.join(__dirname, "../../my-app/build")));
 
+
 app.get("/", (req: Request, res: Response): void => {
 	res.sendFile(path.join(__dirname, "../../my-app/build/index.html"));
 });
@@ -64,7 +65,7 @@ app.get("/all-states", (req: Request, res: Response): void => {
 app.get("/all-interests", (req: Request, res: Response): void => {
 	const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
 
-	Db.getTable("Interests", "ASC", "id")
+	Db.searchByValue("Interests", "active", "1")
 		.then((data: string[]): void => sendSuccess(data, res))
 		.catch((err: SQLResponse): void => sendFailure(err, res, Db.getSqlError));
 });
@@ -109,7 +110,9 @@ app.post("/add-attendant", (req: Request, res: Response): void => {
 	const attendantColumns = "firstName, lastName, memberType, age, birthYear";
 
 	const getAgeGroup = (age: number): string => {
-		if (age > 18) {
+		if (age === null || age === -1) {
+			return 'undefined';
+		} else if (age > 18) {
 			return "adult";
 		} else if (age < 12) {
 			return "child";
@@ -118,11 +121,15 @@ app.post("/add-attendant", (req: Request, res: Response): void => {
 		}
 	}
 
-	const getBirthYear = (age: number): number => {
-		const date: Date = new Date();
-		const currentYear: number = date.getFullYear();
-		const birthYear: number = currentYear - age;
-		return birthYear;
+	const getBirthYear = (age: number): number | null => {
+		if (age !== -1) {
+			const date: Date = new Date();
+			const currentYear: number = date.getFullYear();
+			const birthYear: number = currentYear - age;
+			return birthYear;
+		} else {
+			return null;
+		}
 	}
 
 	const attendantValues = [req.body.visitorName.firstName, req.body.visitorName.lastName, "visitor", getAgeGroup(req.body.visitorAge), getBirthYear(req.body.visitorAge)];

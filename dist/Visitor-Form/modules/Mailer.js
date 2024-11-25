@@ -39,16 +39,21 @@ class Mailer {
      */
     sendMail() {
         return __awaiter(this, void 0, void 0, function* () {
-            //compiler, being used compile the handlebars template.
-            this.transporter.use('compile', hbs({
+            //compiler, being used to compile the handlebars template.
+            this.transporter.use("compile", hbs({
                 viewEngine: {
-                    extname: '.hbs',
-                    layoutsDir: 'templates/',
+                    extname: ".hbs",
+                    layoutsDir: "templates/",
                     defaultLayout: false,
-                    partialsDir: 'templates/',
+                    partialsDir: "templates/",
+                    helpers: {
+                        ifNotNegativeAge: function (a) {
+                            return a === -1 ? "" : `(${a})`;
+                        },
+                    },
                 },
-                viewPath: 'templates/',
-                extName: '.hbs'
+                viewPath: "templates/",
+                extName: ".hbs",
             }));
             //Actually sending the email.
             const info = yield this.transporter.sendMail({
