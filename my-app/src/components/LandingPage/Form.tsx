@@ -9,7 +9,7 @@ import SelectField from "./SelectField.tsx";
 import MathFunctions from "../../lib/methods/MathFunctions.ts";
 import FormChecker from "../../lib/form/FormChecker.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus, faL } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import ChildrenFields from "../../components/LandingPage/ChildrenFields.tsx";
 
 interface FormProps {

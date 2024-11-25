@@ -64,7 +64,7 @@ app.get("/all-states", (req: Request, res: Response): void => {
 app.get("/all-interests", (req: Request, res: Response): void => {
 	const Db = new DBMethods(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_DATABASE, process.env.MYSQL_PASSWORD);
 
-	Db.getTable("Interests", "ASC", "id")
+	Db.searchByValue("Interests", "active", "1")
 		.then((data: string[]): void => sendSuccess(data, res))
 		.catch((err: SQLResponse): void => sendFailure(err, res, Db.getSqlError));
 });
