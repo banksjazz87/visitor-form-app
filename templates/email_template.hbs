@@ -13,7 +13,7 @@
 
                 <tr style='height: 40px;'>
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Name</strong></td>
-                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.title}} {{visitor.visitorName.firstName}} {{visitor.visitorName.lastName}} ({{visitor.visitorAge}})
+                    <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>{{visitor.title}} {{visitor.visitorName.firstName}} {{visitor.visitorName.lastName}} {{#ifNotNegativeAge visitor.visitorAge}}{{/ifNotNegativeAge}}
                     </td>
                 </tr>
 
@@ -21,7 +21,7 @@
                     <td style='border-right: solid 1px black; border-left: solid 1px black; width: 30%; border-bottom: 1px solid black; font-size: 16px; padding: 20px 12px;'><strong>Spouse</strong></td>
                    
                     <td style='border-bottom: 1px solid black; border-right: solid 1px black; font-size: 16px; padding: 20px 12px;'>
-                        {{visitor.spouseName.firstName}} {{visitor.spouseName.lastName }} ({{visitor.spouseAge}})          
+                        {{visitor.spouseName.firstName}} {{visitor.spouseName.lastName }} {{#ifNotNegativeAge visitor.spouseAge}}{{/ifNotNegativeAge}}
                     </td>
                    
                 </tr>
@@ -40,7 +40,7 @@
                         {{#each visitor.children}}
                             <p style="text-transform: capitalize; margin-top: 2px; margin-bottom: 2px;">
                                 {{#if this.firstName}}
-                                    {{this.firstName}} {{this.lastName}} ({{this.age}})
+                                    {{this.firstName}} {{this.lastName}} {{#ifNotNegativeAge this.age}}{{/ifNotNegativeAge}}
                                 {{/if}}
                             </p>
                         {{/each}}
