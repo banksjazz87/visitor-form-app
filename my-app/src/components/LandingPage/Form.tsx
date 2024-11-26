@@ -539,8 +539,8 @@ export default function Form({ show, showHandler, startLoading, stopLoading }: F
 					</div>
 
 					<ButtonGroup
-						title="I am interested in learning more about"
-						subTitle="(please click on all that apply)"
+						title="Mark all that apply:"
+						subTitle=""
 						dataArray={interestList}
 						values={visitorDetails.interests}
 						clickHandler={buttonGroupClickHandler}
