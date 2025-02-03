@@ -1,84 +1,82 @@
 const nodemailer = require("nodemailer");
-const hbs = require('nodemailer-express-handlebars');
+const hbs = require("nodemailer-express-handlebars");
 import { Visitor } from "../my-app/src/interfaces";
 
-
 export class Mailer {
-    userEmail: any;
-    userPassword: any;
-    sendAddress: any;
-    transporter: any;
-    emailHTML: any;
-    interests: string;
-    allVisitor: Visitor;
+	userEmail: any;
+	userPassword: any;
+	sendAddress: any;
+	transporter: any;
+	emailHTML: any;
+	interests: string;
+	allVisitor: Visitor;
 
-    constructor(userEmail: any, userPassword: any, sendAddress: string[], allVisitor: Visitor, interests: string) {
+	constructor(userEmail: any, userPassword: any, sendAddress: string[], allVisitor: Visitor, interests: string) {
+		this.userEmail = userEmail;
+		this.userPassword = userPassword;
+		this.sendAddress = sendAddress;
+		this.interests = interests;
+		this.allVisitor = allVisitor;
 
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.sendAddress = sendAddress;
-        this.interests = interests;
-        this.allVisitor = allVisitor;
-
-        this.transporter = nodemailer.createTransport({
-            service: 'gmail', 
-            auth: {
-                user: this.userEmail,
-                pass: this.userPassword,
+		this.transporter = nodemailer.createTransport({
+			host: "mail.noip.com",
+			port: 587,
+			secure: false,
+			auth: {
+				user: this.userEmail,
+				pass: this.userPassword,
+            },
+            tls: {
+                rejectUnauthorized: false
             }
-        });
-    }
+		});
+	}
 
+	//Used to get the current date as a month/date/year.
+	getDate(): string {
+		const date = new Date();
+		const stringOfDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+		return stringOfDate;
+	}
 
-    //Used to get the current date as a month/date/year.
-    getDate(): string {
-        const date = new Date();
-        const stringOfDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-        return stringOfDate;
-    }
-
-
-
-    /**
-     * @returns Promise<void>
-     * @description this is used to send an email.
-     */
-    async sendMail(): Promise<void> {
-        //compiler, being used to compile the handlebars template.
-        this.transporter.use(
-					"compile",
-					hbs({
-						viewEngine: {
-							extname: ".hbs",
-							layoutsDir: "templates/",
-							defaultLayout: false,
-							partialsDir: "templates/",
-							helpers: {
-								ifNotNegativeAge: function (a: number) {
-									return a === -1 ? "" : `(${a})`;
-								},
-							},
+	/**
+	 * @returns Promise<void>
+	 * @description this is used to send an email.
+	 */
+	async sendMail(): Promise<void> {
+		//compiler, being used to compile the handlebars template.
+		this.transporter.use(
+			"compile",
+			hbs({
+				viewEngine: {
+					extname: ".hbs",
+					layoutsDir: "templates/",
+					defaultLayout: false,
+					partialsDir: "templates/",
+					helpers: {
+						ifNotNegativeAge: function (a: number) {
+							return a === -1 ? "" : `(${a})`;
 						},
-						viewPath: "templates/",
-						extName: ".hbs",
-					})
-				);
+					},
+				},
+				viewPath: "templates/",
+				extName: ".hbs",
+			})
+		);
 
-        //Actually sending the email.
-        const info = await this.transporter.sendMail({
-            from: `Visitor Form <${this.userEmail}>`,
-            to: this.sendAddress, 
-            subject: "New Chapel on the Hill Visitor Form", 
-            template: 'email_template',
-            context: {
-                visitor: this.allVisitor, 
-                interests: this.interests,
-                date: this.getDate(),
-            }
-        });
+		//Actually sending the email.
+		const info = await this.transporter.sendMail({
+			from: `Visitor Form <${this.userEmail}>`,
+			to: this.sendAddress,
+			subject: "New Chapel on the Hill Visitor Form",
+			template: "email_template",
+			context: {
+				visitor: this.allVisitor,
+				interests: this.interests,
+				date: this.getDate(),
+			},
+		});
 
-        console.log(`Message Sent: ${info.messageId}`);
-  }
-
+		console.log(`Message Sent: ${info.messageId}`);
+	}
 }
-
