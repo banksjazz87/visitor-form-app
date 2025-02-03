@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Mailer = void 0;
 const nodemailer = require("nodemailer");
-const hbs = require('nodemailer-express-handlebars');
+const hbs = require("nodemailer-express-handlebars");
 class Mailer {
     constructor(userEmail, userPassword, sendAddress, allVisitor, interests) {
         this.userEmail = userEmail;
@@ -20,10 +20,15 @@ class Mailer {
         this.interests = interests;
         this.allVisitor = allVisitor;
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "mail.noip.com",
+            port: 587,
+            secure: false,
             auth: {
                 user: this.userEmail,
                 pass: this.userPassword,
+            },
+            tls: {
+                rejectUnauthorized: false
             }
         });
     }
@@ -60,12 +65,12 @@ class Mailer {
                 from: `Visitor Form <${this.userEmail}>`,
                 to: this.sendAddress,
                 subject: "New Chapel on the Hill Visitor Form",
-                template: 'email_template',
+                template: "email_template",
                 context: {
                     visitor: this.allVisitor,
                     interests: this.interests,
                     date: this.getDate(),
-                }
+                },
             });
             console.log(`Message Sent: ${info.messageId}`);
         });
