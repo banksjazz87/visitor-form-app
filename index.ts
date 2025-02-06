@@ -269,7 +269,8 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	//Set up the email notification
 	const emailList = [
 		"banksjazz87@gmail.com",
-		"whitneylanematthews@yahoo.com"
+		"whitneylanematthews@yahoo.com",
+		"whitneymatthews05@gmail"
 	];
 	
 	const interestsString = interests.join(", ");
