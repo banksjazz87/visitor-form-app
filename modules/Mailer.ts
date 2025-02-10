@@ -11,7 +11,7 @@ export class Mailer {
 	interests: string;
 	allVisitor: Visitor;
 
-	constructor(userEmail: any, userPassword: any, sendAddress: string[], allVisitor: Visitor, interests: string) {
+	constructor(userEmail: any, userPassword: any, sendAddress: string, allVisitor: Visitor, interests: string) {
 		this.userEmail = userEmail;
 		this.userPassword = userPassword;
 		this.sendAddress = sendAddress;
@@ -22,13 +22,18 @@ export class Mailer {
 			host: "mail.noip.com",
 			port: 587,
 			secure: false,
+			pool: true,
 			auth: {
 				user: this.userEmail,
 				pass: this.userPassword,
             },
             tls: {
                 rejectUnauthorized: false
-            }
+			}, 
+			maxMessage: Infinity,
+			maxConnections: 5,
+			debug: true,
+			logger: true
 		});
 	}
 

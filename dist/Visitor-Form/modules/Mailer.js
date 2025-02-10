@@ -23,13 +23,18 @@ class Mailer {
             host: "mail.noip.com",
             port: 587,
             secure: false,
+            pool: true,
             auth: {
                 user: this.userEmail,
                 pass: this.userPassword,
             },
             tls: {
                 rejectUnauthorized: false
-            }
+            },
+            maxMessage: Infinity,
+            maxConnections: 5,
+            debug: true,
+            logger: true
         });
     }
     //Used to get the current date as a month/date/year.
