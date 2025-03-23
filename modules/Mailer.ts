@@ -17,14 +17,6 @@ export class Mailer {
 		this.sendAddress = sendAddress;
 		this.interests = interests;
 		this.allVisitor = allVisitor;
-		// this.transporter = nodemailer.createTransport({
-		// 	service: "gmail",
-		// 	auth: {
-		// 		user: this.userEmail,
-		// 		pass: this.userPassword,
-		// 	},
-		// });
-
 		this.transporter = nodemailer.createTransport({
 			service: "Gmail",
 			host: "smtp.gmail.com",
