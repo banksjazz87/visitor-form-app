@@ -235,11 +235,9 @@ app.post("/add-visitor-to-all", (req, res) => {
         return currentObj;
     });
     //Set up the email notification
-    const emailList = [
-        "banksjazz87@gmail.com"
-    ];
+    const emailList = "banksjazz87@gmail.com";
     const interestsString = interests.join(", ");
-    const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList[0], visitorData, interestsString);
+    const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
     //Solo visitor
     if (children[0].firstName.length === 0 && spouseValues[0].firstName.length === 0) {
         const familyData = primaryValues;

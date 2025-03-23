@@ -17,24 +17,25 @@ export class Mailer {
 		this.sendAddress = sendAddress;
 		this.interests = interests;
 		this.allVisitor = allVisitor;
+		// this.transporter = nodemailer.createTransport({
+		// 	service: "gmail",
+		// 	auth: {
+		// 		user: this.userEmail,
+		// 		pass: this.userPassword,
+		// 	},
+		// });
 
 		this.transporter = nodemailer.createTransport({
-			host: "mail.noip.com",
-			port: 587,
-			secure: false,
-			pool: true,
+			service: "Gmail",
+			host: "smtp.gmail.com",
+			port: 465,
+			secure: true,
 			auth: {
 				user: this.userEmail,
 				pass: this.userPassword,
-            },
-            tls: {
-                rejectUnauthorized: false
-			}, 
-			maxMessage: Infinity,
-			maxConnections: 5,
-			debug: true,
-			logger: true
+			},
 		});
+		
 	}
 
 	//Used to get the current date as a month/date/year.
