@@ -14,7 +14,7 @@ import "isomorphic-fetch";
 dotenv.config();
 
 const app: Application = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 6200;
 
 //All middleware functions
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -267,7 +267,7 @@ app.post("/add-visitor-to-all", (req: Request, res: Response): void => {
 	});
 
 	//Set up the email notification
-	const emailList = "banksjazz87@gmail.com, whitneylanematthews@yahoo.com, whitneymatthews05@gmail, notifications@chapelonthehill.com, chapelonthehill@embarqmail.com";
+	const emailList = "banksjazz87@gmail.com, whitneylanematthews@yahoo.com, whitneymatthews05@gmail, chapelonthehill@embarqmail.com";
 	
 	const interestsString = interests.join(", ");
 	const Email = new Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);

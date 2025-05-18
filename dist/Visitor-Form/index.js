@@ -23,7 +23,7 @@ const Mailer_1 = require("./modules/Mailer");
 require("isomorphic-fetch");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 6200;
 //All middleware functions
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
@@ -235,7 +235,7 @@ app.post("/add-visitor-to-all", (req, res) => {
         return currentObj;
     });
     //Set up the email notification
-    const emailList = "banksjazz87@gmail.com, whitneylanematthews@yahoo.com, whitneymatthews05@gmail";
+    const emailList = "banksjazz87@gmail.com, whitneylanematthews@yahoo.com, whitneymatthews05@gmail, chapelonthehill@embarqmail.com";
     const interestsString = interests.join(", ");
     const Email = new Mailer_1.Mailer(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD, emailList, visitorData, interestsString);
     //Solo visitor
